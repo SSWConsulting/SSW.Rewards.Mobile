@@ -120,6 +120,7 @@
                                                 ButtonText="GET"
                                                 ItemId="{Binding Id}"
                                                 IsButtonDisabled="{Binding CanAfford, Converter={mct:InvertedBoolConverter}}"
+                                                AllowTapWhenDisabled="True"
                                                 ButtonCommand="{Binding Source={x:Reference RewardList}, Path=BindingContext.RedeemRewardCommand}"/>
                                         </DataTemplate>
                                     </CarouselView.ItemTemplate>
@@ -148,6 +149,7 @@
                                             <controls:ListItem Title="{Binding Name}"
                                                                Description="{Binding Description}"
                                                                IsButtonDisabled="{Binding CanAfford, Converter={mct:InvertedBoolConverter}}"
+                                                               AllowTapWhenDisabled="True"
                                                                ItemId="{Binding Id}"
                                                                Points="{Binding Cost}"
                                                                ButtonText="GET"

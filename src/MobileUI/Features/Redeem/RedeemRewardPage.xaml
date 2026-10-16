@@ -98,6 +98,36 @@
                                        HorizontalOptions="Center"
                                        HorizontalTextAlignment="Center"
                                        Margin="0,0,0,30" />
+
+                                <Label Text="{Binding InsufficientPointsMessage}"
+                                       FontSize="18"
+                                       TextColor="{StaticResource Coin}"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"
+                                       Margin="0,0,0,10"
+                                       IsVisible="{Binding IsInsufficientPointsVisible}"
+                                       Style="{StaticResource LabelBold}" />
+
+                                <Label Text="{Binding TinaCmsStoreLinkText}"
+                                       FontSize="16"
+                                       TextColor="{StaticResource Gray300}"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"
+                                       Margin="0,0,0,30"
+                                       IsVisible="{Binding IsTinaCmsStoreTextVisible}" />
+
+                                <Label Text="{Binding TinaCmsStoreLinkText}"
+                                       FontSize="16"
+                                       TextColor="{StaticResource SSWRed}"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"
+                                       TextDecorations="Underline"
+                                       Margin="0,0,0,30"
+                                       IsVisible="{Binding IsTinaCmsStoreLinkVisible}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding OpenTinaCmsStoreCommand}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
                             </VerticalStackLayout>
                             
                             <!-- Balance section -->
@@ -319,7 +349,7 @@
                             <Grid
                                 ColumnDefinitions="*,15,*"
                                 Margin="0,0,0,30"
-                                IsVisible="{Binding IsBalanceVisible}">
+                                IsVisible="{Binding IsRewardActionsVisible}">
                                 <controls:MultiLineButton
                                     Text="Redeem in-person"
                                     Command="{Binding RedeemInPersonClickedCommand}"

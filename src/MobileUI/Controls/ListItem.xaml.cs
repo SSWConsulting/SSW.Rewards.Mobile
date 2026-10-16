@@ -36,6 +36,9 @@ public partial class ListItem : Border
     public partial bool IsButtonDisabled { get; set; }
 
     [BindableProperty]
+    public partial bool AllowTapWhenDisabled { get; set; }
+
+    [BindableProperty]
     public partial int ItemId { get; set; } = -1;
 
     public ListItem()
@@ -46,7 +49,7 @@ public partial class ListItem : Border
     [RelayCommand]
     private async Task ButtonClicked()
     {
-        if (!IsButtonDisabled && ButtonCommand != null)
+        if ((!IsButtonDisabled || AllowTapWhenDisabled) && ButtonCommand != null)
         {
             await ButtonCommand.ExecuteAsync(ItemId);
         }

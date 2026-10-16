@@ -21,6 +21,7 @@ public partial class RedeemRewardViewModel(
 {
     private Reward _reward;
     private float _defaultBrightness;
+    private IDisposable _balanceSubscription;
     private const float MaxBrightness = 1.0f;
 
     [ObservableProperty]
@@ -33,12 +34,14 @@ public partial class RedeemRewardViewModel(
     private string _description;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RedeemInPersonClickedCommand), nameof(RedeemDigitalClickedCommand), nameof(ConfirmClickedCommand))]
     private int _cost;
 
     [ObservableProperty]
     private bool _isDigital;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RedeemInPersonClickedCommand), nameof(RedeemDigitalClickedCommand), nameof(ConfirmClickedCommand))]
     private int _userBalance;
 
     [ObservableProperty]
@@ -46,6 +49,21 @@ public partial class RedeemRewardViewModel(
 
     [ObservableProperty]
     private bool _isBalanceVisible = true;
+
+    [ObservableProperty]
+    private bool _isRewardActionsVisible = true;
+
+    [ObservableProperty]
+    private bool _isInsufficientPointsVisible;
+
+    [ObservableProperty]
+    private string _insufficientPointsMessage;
+
+    [ObservableProperty]
+    private bool _isTinaCmsStoreLinkVisible;
+
+    [ObservableProperty]
+    private bool _isTinaCmsStoreTextVisible;
 
     [ObservableProperty]
     private bool _isQrCodeVisible;
@@ -77,22 +95,27 @@ public partial class RedeemRewardViewModel(
     [ObservableProperty]
     private ImageSource _qrCode;
 
+    public string TinaCmsStoreLinkText { get; } = "Purchase at the TinaCMS store";
+
     public ObservableCollection<Address> SearchResults { get; set; } = [];
     public bool ShouldCallCallback { get; set; }
 
-    public void Initialise(Reward reward)
+    public void Initialise(Reward reward, int userBalance)
     {
         _reward = reward;
         _defaultBrightness = ScreenBrightness.Default.Brightness;
+        UserBalance = userBalance;
 
         SetRewardProperties(reward);
+        UpdateInsufficientPointsState();
 
         if (reward.IsPendingRedemption)
         {
             ShowQrCode();
         }
 
-        userService.MyBalanceObservable().Subscribe(myBalance => UserBalance = myBalance);
+        _balanceSubscription?.Dispose();
+        _balanceSubscription = userService.MyBalanceObservable().Subscribe(OnBalanceChanged);
         LogEvent(Constants.AnalyticsEvents.RewardView);
     }
 
@@ -107,8 +130,50 @@ public partial class RedeemRewardViewModel(
 
     public void OnDisappearing()
     {
+        _balanceSubscription?.Dispose();
+        _balanceSubscription = null;
         ScreenBrightness.Default.Brightness = _defaultBrightness;
     }
+
+    private void OnBalanceChanged(int balance)
+    {
+        UserBalance = balance;
+        UpdateInsufficientPointsState();
+    }
+
+    private void UpdateInsufficientPointsState()
+    {
+        if (_reward is null || !IsRewardDecisionVisible())
+        {
+            return;
+        }
+
+        var pointsNeeded = Math.Max(_reward.Cost - UserBalance, 0);
+        var showTinaCmsStore = IsTinaCmsReward();
+        var hasStoreLink = showTinaCmsStore && !string.IsNullOrWhiteSpace(Constants.TinaCmsStoreUrl);
+        IsInsufficientPointsVisible = pointsNeeded > 0;
+        IsRewardActionsVisible = !IsInsufficientPointsVisible;
+        IsTinaCmsStoreLinkVisible = IsInsufficientPointsVisible && hasStoreLink;
+        IsTinaCmsStoreTextVisible = IsInsufficientPointsVisible && showTinaCmsStore && !hasStoreLink;
+        InsufficientPointsMessage = IsInsufficientPointsVisible
+            ? $"You need {pointsNeeded:n0} more points"
+            : string.Empty;
+    }
+
+    private bool IsRewardDecisionVisible()
+        => IsHeaderVisible &&
+           !IsQrCodeVisible &&
+           !IsAddressVisible &&
+           !ConfirmEnabled &&
+           !SendingClaim &&
+           !ClaimSuccess &&
+           !ClaimError;
+
+    private bool CanAffordReward()
+        => UserBalance >= Cost;
+
+    private bool IsTinaCmsReward()
+        => _reward?.Name?.Contains("TinaCMS", StringComparison.OrdinalIgnoreCase) == true;
 
     private void ShowQrCode(string qrCode = null)
     {
@@ -116,6 +181,10 @@ public partial class RedeemRewardViewModel(
 
         IsHeaderVisible = false;
         IsBalanceVisible = false;
+        IsRewardActionsVisible = false;
+        IsInsufficientPointsVisible = false;
+        IsTinaCmsStoreLinkVisible = false;
+        IsTinaCmsStoreTextVisible = false;
         ConfirmEnabled = false;
         Heading = $"Ready to claim:{Environment.NewLine}{_reward.Name}";
         QrCode = ImageHelpers.GenerateQrCode(qrCode ?? _reward.PendingRedemptionCode);
@@ -126,6 +195,10 @@ public partial class RedeemRewardViewModel(
     private void ShowClaimingState()
     {
         IsBalanceVisible = false;
+        IsRewardActionsVisible = false;
+        IsInsufficientPointsVisible = false;
+        IsTinaCmsStoreLinkVisible = false;
+        IsTinaCmsStoreTextVisible = false;
         ConfirmEnabled = false;
         SendingClaim = true;
         Heading = "Claiming reward...";
@@ -192,9 +265,29 @@ public partial class RedeemRewardViewModel(
     }
 
     [RelayCommand]
+    private async Task OpenTinaCmsStore()
+    {
+        if (string.IsNullOrWhiteSpace(Constants.TinaCmsStoreUrl) ||
+            !Uri.TryCreate(Constants.TinaCmsStoreUrl, UriKind.Absolute, out var uri))
+        {
+            return;
+        }
+
+        try
+        {
+            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.External);
+        }
+        catch
+        {
+            await alertService.DisplayAlertAsync("Error", "There was an error trying to launch the default browser.", "OK");
+        }
+    }
+
+    [RelayCommand]
     private void NextClicked()
     {
         IsBalanceVisible = false;
+        IsRewardActionsVisible = false;
         IsAddressVisible = true;
     }
 
@@ -211,7 +304,7 @@ public partial class RedeemRewardViewModel(
         IsAddressVisible = false;
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanAffordReward))]
     private async Task RedeemInPersonClicked()
     {
         ShowClaimingState();
@@ -232,7 +325,7 @@ public partial class RedeemRewardViewModel(
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanAffordReward))]
     private async Task RedeemDigitalClicked()
     {
         var isConfirmed = await alertService.DisplayConfirmationAsync(
@@ -284,7 +377,7 @@ public partial class RedeemRewardViewModel(
         LogEvent(Constants.AnalyticsEvents.RewardRedemptionCancelled);
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanAffordReward))]
     private async Task ConfirmClicked()
     {
         if (SelectedAddress is null)
