@@ -25,6 +25,43 @@ public class OfflineScenarioTests
     /// <summary>Stands in for the auth handler the app registers; auth is not under test.</summary>
     private sealed class PassthroughAuthHandler : DelegatingHandler;
 
+    /// <summary>Same 401 check as the app's handler, counting the re-login it would trigger.</summary>
+    private sealed class LoginRedirectHandler : IApiExceptionHandler
+    {
+        public int LoginRedirects { get; private set; }
+
+        public Task<bool> TryHandleAsync(Exception exception)
+        {
+            if (!exception.IsUnauthorized())
+            {
+                return Task.FromResult(false);
+            }
+
+            LoginRedirects++;
+            return Task.FromResult(true);
+        }
+    }
+
+    private sealed class FakeAlertService : IAlertService
+    {
+        public int Alerts { get; private set; }
+
+        public Task DisplayAlertAsync(string title, string message, string cancel)
+        {
+            Alerts++;
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> DisplayConfirmationAsync(string title, string message, string accept, string cancel)
+            => Task.FromResult(false);
+    }
+
+    private sealed class OnlineConnectivity : IConnectivityService
+    {
+        public bool IsOnline => true;
+        public event EventHandler<bool>? ConnectivityChanged { add { } remove { } }
+    }
+
     private WireMockServer _server = null!;
     private ServiceProvider _services = null!;
 
@@ -53,12 +90,16 @@ public class OfflineScenarioTests
                 Feed = userIds.Select(id => new ActivityFeedItemDto { UserId = id, UserName = $"user-{id}" }),
             }));
 
-    private PagedListSource<ActivityFeedItemDto> CreateFeedSource(string cacheKey) =>
+    private void StubUnauthorized() =>
+        _server.Given(Request.Create().WithPath(FeedRoute).UsingGet())
+            .RespondWith(Response.Create().WithStatusCode(401).WithBody("token expired"));
+
+    private PagedListSource<ActivityFeedItemDto> CreateFeedSource(string cacheKey, int pageSize = 50) =>
         new(new PagedListSourceOptions<ActivityFeedItemDto>
         {
             FetchPage = async (skip, take, ct) =>
                 (await _services.GetRequiredService<IActivityFeedService>().GetAllActivities(take, skip, ct)).Feed.ToList(),
-            PageSize = 50,
+            PageSize = pageSize,
             Cache = new AkavacheCacheService(NullLogger<AkavacheCacheService>.Instance),
             CacheKey = cacheKey,
         });
@@ -84,6 +125,49 @@ public class OfflineScenarioTests
         offline.HasContent.Should().BeTrue("cached content is on screen");
         offlineSession.Items.Select(i => i.UserId).Should().Equal(1, 2, 3);
         offlineSession.IsShowingCachedData.Should().BeTrue();
+    }
+
+    [Test]
+    public async Task ExpiredSession_BehindCachedFeed_RedirectsToLoginWithoutAlert()
+    {
+        var cacheKey = $"expired-{Guid.NewGuid():N}";
+        StubFeed(1, 2, 3);
+        await CreateFeedSource(cacheKey).RefreshAsync();
+
+        _server.Reset();
+        StubUnauthorized();
+        var redirect = new LoginRedirectHandler();
+        var alerts = new FakeAlertService();
+        var errorHandler = new OfflineAwareListErrorHandler(redirect, new OnlineConnectivity(), alerts);
+
+        var coldStart = CreateFeedSource(cacheKey);
+        var result = await coldStart.RefreshAsync();
+        await errorHandler.HandleAsync(result, userRequestedNewData: false, "Activity Feed", "offline", "generic");
+
+        coldStart.IsShowingCachedData.Should().BeTrue();
+        result.Error.Should().BeOfType<HttpRequestException>()
+            .Which.IsUnauthorized().Should().BeTrue("the API status must survive the typed client");
+        redirect.LoginRedirects.Should().Be(1, "cached content must not hide an expired session");
+        alerts.Alerts.Should().Be(0);
+    }
+
+    [Test]
+    public async Task ExpiredSession_OnLoadMore_RedirectsToLogin()
+    {
+        StubFeed(1, 2);
+        var source = CreateFeedSource($"expired-more-{Guid.NewGuid():N}", pageSize: 2);
+        await source.RefreshAsync();
+
+        _server.Reset();
+        StubUnauthorized();
+        var redirect = new LoginRedirectHandler();
+        var errorHandler = new OfflineAwareListErrorHandler(redirect, new OnlineConnectivity(), new FakeAlertService());
+
+        var result = await source.LoadMoreAsync();
+        await errorHandler.HandleAsync(result, userRequestedNewData: false, "Activity Feed", "offline", "generic");
+
+        redirect.LoginRedirects.Should().Be(1);
+        source.Items.Should().HaveCount(2);
     }
 
     [Test]

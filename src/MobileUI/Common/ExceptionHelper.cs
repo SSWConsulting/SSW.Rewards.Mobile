@@ -1,4 +1,3 @@
-using System.Net;
 using SSW.Rewards.Mobile.Common;
 
 namespace SSW.Rewards.Mobile.Helpers;
@@ -9,7 +8,7 @@ public static class ExceptionHandler
 {
     public static async Task<bool> HandleApiException(Exception exception)
     {
-        if (exception is HttpRequestException httpRequestException && IsUnauthorized(httpRequestException))
+        if (exception.IsUnauthorized())
         {
             await NavigateToLoginPage();
             return true;
@@ -18,12 +17,6 @@ public static class ExceptionHandler
         {
             return false;
         }
-    }
-
-    private static bool IsUnauthorized(HttpRequestException exception)
-    {
-        // Check if the exception corresponds to a 401 Unauthorized response
-        return exception.StatusCode == HttpStatusCode.Unauthorized;
     }
 
     private static async Task NavigateToLoginPage()
