@@ -19,6 +19,7 @@ public sealed partial class PagedListSource<T> : ObservableObject
     // Stays 0 while only cached data is shown so pagination can't duplicate page 1.
     private int _fetchedCount;
     private bool _endReached;
+    private bool _isRefreshing;
 
     public ObservableRangeCollection<T> Items { get; } = [];
 
@@ -38,12 +39,21 @@ public sealed partial class PagedListSource<T> : ObservableObject
     /// <summary>
     /// Replaces the list: shows cached items immediately (first load only),
     /// then the fresh first page. Safe to call repeatedly (refresh, segment switch).
+    /// A failed refresh keeps the shown items and their pagination position.
     /// </summary>
-    public async Task<ListLoadResult> RefreshAsync()
+    /// <param name="queryChanged">
+    /// True when <see cref="PagedListSourceOptions{T}.FetchPage"/> now returns a different list
+    /// (segment or filter switch), so the shown items can no longer be paged.
+    /// </param>
+    public async Task<ListLoadResult> RefreshAsync(bool queryChanged = false)
     {
         var ct = RestartToken();
-        _fetchedCount = 0;
-        _endReached = false;
+        _isRefreshing = true;
+        if (queryChanged)
+        {
+            _fetchedCount = 0;
+            _endReached = false;
+        }
 
         try
         {
@@ -81,6 +91,14 @@ public sealed partial class PagedListSource<T> : ObservableObject
         {
             return ListLoadResult.Fail(ex, Items.Count > 0);
         }
+        finally
+        {
+            // A superseding refresh owns the flag now.
+            if (!ct.IsCancellationRequested)
+            {
+                _isRefreshing = false;
+            }
+        }
     }
 
     /// <summary>
@@ -90,7 +108,8 @@ public sealed partial class PagedListSource<T> : ObservableObject
     public async Task<ListLoadResult> LoadMoreAsync()
     {
         // No successful refresh yet (e.g. showing cache offline) — appending could duplicate page 1.
-        if (_endReached || _fetchedCount == 0)
+        // While a refresh is in flight the next page would belong to the list being replaced.
+        if (_endReached || _fetchedCount == 0 || _isRefreshing)
         {
             return ListLoadResult.Ok(Items.Count > 0, IsShowingCachedData);
         }

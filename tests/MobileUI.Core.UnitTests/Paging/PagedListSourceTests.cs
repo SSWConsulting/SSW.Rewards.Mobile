@@ -251,6 +251,96 @@ public class PagedListSourceTests
     }
 
     [Test]
+    public async Task Refresh_FailsAfterLiveLoad_LoadMoreResumesFromShownItems()
+    {
+        var fetch = new FakeFetch().Returns(1, 2).Throws().Returns(3, 4);
+        var source = CreateSource(fetch);
+
+        await source.RefreshAsync();
+        var failed = await source.RefreshAsync(); // transient failure, same query
+        await source.LoadMoreAsync();
+
+        failed.Error.Should().NotBeNull();
+        fetch.RequestedSkips.Should().Equal(new[] { 0, 0, 2 }, "the shown items are still a valid first page");
+        source.Items.Select(i => i.Id).Should().Equal(1, 2, 3, 4);
+    }
+
+    [Test]
+    public async Task Refresh_QueryChangedAndFails_LoadMoreDoesNotAppendToOldList()
+    {
+        var fetch = new FakeFetch().Returns(1, 2).Throws();
+        var source = CreateSource(fetch);
+
+        await source.RefreshAsync();
+        await source.RefreshAsync(queryChanged: true);
+        await source.LoadMoreAsync();
+
+        fetch.RequestedSkips.Should().Equal(new[] { 0, 0 }, "page 2 of the new query must not follow the old list");
+        source.Items.Select(i => i.Id).Should().Equal(1, 2);
+    }
+
+    [Test]
+    public async Task Refresh_QueryChangedThenSucceeds_PagesTheNewList()
+    {
+        var fetch = new FakeFetch().Returns(1, 2).Throws().Returns(5, 6).Returns(7);
+        var source = CreateSource(fetch);
+
+        await source.RefreshAsync();
+        await source.RefreshAsync(queryChanged: true);
+        await source.RefreshAsync();
+        await source.LoadMoreAsync();
+
+        fetch.RequestedSkips.Should().Equal(0, 0, 0, 2);
+        source.Items.Select(i => i.Id).Should().Equal(5, 6, 7);
+    }
+
+    [Test]
+    public async Task LoadMore_WhileRefreshPending_DoesNotFetchOrCancelRefresh()
+    {
+        var fetch = new FakeFetch().Returns(1, 2).Pending(out var refreshed);
+        var source = CreateSource(fetch);
+
+        await source.RefreshAsync();
+        var refresh = source.RefreshAsync();
+        await source.LoadMoreAsync();
+        refreshed.SetResult(CachedItems(3, 4));
+        await refresh;
+
+        fetch.RequestedSkips.Should().Equal(new[] { 0, 0 }, "the next page would belong to the list being replaced");
+        source.Items.Select(i => i.Id).Should().Equal(3, 4);
+    }
+
+    [Test]
+    public async Task LoadMore_Failure_ReportsErrorWithContent()
+    {
+        var unauthorized = new HttpRequestException("expired", null, System.Net.HttpStatusCode.Unauthorized);
+        var fetch = new FakeFetch().Returns(1, 2).Throws(unauthorized);
+        var source = CreateSource(fetch);
+
+        await source.RefreshAsync();
+        var result = await source.LoadMoreAsync();
+
+        result.Error.Should().BeSameAs(unauthorized);
+        result.HasContent.Should().BeTrue();
+    }
+
+    [Test]
+    public async Task AreSame_DisplayedFieldChanged_ReplacesShownItems()
+    {
+        var cache = new FakeCache();
+        cache.Store["test-key"] = new List<Item> { new() { Id = 1, Display = "old name" } };
+        var fetch = new FakeFetch().Pending(out var fresh);
+        var source = CreateSource(fetch, cache, pageSize: 1, areSame: (a, b) => a.Id == b.Id && a.Display == b.Display);
+
+        var refresh = source.RefreshAsync();
+        fresh.SetResult([new Item { Id = 1, Display = "new name" }]);
+        await refresh;
+
+        source.Items.Single().Display.Should().Be("new name");
+        source.IsShowingCachedData.Should().BeFalse();
+    }
+
+    [Test]
     public async Task PrepareItem_RunsForCachedAndFreshItems()
     {
         var cache = new FakeCache();
