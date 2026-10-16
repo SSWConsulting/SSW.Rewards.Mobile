@@ -17,5 +17,7 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
             .WithOne(x => x.Tenant)
             .HasForeignKey<TenantSettings>(x => x.TenantId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasSoftDelete();
     }
 }

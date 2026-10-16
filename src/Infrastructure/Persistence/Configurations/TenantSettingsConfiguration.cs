@@ -44,5 +44,7 @@ public class TenantSettingsConfiguration : IEntityTypeConfiguration<TenantSettin
         builder.Property(x => x.FacebookUrl).HasMaxLength(300);
         builder.Property(x => x.InstagramUrl).HasMaxLength(300);
         builder.Property(x => x.YouTubeUrl).HasMaxLength(300);
+
+        builder.HasSoftDelete();
     }
 }

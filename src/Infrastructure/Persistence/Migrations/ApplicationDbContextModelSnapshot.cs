@@ -953,6 +953,9 @@ namespace SSW.Rewards.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DeletedUtc")
+                        .HasFilter("[DeletedUtc] IS NULL");
+
                     b.ToTable("Tenants", (string)null);
                 });
 
@@ -1129,6 +1132,9 @@ namespace SSW.Rewards.Persistence.Migrations
                         .HasColumnType("nvarchar(300)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DeletedUtc")
+                        .HasFilter("[DeletedUtc] IS NULL");
 
                     b.HasIndex("TenantId")
                         .IsUnique();
