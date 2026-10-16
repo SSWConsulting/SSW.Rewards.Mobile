@@ -1,4 +1,4 @@
-name: Deploy iOS build to TestFlight
+name: Deploy iOS build to TestFlight (Automation)
 
 on:
   workflow_call:

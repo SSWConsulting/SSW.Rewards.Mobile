@@ -1,4 +1,4 @@
-name: Build Android app
+name: Build Android app (Automation)
 
 on:
   workflow_call:

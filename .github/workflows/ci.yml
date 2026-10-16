@@ -1,4 +1,4 @@
-name: CI
+name: CI (Automation)
 
 on:
   workflow_call:

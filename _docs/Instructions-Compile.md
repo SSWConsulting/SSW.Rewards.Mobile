@@ -1,6 +1,11 @@
 # The F5 Experience
 
-**NOTE:** ⚠️ From 07/07/2025 we moved from Azure SQL Edge to SQL Server 2022! If you have setup SSW.Rewards before that date, backup your DB and restore it after running Docker compose.
+> **Local dev now runs on .NET Aspire.** `aspire run` (from the repo root) brings up SQL Server +
+> Azurite + WebAPI + AdminUI with one command (replacing `up.ps1` + `docker compose`). See the full
+> guide: **[Aspire-Local-Dev.md](Aspire-Local-Dev.md)**. This page covers the end-to-end setup,
+> including mobile and iOS signing.
+
+**NOTE:** ⚠️ From 07/07/2025 we moved from Azure SQL Edge to SQL Server 2022! If you set up SSW.Rewards before that date, back up your DB and restore it afterwards (see [manage-database skill](../.agents/skills/manage-database/SKILL.md)).
 
 ## Local architecture
 
@@ -32,8 +37,8 @@ flowchart LR
 %%──────────────────── Local ────────────────────
 subgraph Local["🧑‍💻 Local"]
   direction TB
-  MobileApp["📱 Mobile App<br/>(Xamarin / .NET&nbsp;MAUI)"]
-  DevTunnel[/"🌐 Dev Tunnel<br/>(ngrok / Dev Tunnels)"/]
+  MobileApp["📱 Mobile App<br/>(.NET&nbsp;MAUI)"]
+  DevTunnel[/"🌐 Tailscale<br/>(stable URL, trusted cert)"/]
   AdminUI["🖥️ Admin UI<br/>(Blazor)"]
   WebAPI{{"⚡ WebAPI<br/>(ASP.NET Core)"}}
 
@@ -43,7 +48,7 @@ subgraph Local["🧑‍💻 Local"]
 end
 
 %%──────────────────── Docker ───────────────────
-subgraph Docker["🐳 Docker"]
+subgraph Docker["🐳 Docker (via .NET Aspire)"]
   direction TB
   SQLServer[("🗄️ SQL Server")]
   Azurite[("🪣 Azurite Blob Storage")]
@@ -81,18 +86,16 @@ class MobileApp,DevTunnel,AdminUI,WebAPI,SQLServer,Azurite,SSWIdentity,SSWQuizGP
 
 **TODO** Find Azurite seed data for the API (Tylah might be blind)
 
-- .NET 10 SDK https://dotnet.microsoft.com/en-us/download/dotnet/10.0
+- .NET 10 SDK https://dotnet.microsoft.com/en-us/download/dotnet/10.0 (`global.json` pins `10.0.301`)
+- Aspire CLI ≥ **13.4.6**: `dotnet tool install -g aspire` (or `dotnet tool update -g aspire`)
+- [Docker Desktop](https://docs.docker.com/desktop/) — Aspire runs SQL + Azurite as containers
 - IDE - Visual Studio Enterprise Latest // Jetbrains Rider // VS Code
-- Android SDK setup/ installed w/ Xamarin (https://docs.microsoft.com/en-us/xamarin/android/get-started/installation/android-sdk)
-- iOS SDK setup/installed w/ Xamarin (https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/)
-- [PowerShell Core](https://github.com/PowerShell/PowerShell)
-- [Docker Desktop](https://docs.docker.com/desktop/)
+- Android SDK (for the mobile app) + MAUI workloads: `dotnet workload install maui` (or `maui-android`; needs `sudo` on a system-wide .NET install)
 - Optional: [Azure Data Studio](https://azure.microsoft.com/en-us/products/data-studio/) (Not required, can use IDE Tools for DB Querying)
 - Optional: [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/) (Easy way to upload and download files)
 
-- Install Dev Tunnels or Ngrok see the rule https://ssw.com.au/rules/port-forwarding/
-  - [dev tunnels](https://learn.microsoft.com/en-us/azure/developer/dev-tunnels/get-started?tabs=macos) (Recommended)
-  - [ngrok](https://ngrok.com/)
+- For testing the mobile app on a phone, use **Tailscale** for a stable, iOS-trusted URL (see the
+  Mobile UI section below) — it replaces Dev Tunnels / ngrok.
 
 ### Required Tools (for Mac)
 
@@ -106,95 +109,85 @@ class MobileApp,DevTunnel,AdminUI,WebAPI,SQLServer,Azurite,SSWIdentity,SSWQuizGP
 
 1. Clone this Repo https://github.com/SSWConsulting/SSW.Rewards.Mobile.git
 2. Download and install latest .NET 10 SDK
-3. Get the Secrets from Keeper
-   1. **Client Secrets | SSW | SSW.Rewards | Developer Secrets**
-   2. Add them as .NET User Secrets for `WebAPI.csproj`
-   3. Copy `google-services.json` to `src/MobileUI/Platforms/Android/google-services.json`
-   4. Copy `GoogleService-Info.plist` to `src/MobileUI/Platforms/iOS/GoogleService-Info.plist`
-4. Create a Developer Certificate with command below
-   1. Make sure you have folder `.aspnet\https` in your home directory
-   1. Run the script below (You can change change this, but the `docker-compose.yml` should be updated appropriately)
+3. Trust the local dev HTTPS certificate (one-time):
 
-**Windows Terminal**
+   ```bash
+   dotnet dev-certs https --trust
+   ```
 
-```bash
-dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\WebAPI.pfx -p ThisPassword
-dotnet dev-certs https --trust
-```
+   (Also available later as the **Tools: Trust dev HTTPS cert** dashboard command. If you get
+   "A valid HTTPS certificate is already present", run `dotnet dev-certs https --clean` first.)
 
-**Mac**
+   Before the first run, put the secrets in place — **Keeper is the only external resource**. Every
+   stack secret lives in one store (the AppHost user-secrets); copy the single
+   **`SSW.Rewards ▸ SSW.Rewards — Aspire Dev Secrets`** Keeper record, then:
 
-```bash
-dotnet dev-certs https -ep ${HOME}/.aspnet/https/WebAPI.pfx -p ThisPassword
-dotnet dev-certs https --trust
-```
+   ```bash
+   ./rewards-dev secrets edit    # opens secrets.json — paste the Keeper record, save
+   ./rewards-dev secrets check   # ✓/✗ per key; tells you what's missing + where in Keeper
+   ```
 
-**NOTE:** If when creating WebAPI.pfx you get "A valid HTTPS certificate is already present." use `dotnet dev-certs https --clean` to remove the existing certificate.
-**NOTE:** See https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-8.0#certificates if there are any issues.
+4. Start the local stack with Aspire (Docker must be running):
 
-5. Cd into the Repo
-6. Run the Docker Containers
+   ```bash
+   aspire run   # from the repo root (.aspire/settings.json targets src/AppHost)
+   ```
 
-- On Windows, open PowerShell and run:
+   `WebAPI`/`AdminUI` no longer carry their own secrets — everything is injected from the AppHost.
+   If a secret is missing, Aspire reports *ValueMissing* and SQL won't start; run
+   `./rewards-dev secrets edit`, paste, and re-run.
 
-```bash
-./up.ps1
-```
+The dashboard opens automatically. SQL Server + Azurite come up as **persistent** containers, then
+WebAPI + AdminUI start once SQL is healthy (EF migrations apply on WebAPI startup):
 
-- On macOS or Linux, open a terminal and run:
+- AdminUI → https://localhost:7137
+- WebAPI Swagger → https://localhost:5001/swagger/index.html
 
-```bash
-pwsh ./up.ps1
-```
+> Full guide, dashboard commands, and the `rewards-dev` target switcher: **[Aspire-Local-Dev.md](Aspire-Local-Dev.md)**.
 
-You should now be able to access the AdminUI hosted locally at https://localhost:7137
-
-You should now be able to access the WebAPI Swagger docs at https://localhost:5001/swagger/index.html
-
-**NOTE:** For active development for WebAPI and AdminUI, we can just start up dependencies for them:
-
-```bash
-docker compose --profile tools up -d
-```
-
-**Note:** You can run only the WebAPI or AdminUI by running:
-
-```bash
-docker compose --profile webapi up -d
-```
-
-OR
-
-```bash
-docker compose --profile admin up -d
-```
-
-7. Check `Managing-DB.md` if you want to restore existing DB.
+5. Check [manage-database skill](../.agents/skills/manage-database/SKILL.md) if you want to restore an existing DB.
 
 **TODO: Current seeding might not fully work for development. [Tech-Debt - #540](https://github.com/SSWConsulting/SSW.Rewards.Mobile/issues/540)**
 
-Currently, we need to restore the DB like for instance from staging or another developer. Follow `Managing-DB.md` for backup and restore instructions.
+Currently, we need to restore the DB like for instance from staging or another developer. Follow the `manage-database` skill (`.agents/skills/manage-database/SKILL.md`) for backup and restore instructions.
 
 ## Mobile UI
 
 Follow Microsoft Learn’s step-by-step guide to get your first .NET MAUI project up and running. It lets you run Mobile UI without issues. https://learn.microsoft.com/en-us/dotnet/maui/get-started/first-app?view=net-maui-8.0&tabs=vsmac&pivots=devices-android
 
-### To work on the Mobile UI (Android SDK)
+> **Don't hand-edit `Constants.cs`.** The DEBUG API/identity URLs come from a git-ignored override
+> written by the `rewards-dev` CLI. See [Aspire-Local-Dev.md](Aspire-Local-Dev.md) for the full flow.
 
-1. Run the Docker containers (Only WebApi required)
-2. Start a Dev Tunnel for the API
+### To work on the Mobile UI (Android)
+
+1. Install the MAUI workload (one-time): `dotnet workload install maui` (or `maui-android`).
+2. Make sure the Firebase config files exist (git-ignored): copy `google-services.json` /
+   `GoogleService-Info.plist` from Keeper into `src/MobileUI/Platforms/{Android,iOS}/`, or use the
+   **Mobile: Sync mobile secrets (isolated)** dashboard command. Only `*.template` placeholders are committed.
+3. Point the app at a backend (emulators **can't** reach `localhost`, so use `staging` or `tailscale`):
+
+   ```bash
+   dotnet run --project tools/RewardsDev -- env staging      # or: api tailscale + identity staging
+   ```
+
+4. Build and deploy to a running emulator:
+
+   ```bash
+   dotnet build src/MobileUI/MobileUI.csproj -t:Run -f net10.0-android -c Debug
+   ```
+
+   (`-t:Run` is required for Debug builds — a plain `adb install` of the APK won't start due to Fast Deployment.)
+
+#### Phone testing with Tailscale (stable URL + trusted cert)
 
 ```bash
-devtunnel host -p 5001
+tailscale serve --bg https / https+insecure://localhost:5001     # iOS-trusted HTTPS to the local API
+dotnet run --project tools/RewardsDev -- api tailscale            # auto-detects your *.ts.net URL
 ```
 
-3. Update the `Constants.cs` `ApiBaseUrl` in the **#if DEBUG** block to use your DevTunnel address
-4. Run the MobileUI, targeting your Android Emulator
+### To work on the Mobile UI (iOS, macOS only)
 
-### To work on the Mobile UI (iOS, MacOS Only)
-
-1. Complete steps 1-3 above
-2. Run the MobileUI, targeting your Android Emulator
+1. Complete the steps above, then target an iOS simulator/device (requires the `maui-ios` workload).
 
 **NOTE: if you cannot build and see an error relating to the provisioning profile/ app signing identity**
 
