@@ -1,3 +1,5 @@
+name: Admin - Build (Automation)
+
 on:
     workflow_call:
 

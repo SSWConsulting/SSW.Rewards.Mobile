@@ -11,7 +11,7 @@ public class CustomAuthorizationMessageHandler : AuthorizationMessageHandler
         : base(provider, navigationManager)
     {
         ConfigureHandler(
-            authorizedUrls: new[] { config.GetValue<string>("RewardsApiUrl") } !,
-            scopes: new[] { "email", "profile", "ssw-rewards-api" });
+            authorizedUrls: [config.GetValue<string>("RewardsApiUrl")!],
+            scopes: ["ssw-rewards-api"]);
     }
 }

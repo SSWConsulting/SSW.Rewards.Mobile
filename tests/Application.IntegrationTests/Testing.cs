@@ -24,7 +24,7 @@ public partial class Testing
     private static string? _currentUserId;
 
     [OneTimeSetUp]
-    public async void RunBeforeAnyTests()
+    public async Task RunBeforeAnyTests()
     {
         _factory = new CustomWebApplicationFactory();
         _scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory>();
