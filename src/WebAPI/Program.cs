@@ -41,7 +41,7 @@ app.UseRouting();
 
 string _allowSpecificOrigins = "_AllowSpecificOrigins";
 app.UseCors(_allowSpecificOrigins);
-    
+
 app.UseAuthentication();
 app.UseAuthorization();
 

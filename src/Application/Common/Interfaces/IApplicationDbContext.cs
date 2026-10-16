@@ -28,5 +28,7 @@ public interface IApplicationDbContext
     DbSet<Post> Posts { get; set; }
     DbSet<PostLike> PostLikes { get; set; }
     DbSet<PostComment> PostComments { get; set; }
+    DbSet<Tenant> Tenants { get; set; }
+    DbSet<TenantSettings> TenantSettings { get; set; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
