@@ -80,8 +80,7 @@ public class UserService : IUserService
         _logger = logger;
         _authService.DetailsUpdated += UpdateMyDetailsAsync;
 
-        // Load cached profile data on startup
-        LoadCachedProfileData();
+        MainThread.BeginInvokeOnMainThread(async () => await LoadCachedProfileDataAsync());
     }
 
     public IObservable<int> MyUserIdObservable() => _myUserId.AsObservable();
@@ -124,18 +123,8 @@ public class UserService : IUserService
             var user = await _userClient.GetCurrentUser();
             UpdateObservablesFromUser(user);
 
-            // Persist to file cache for offline access
-            try
-            {
-                var filePath = Path.Combine(FileSystem.CacheDirectory, MyCachedProfileKey + ".json");
-                using var stream = File.Create(filePath);
-                await System.Text.Json.JsonSerializer.SerializeAsync(stream, user);
-                _logger.LogInformation("Saved profile data to cache for user {UserId}", user.Id);
-            }
-            catch (Exception cacheEx)
-            {
-                _logger.LogError(cacheEx, "Failed to save profile data to cache");
-            }
+            // Through the cache service so the logout cache reset removes it.
+            await _fileCacheService.SetAsync(MyCachedProfileKey, user);
         }
         catch (HttpRequestException ex)
         {
@@ -347,29 +336,37 @@ public class UserService : IUserService
         }
     }
 
-    private void LoadCachedProfileData()
+    private async Task LoadCachedProfileDataAsync()
+    {
+        DeleteLegacyProfileFile();
+
+        var cachedUser = await _fileCacheService.GetAsync<CurrentUserDto>(MyCachedProfileKey);
+        if (cachedUser == null)
+        {
+            _logger.LogInformation("No cached profile data found");
+            return;
+        }
+
+        // The live profile may have arrived while the cache was being read.
+        if (_myUserId.Value != 0)
+        {
+            return;
+        }
+
+        UpdateObservablesFromUser(cachedUser);
+        _logger.LogInformation("Loaded cached profile data for user {UserId}", cachedUser.Id);
+    }
+
+    // Older versions wrote the profile straight to disk, where it survived logout.
+    private void DeleteLegacyProfileFile()
     {
         try
         {
-            var filePath = Path.Combine(FileSystem.CacheDirectory, MyCachedProfileKey + ".json");
-            if (!File.Exists(filePath))
-            {
-                _logger.LogInformation("No cached profile data found");
-                return;
-            }
-
-            using var stream = File.OpenRead(filePath);
-            var cachedUser = System.Text.Json.JsonSerializer.Deserialize<CurrentUserDto>(stream);
-
-            if (cachedUser != null)
-            {
-                UpdateObservablesFromUser(cachedUser);
-                _logger.LogInformation("Loaded cached profile data for user {UserId}", cachedUser.Id);
-            }
+            File.Delete(Path.Combine(FileSystem.CacheDirectory, MyCachedProfileKey + ".json"));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to load cached profile data");
+            _logger.LogWarning(ex, "Failed to delete the legacy cached profile file");
         }
     }
 
