@@ -148,17 +148,21 @@ gh secret list -R "$repo" | grep APPLE_
 
 ### Rerun the Mobile Workflow
 
-```bash
-gh workflow run mobile-main.yml -R <owner>/<repo> --ref main
+If only one platform failed, rerun just the failed jobs of that run:
 
-gh run list \
-  -R <owner>/<repo> \
-  --workflow mobile-main.yml \
-  --limit 3
+```bash
+repo="<owner>/<repo>"
+run_id="<failed-run-id>"
+
+gh run list -R "$repo" --workflow mobile-main.yml --limit 3
+gh run rerun "$run_id" --failed -R "$repo"
 ```
 
-The workflow uses the `prod` GitHub environment, so build jobs may wait for environment approval
-before the iOS signing step runs.
+Don't redispatch `mobile-main.yml` on an unchanged `main` for this. The build number is the commit
+count, so a new run re-uploads the same Android version code, which Google Play rejects.
+
+All build and deploy jobs use the `prod` GitHub environment, so each may wait for environment
+approval (the iOS signing step runs after it).
 
 References:
 

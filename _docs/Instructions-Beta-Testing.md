@@ -20,9 +20,10 @@ Give developers, QA, Product Owner, and other stakeholders access to pre‑relea
 
 | Stage                 | Trigger            | Action                                            | Manual Gate            | Outputs                    |
 | --------------------- | ------------------ | ------------------------------------------------- | ---------------------- | -------------------------- |
-| Build                 | Push to `main`     | Compile, run unit tests, produce AAB + IPA        | No                     | Build artifacts            |
-| Beta Deploy (Android) | Post-build success | (Pending until gate) Upload AAB to configured Play track | Yes (Approve)          | Play Store testing release |
-| Beta Deploy (iOS)     | Post-build success | (Pending until gate) Upload to App Store Connect / TestFlight | Yes (Approve)          | TestFlight build available |
+| PR Validation         | Pull request       | Build and run unit tests (separate PR workflow)   | No                     | Check results              |
+| Build                 | Push to `main` (`src/MobileUI/**`) or manual dispatch | Compile and sign AAB + IPA (no unit tests) | Yes (`prod` environment approval) | Build artifacts |
+| Beta Deploy (Android) | Post-build success | Upload AAB to the Play internal track             | Yes (`prod` environment approval) | Play Store testing release |
+| Beta Deploy (iOS)     | Post-build success | Upload to App Store Connect / TestFlight          | Yes (`prod` environment approval) | TestFlight build available |
 | Public Release        | Manual store action or dedicated workflow | Promote approved build to open testing or production | Store-dependent | Public tester or store release |
 
 ## Requesting Beta Access (New Users)
@@ -119,7 +120,7 @@ Gold plating:
 ## Versioning & Build Numbers
 
 - Marketing version (e.g. 3.10.0) must be incremented manually each store release.
-- Build number auto-increments per CI run.
+- Build number is the `main` commit count, so it increases only with new commits; re-running or redispatching the same commit reuses it.
 
 ## Telemetry & Crash Reporting
 
