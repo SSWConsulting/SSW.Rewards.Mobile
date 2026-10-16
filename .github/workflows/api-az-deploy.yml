@@ -1,4 +1,4 @@
-name: API - Deploy
+name: API - Deploy (Automation)
 
 on:
   workflow_call:

@@ -3,7 +3,6 @@
     <PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
-        <UserSecretsId>abaa8db5-c195-4a86-bd29-069a802aa8d5</UserSecretsId>
 		<RootNamespace>SSW.Rewards.Admin.UI</RootNamespace>
         <AssemblyName>SSW.Rewards.Admin.$(MSBuildProjectName)</AssemblyName>
         <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory).codeanalysis\codeanalysis.ruleset</CodeAnalysisRuleSet>

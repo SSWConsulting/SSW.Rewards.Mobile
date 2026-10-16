@@ -29,8 +29,8 @@ public static class ConfigureServices
         services.AddMemoryCache();
         services.AddScoped<ICacheService, CacheService>();
 
-        services.AddScoped<AuditableEntitySaveChangesInterceptor>();
-        services.AddScoped<AchievementIntegrationIdInterceptor>();
+        services.AddSingleton<AuditableEntitySaveChangesInterceptor>();
+        services.AddSingleton<AchievementIntegrationIdInterceptor>();
 
         // ChatGPT config
         services.AddOptions<GPTServiceOptions>()
@@ -58,13 +58,17 @@ public static class ConfigureServices
 
         services.AddHangfireServer();
 
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContextPool<ApplicationDbContext>((provider, options) =>
         {
 #if DEBUG
             options.EnableSensitiveDataLogging();
 #endif
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
                 builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
+
+            options.AddInterceptors(
+                provider.GetRequiredService<AuditableEntitySaveChangesInterceptor>(),
+                provider.GetRequiredService<AchievementIntegrationIdInterceptor>());
         });
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());

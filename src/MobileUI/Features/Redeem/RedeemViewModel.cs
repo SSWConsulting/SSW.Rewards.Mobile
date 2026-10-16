@@ -131,6 +131,9 @@ public partial class RedeemViewModel : BaseViewModel
         _timer.Stop();
         CarouselPosition = 0;
 
+        // Ensure reward affordability is calculated against the user's latest credit balance.
+        await _userService.UpdateMyDetailsAsync();
+
         await Rewards.LoadAsync(async ct => await FetchRewardsData(ct), reload: true);
     }
 
@@ -167,6 +170,7 @@ public partial class RedeemViewModel : BaseViewModel
             _timer.Start();
 
             CarouselRewards.ReplaceRange(Rewards.Collection.Where(r => r.IsCarousel));
+            UpdateRewardsAffordability();
         });
     }
 
@@ -267,7 +271,6 @@ public partial class RedeemViewModel : BaseViewModel
             {
                 popup.CallbackEvent -= handler;
                 await LoadData();
-                await _userService.UpdateMyDetailsAsync();
             };
             popup.CallbackEvent += handler;
             await MopupService.Instance.PushAsync(popup);
