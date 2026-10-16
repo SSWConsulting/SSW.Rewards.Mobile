@@ -22,4 +22,15 @@ public partial class ActivityPage
         _firebaseAnalyticsService.Log("ActivityPage");
         await _viewModel.LoadFeed();
     }
+
+    protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
+    {
+        base.OnNavigatedFrom(args);
+
+        // Still on a stack means a page was pushed on top; it's only gone for good once popped.
+        if (!Navigation.NavigationStack.Contains(this) && !Navigation.ModalStack.Contains(this))
+        {
+            _viewModel.Dispose();
+        }
+    }
 }

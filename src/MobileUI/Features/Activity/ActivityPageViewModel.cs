@@ -17,7 +17,7 @@ public enum ActivityPageSegments
     Posts
 }
 
-public partial class ActivityPageViewModel : BaseViewModel
+public partial class ActivityPageViewModel : BaseViewModel, IDisposable
 {
     private const string FeedTitle = "Activity Feed";
     private const string OfflineMessage = "You're offline. The activity feed will load once you're back online.";
@@ -25,6 +25,7 @@ public partial class ActivityPageViewModel : BaseViewModel
 
     private readonly IAppNavigator _navigator;
     private readonly OfflineAwareListErrorHandler _errorHandler;
+    private readonly IDisposable _myUserIdSubscription;
 
     private ActivityPageSegments _currentSegment;
     private int _myUserId;
@@ -82,7 +83,7 @@ public partial class ActivityPageViewModel : BaseViewModel
             ShouldUseCache = () => _currentSegment == ActivityPageSegments.All,
         });
 
-        userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
+        _myUserIdSubscription = userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
     }
 
     public async Task LoadFeed()
@@ -150,4 +151,6 @@ public partial class ActivityPageViewModel : BaseViewModel
 
     [RelayCommand]
     private Task ClosePage() => _navigator.PopModalAsync();
+
+    public void Dispose() => _myUserIdSubscription.Dispose();
 }
