@@ -29,7 +29,7 @@ internal class Handler : IRequestHandler<GetLeaderboardPaginatedListQuery, Leade
             LeaderboardFilter.Forever => query.OrderByDescending(x => x.TotalPoints),
             LeaderboardFilter.ThisWeek => query.OrderByDescending(x => x.PointsThisWeek),
             _ => query.OrderByDescending(x => x.TotalPoints),
-        }).ThenBy(x => x.Name);
+        }).ThenBy(x => x.Name).ThenBy(x => x.UserId);
 
         return new LeaderboardViewModel
         {

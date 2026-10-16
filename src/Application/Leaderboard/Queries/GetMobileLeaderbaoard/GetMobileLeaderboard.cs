@@ -30,6 +30,7 @@ internal class GetMobileLeaderboardQueryHandler(ILeaderboardService leaderboardS
         query = query
             .OrderByDescending(x => x.Points)
             .ThenBy(x => x.Name)
+            .ThenBy(x => x.UserId)
             .Select((x, i) =>
             {
                 x.Rank = i + 1;
