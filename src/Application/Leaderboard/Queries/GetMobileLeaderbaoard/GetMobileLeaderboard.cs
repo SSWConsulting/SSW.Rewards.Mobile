@@ -29,6 +29,8 @@ internal class GetMobileLeaderboardQueryHandler(ILeaderboardService leaderboardS
         // Sort and recalculate the rank based on the current period.
         query = query
             .OrderByDescending(x => x.Points)
+            .ThenBy(x => x.Name)
+            .ThenBy(x => x.UserId)
             .Select((x, i) =>
             {
                 x.Rank = i + 1;
