@@ -25,6 +25,9 @@ public partial class CarouselItem
     
     [BindableProperty]
     public partial bool IsButtonDisabled { get; set; }
+
+    [BindableProperty]
+    public partial bool AllowTapWhenDisabled { get; set; }
     
     [BindableProperty]
     public partial string RibbonText { get; set; }
@@ -55,7 +58,7 @@ public partial class CarouselItem
     [RelayCommand]
     private async Task ButtonClicked()
     {
-        if (ButtonCommand != null)
+        if ((!IsButtonDisabled || AllowTapWhenDisabled) && ButtonCommand != null)
         {
             await ButtonCommand.ExecuteAsync(ItemId);
         }

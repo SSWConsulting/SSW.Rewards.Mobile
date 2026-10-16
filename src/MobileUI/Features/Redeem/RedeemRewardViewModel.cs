@@ -34,12 +34,14 @@ public partial class RedeemRewardViewModel(
     private string _description;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RedeemInPersonClickedCommand), nameof(RedeemDigitalClickedCommand), nameof(ConfirmClickedCommand))]
     private int _cost;
 
     [ObservableProperty]
     private bool _isDigital;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RedeemInPersonClickedCommand), nameof(RedeemDigitalClickedCommand), nameof(ConfirmClickedCommand))]
     private int _userBalance;
 
     [ObservableProperty]
@@ -166,6 +168,9 @@ public partial class RedeemRewardViewModel(
            !SendingClaim &&
            !ClaimSuccess &&
            !ClaimError;
+
+    private bool CanAffordReward()
+        => UserBalance >= Cost;
 
     private bool IsTinaCmsReward()
         => _reward?.Name?.Contains("TinaCMS", StringComparison.OrdinalIgnoreCase) == true;
@@ -299,7 +304,7 @@ public partial class RedeemRewardViewModel(
         IsAddressVisible = false;
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanAffordReward))]
     private async Task RedeemInPersonClicked()
     {
         ShowClaimingState();
@@ -320,7 +325,7 @@ public partial class RedeemRewardViewModel(
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanAffordReward))]
     private async Task RedeemDigitalClicked()
     {
         var isConfirmed = await alertService.DisplayConfirmationAsync(
@@ -372,7 +377,7 @@ public partial class RedeemRewardViewModel(
         LogEvent(Constants.AnalyticsEvents.RewardRedemptionCancelled);
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanAffordReward))]
     private async Task ConfirmClicked()
     {
         if (SelectedAddress is null)
