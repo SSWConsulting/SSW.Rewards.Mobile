@@ -9,6 +9,8 @@
         T="LeaderboardUserDto"
         Value="@SelectedUser"
         ValueChanged="@OnSelectedUserChanged"
+        Text="@_text"
+        TextChanged="@OnTextChanged"
         Label="@Label"
         SearchFunc="@SearchUsers"
         ToStringFunc="@(usr => usr?.Name ?? string.Empty)"
@@ -33,6 +35,8 @@
 
 @code {
     private List<LeaderboardUserDto> _usersList = [];
+    private LeaderboardUserDto? _syncedUser;
+    private string _text = string.Empty;
 
     [Parameter]
     public LeaderboardUserDto? SelectedUser { get; set; }
@@ -77,10 +81,29 @@
         }
     }
 
+    protected override void OnParametersSet()
+    {
+        if (!ReferenceEquals(SelectedUser, _syncedUser))
+        {
+            _syncedUser = SelectedUser;
+            _text = SelectedUser?.Name ?? string.Empty;
+        }
+    }
+
     private async Task OnSelectedUserChanged(LeaderboardUserDto? value)
     {
         SelectedUser = value;
+        _syncedUser = value;
         await SelectedUserChanged.InvokeAsync(value);
+    }
+
+    private async Task OnTextChanged(string? text)
+    {
+        _text = text ?? string.Empty;
+        if (SelectedUser != null && text != SelectedUser.Name)
+        {
+            await OnSelectedUserChanged(null);
+        }
     }
 
     private async Task HandleButtonClick()
