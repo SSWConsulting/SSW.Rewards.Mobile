@@ -83,7 +83,18 @@ await using (var services = BuildServices(sqlConn, blobConn))
         };
         Console.WriteLine($"Seeding demo data ({options.Years}y of history, dev = {options.DevEmail})…");
         var seeder = new DemoDataSeeder(db, services.GetService<IDemoAssetProvider>(), Console.WriteLine);
-        var summary = await seeder.SeedAsync(options, CancellationToken.None);
+        // SeedAsync validates balances last and throws, so a bad seed rolls back instead of sticking.
+        await using var transaction = await db.Database.BeginTransactionAsync();
+        DemoSeedSummary summary;
+        try
+        {
+            summary = await seeder.SeedAsync(options, CancellationToken.None);
+        }
+        catch (InvalidOperationException e)
+        {
+            return Fail(e.Message);
+        }
+        await transaction.CommitAsync();
         Console.WriteLine($"✓ {summary.Users} users · {summary.StaffMembers} staff · {summary.Rewards} rewards · " +
                           $"{summary.Quizzes} quizzes · +{summary.AwardsAdded} achievements · +{summary.ClaimsAdded} claims · " +
                           $"+{summary.CompletionsAdded} quiz completions · +{summary.PendingAdded} pending redemptions");

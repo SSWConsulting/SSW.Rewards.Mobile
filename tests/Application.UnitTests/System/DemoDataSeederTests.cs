@@ -1,11 +1,14 @@
+using System.Text;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.System.Commands.Common;
+using SSW.Rewards.Domain.Entities;
 using SSW.Rewards.Infrastructure.Persistence;
 using SSW.Rewards.Infrastructure.Persistence.Interceptors;
+using ApiClientConstants = SSW.Rewards.ApiClient.Constants;
 
 namespace SSW.Rewards.Application.UnitTests.System;
 
@@ -79,25 +82,106 @@ public class DemoDataSeederTests
         again.AwardsAdded.Should().Be(0, "the topped-up window must itself be idempotent");
     }
 
+    private async Task<List<int>> Balances()
+    {
+        await using var context = CreateContext();
+        return await context.Users
+            .Select(u => (u.UserAchievements.Sum(ua => (int?)ua.Achievement.Value) ?? 0)
+                         - (u.UserRewards.Sum(ur => (int?)ur.Reward.Cost) ?? 0)
+                         - (u.PendingRedemptions
+                             .Where(pr => !pr.Completed && !pr.CancelledByUser && !pr.CancelledByAdmin)
+                             .Sum(pr => (int?)pr.Reward.Cost) ?? 0))
+            .ToListAsync();
+    }
+
     [Test]
     public async Task Seed_NoUserEverHasANegativeBalance()
     {
         await Seed(Today, years: 3);
 
-        await using var context = CreateContext();
-        var balances = await context.Users
-            .Select(u => new
-            {
-                u.Email,
-                Balance = (u.UserAchievements.Sum(ua => (int?)ua.Achievement.Value) ?? 0)
-                          - (u.UserRewards.Sum(ur => (int?)ur.Reward.Cost) ?? 0)
-                          - (u.PendingRedemptions
-                              .Where(pr => !pr.Completed && !pr.CancelledByUser && !pr.CancelledByAdmin)
-                              .Sum(pr => (int?)pr.Reward.Cost) ?? 0),
-            })
-            .ToListAsync();
+        (await Balances()).Should().OnlyContain(b => b >= 0);
+    }
 
-        balances.Should().OnlyContain(b => b.Balance >= 0);
+    [Test]
+    public async Task Seed_WideningTheHistoryWindow_ChargesEveryPersistedClaim()
+    {
+        await Seed(Today, years: 1);
+        await Seed(Today, years: 3);
+
+        (await Balances()).Should().OnlyContain(b => b >= 0);
+
+        var again = await Seed(Today, years: 3);
+        again.ClaimsAdded.Should().Be(0, "the widened window must itself be idempotent");
+        again.PendingAdded.Should().Be(0);
+    }
+
+    [Test]
+    public async Task Seed_WhenPersistedClaimsAlreadyOverspend_RefusesInsteadOfSucceeding()
+    {
+        await Seed(Today);
+        await using (var context = CreateContext())
+        {
+            var dev = await context.Users.SingleAsync(u => u.Email == DevEmail);
+            var reward = await context.Rewards.OrderByDescending(r => r.Cost).FirstAsync();
+            for (var i = 0; i < 100; i++)
+                context.UserRewards.Add(new UserReward { UserId = dev.Id, RewardId = reward.Id, AwardedAt = Today });
+            await context.SaveChangesAsync();
+        }
+
+        var rerun = () => Seed(Today);
+
+        (await rerun.Should().ThrowAsync<InvalidOperationException>()).WithMessage($"*{DevEmail}*");
+    }
+
+    [Test]
+    public async Task Seed_QrCodes_DecodeToPrefixesTheMobileScannerAccepts()
+    {
+        await Seed(Today);
+
+        await using var context = CreateContext();
+        var achievementCodes = await context.Achievements.Select(a => a.Code).ToListAsync();
+        var rewardCodes = await context.Rewards.Select(r => r.Code).ToListAsync();
+        var pendingCodes = await context.PendingRedemptions.Select(pr => pr.Code).ToListAsync();
+
+        pendingCodes.Should().NotBeEmpty();
+        achievementCodes.Should().OnlyContain(c => DecodeLikeScanner(c).StartsWith(ApiClientConstants.RewardsQRCodeAchievementPrefix));
+        rewardCodes.Should().OnlyContain(c => DecodeLikeScanner(c).StartsWith(ApiClientConstants.RewardsQRCodeRewardPrefix));
+        pendingCodes.Should().OnlyContain(c => DecodeLikeScanner(c).StartsWith(ApiClientConstants.RewardsQRCodePendingRewardPrefix));
+    }
+
+    // Mirrors MobileUI ScannerService.DecodeQrCode + StringHelpers.Base64Decode (MAUI, not referenceable here).
+    private static string DecodeLikeScanner(string? code)
+    {
+        try
+        {
+            return Encoding.UTF8.GetString(Convert.FromBase64String(code ?? string.Empty)).ToLowerInvariant();
+        }
+        catch (FormatException)
+        {
+            return string.Empty;
+        }
+    }
+
+    [Test]
+    public async Task Seed_CancelledOrCompletedPendingRedemptions_AreNotRecreated()
+    {
+        await Seed(Today);
+        await using (var context = CreateContext())
+        {
+            var pending = await context.PendingRedemptions.ToListAsync();
+            pending.Should().HaveCountGreaterThan(1);
+            pending[0].Completed = true;
+            foreach (var pr in pending.Skip(1)) pr.CancelledByUser = true;
+            await context.SaveChangesAsync();
+        }
+
+        var rerun = await Seed(Today);
+
+        rerun.PendingAdded.Should().Be(0);
+        await using var verify = CreateContext();
+        var codes = await verify.PendingRedemptions.Select(pr => pr.Code).ToListAsync();
+        codes.Should().OnlyHaveUniqueItems();
+        (await verify.PendingRedemptions.CountAsync(pr => !pr.Completed && !pr.CancelledByUser)).Should().Be(0);
     }
 
     [Test]

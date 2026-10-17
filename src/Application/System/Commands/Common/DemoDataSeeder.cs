@@ -1,3 +1,5 @@
+using System.Text;
+using SSW.Rewards.Application.Achievements.Common;
 using SSW.Rewards.Application.Common.Helpers;
 
 namespace SSW.Rewards.Application.System.Commands.Common;
@@ -19,8 +21,9 @@ public sealed record DemoSeedSummary(
 /// catalog, multi-year scan/event/quiz history with event clusters, reward claims
 /// and the developer's own user. Fully idempotent — every decision is a stable hash
 /// of (entity key, calendar date), so re-running tops up new days without duplicating
-/// old ones. Claims are generated chronologically and never drive a balance negative,
-/// including the cost of open pending redemptions.
+/// old ones. Every persisted claim is charged against the balance and new claims are only
+/// added after the latest one, so no balance goes negative (open pending costs included).
+/// QR codes use the app's Base64 <c>ach:</c>/<c>rwd:</c>/<c>pnd:</c> payloads so seeded items scan.
 /// </summary>
 public class DemoDataSeeder
 {
@@ -46,24 +49,24 @@ public class DemoDataSeeder
         var people = BuildPeople(options);
 
         // Phase 1 — catalog (achievements, skills, platforms, rewards, quizzes).
-        var skills = await EnsureSkills(people, ct);
+        await EnsureSkills(people, ct);
         var achievements = new AchievementLookup(_context);
         await EnsureMilestoneAchievements(achievements, ct);
-        var platforms = await EnsureSocialPlatforms(achievements, ct);
+        await EnsureSocialPlatforms(achievements, ct);
         var rewards = await EnsureRewards(ct);
         var events = DemoDataSet.GetEvents(horizon, today).ToList();
         await EnsureEventAchievements(achievements, events, ct);
         await EnsurePeopleAchievements(achievements, people, ct);
-        var quizzes = await EnsureQuizzes(achievements, ct);
+        await EnsureQuizzes(achievements, ct);
         await _context.SaveChangesAsync(ct);
 
         // Phase 2 — people (staff members + users). Saved so ids exist for history.
-        var staffCount = await EnsureStaffMembers(people, achievements, skills, ct);
+        var staffCount = await EnsureStaffMembers(people, achievements, ct);
         var users = await EnsureUsers(people, achievements, ct);
         await _context.SaveChangesAsync(ct);
 
         // Phase 3 — history (awards, socials, completions), then claims on top of it.
-        var history = await GenerateHistory(people, users, achievements, platforms, quizzes, events, horizon, today, ct);
+        var history = await GenerateHistory(people, users, achievements, events, horizon, today, ct);
         await _context.SaveChangesAsync(ct);
 
         var (claims, pending) = await GenerateClaims(people, users, rewards, today, ct);
@@ -72,7 +75,7 @@ public class DemoDataSeeder
         await AssertNoNegativeBalances(users.Values.Select(u => u.Id).ToList(), ct);
 
         var summary = new DemoSeedSummary(
-            users.Count, staffCount, rewards.Count, quizzes.Count,
+            users.Count, staffCount, rewards.Count, DemoDataSet.Quizzes.Length,
             history.Awards, claims, history.Completions, pending);
         _log($"Seed complete: {summary}");
         return summary;
@@ -97,22 +100,18 @@ public class DemoDataSeeder
 
     // ---- phase 1: catalog --------------------------------------------------
 
-    private async Task<Dictionary<string, Skill>> EnsureSkills(List<DemoPerson> people, CancellationToken ct)
+    private async Task EnsureSkills(List<DemoPerson> people, CancellationToken ct)
     {
-        var names = people.SelectMany(p => p.Skills).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
-        var existing = await _context.Skills.ToListAsync(ct);
-        var result = new Dictionary<string, Skill>(StringComparer.OrdinalIgnoreCase);
-        foreach (var name in names)
+        var existing = (await _context.Skills.AsNoTracking()
+                .TagWithContext()
+                .Select(s => s.Name)
+                .ToListAsync(ct))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        foreach (var name in people.SelectMany(p => p.Skills).Distinct(StringComparer.OrdinalIgnoreCase))
         {
-            var skill = existing.FirstOrDefault(s => string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
-            if (skill is null)
-            {
-                skill = new Skill { Name = name };
-                _context.Skills.Add(skill);
-            }
-            result[name] = skill;
+            if (!existing.Contains(name))
+                _context.Skills.Add(new Skill { Name = name });
         }
-        return result;
     }
 
     private static async Task EnsureMilestoneAchievements(AchievementLookup achievements, CancellationToken ct)
@@ -127,9 +126,13 @@ public class DemoDataSeeder
         await achievements.EnsureByName(MilestoneAchievements.AttendHackday, 200, AchievementType.Completed, Icons.Lightbulb, ct);
     }
 
-    private async Task<Dictionary<string, SocialMediaPlatform>> EnsureSocialPlatforms(AchievementLookup achievements, CancellationToken ct)
+    private async Task EnsureSocialPlatforms(AchievementLookup achievements, CancellationToken ct)
     {
-        var result = new Dictionary<string, SocialMediaPlatform>(StringComparer.OrdinalIgnoreCase);
+        var existing = (await _context.SocialMediaPlatforms.AsNoTracking()
+                .TagWithContext()
+                .Select(p => p.Name)
+                .ToListAsync(ct))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
         foreach (var (name, achievementName, icon) in new[]
         {
             ("GitHub", "Follow SSW on GitHub", Icons.Github),
@@ -138,19 +141,11 @@ public class DemoDataSeeder
             (DemoDataSet.CompanyPlatformName, "Add your company", Icons.People),
         })
         {
-            var platform = await _context.SocialMediaPlatforms
-                .Include(p => p.Achievement)
-                .FirstOrDefaultAsync(p => p.Name == name, ct);
-            if (platform is null)
-            {
-                var achievement = await achievements.EnsureByName(achievementName,
-                    name == DemoDataSet.CompanyPlatformName ? 0 : 150, AchievementType.Linked, icon, ct);
-                platform = new SocialMediaPlatform { Name = name, Achievement = achievement };
-                _context.SocialMediaPlatforms.Add(platform);
-            }
-            result[name] = platform;
+            if (existing.Contains(name)) continue;
+            var achievement = await achievements.EnsureByName(achievementName,
+                name == DemoDataSet.CompanyPlatformName ? 0 : 150, AchievementType.Linked, icon, ct);
+            _context.SocialMediaPlatforms.Add(new SocialMediaPlatform { Name = name, Achievement = achievement });
         }
-        return result;
     }
 
     private async Task<List<Reward>> EnsureRewards(CancellationToken ct)
@@ -158,7 +153,7 @@ public class DemoDataSeeder
         var result = new List<Reward>();
         foreach (var demo in DemoDataSet.Rewards)
         {
-            var code = $"demo:reward:{demo.Slug}";
+            var code = AchievementHelpers.GenerateCode($"demo:reward:{demo.Slug}", IsReward: true);
             var reward = await _context.Rewards.FirstOrDefaultAsync(r => r.Code == code, ct);
             if (reward is null)
             {
@@ -211,45 +206,49 @@ public class DemoDataSeeder
         _ => $"demo:user:{person.Key}",
     };
 
-    private async Task<List<Quiz>> EnsureQuizzes(AchievementLookup achievements, CancellationToken ct)
+    private async Task EnsureQuizzes(AchievementLookup achievements, CancellationToken ct)
     {
-        var result = new List<Quiz>();
+        var existing = (await _context.Quizzes.AsNoTracking()
+                .TagWithContext()
+                .Select(q => q.Title)
+                .ToListAsync(ct))
+            .ToHashSet();
         foreach (var demo in DemoDataSet.Quizzes)
         {
-            var quiz = await _context.Quizzes
-                .Include(q => q.Achievement)
-                .FirstOrDefaultAsync(q => q.Title == demo.Title, ct);
-            if (quiz is null)
+            if (existing.Contains(demo.Title)) continue;
+            var achievement = await achievements.EnsureByCode(
+                $"demo:quiz:{demo.Slug}", demo.Title, DemoDataSet.QuizValue, AchievementType.Completed, demo.Icon, ct);
+            var quiz = new Quiz
             {
-                var achievement = await achievements.EnsureByCode(
-                    $"demo:quiz:{demo.Slug}", demo.Title, DemoDataSet.QuizValue, AchievementType.Completed, demo.Icon, ct);
-                quiz = new Quiz
-                {
-                    Title = demo.Title,
-                    Description = demo.Description,
-                    Icon = demo.Icon,
-                    IsArchived = demo.IsArchived,
-                    Achievement = achievement,
-                };
-                foreach (var q in demo.Questions)
-                {
-                    var question = new QuizQuestion { Text = q.Text };
-                    for (int i = 0; i < q.Answers.Length; i++)
-                        question.Answers.Add(new QuizAnswer { Text = q.Answers[i], IsCorrect = i == q.CorrectIndex });
-                    quiz.Questions.Add(question);
-                }
-                _context.Quizzes.Add(quiz);
+                Title = demo.Title,
+                Description = demo.Description,
+                Icon = demo.Icon,
+                IsArchived = demo.IsArchived,
+                Achievement = achievement,
+            };
+            foreach (var q in demo.Questions)
+            {
+                var question = new QuizQuestion { Text = q.Text };
+                for (int i = 0; i < q.Answers.Length; i++)
+                    question.Answers.Add(new QuizAnswer { Text = q.Answers[i], IsCorrect = i == q.CorrectIndex });
+                quiz.Questions.Add(question);
             }
-            result.Add(quiz);
+            _context.Quizzes.Add(quiz);
         }
-        return result;
     }
 
     // ---- phase 2: people ----------------------------------------------------
 
-    private async Task<int> EnsureStaffMembers(
-        List<DemoPerson> people, AchievementLookup achievements, Dictionary<string, Skill> skills, CancellationToken ct)
+    private async Task<int> EnsureStaffMembers(List<DemoPerson> people, AchievementLookup achievements, CancellationToken ct)
     {
+        var skillIds = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        foreach (var skill in await _context.Skills.AsNoTracking()
+                     .TagWithContext()
+                     .Where(s => s.Name != null)
+                     .Select(s => new { s.Id, Name = s.Name! })
+                     .ToListAsync(ct))
+            skillIds.TryAdd(skill.Name, skill.Id);
+
         int count = 0;
         foreach (var person in people.Where(p => p.IsStaff))
         {
@@ -272,12 +271,12 @@ public class DemoDataSeeder
             if (string.IsNullOrEmpty(staff.ProfilePhoto) && _assets is not null)
                 staff.ProfilePhoto = await _assets.GetAssetUriAsync(person.Key, ct);
 
-            var skillIds = staff.StaffMemberSkills.Select(s => s.SkillId).ToHashSet();
+            var assigned = staff.StaffMemberSkills.Select(s => s.SkillId).ToHashSet();
             foreach (var skillName in person.Skills)
             {
-                var skill = skills[skillName];
-                if (skill.Id == 0 || !skillIds.Contains(skill.Id))
-                    staff.StaffMemberSkills.Add(new StaffMemberSkill { Skill = skill, Level = SkillLevel.Advanced });
+                var skillId = skillIds[skillName];
+                if (assigned.Add(skillId))
+                    staff.StaffMemberSkills.Add(new StaffMemberSkill { SkillId = skillId, Level = SkillLevel.Advanced });
             }
             count++;
         }
@@ -327,8 +326,6 @@ public class DemoDataSeeder
         List<DemoPerson> people,
         Dictionary<string, User> users,
         AchievementLookup achievements,
-        Dictionary<string, SocialMediaPlatform> platforms,
-        List<Quiz> quizzes,
         List<DemoEvent> events,
         DateTime horizon,
         DateTime today,
@@ -354,30 +351,42 @@ public class DemoDataSeeder
                 .Select(s => new { s.UserId, s.SocialMediaPlatformId })
                 .ToListAsync(ct))
             .Select(x => (x.UserId, x.SocialMediaPlatformId)).ToHashSet();
+        var platforms = (await _context.SocialMediaPlatforms.AsNoTracking()
+                .TagWithContext()
+                .Select(p => new { p.Name, p.Id, p.AchievementId })
+                .ToListAsync(ct))
+            .ToDictionary(p => p.Name, p => (p.Id, p.AchievementId), StringComparer.OrdinalIgnoreCase);
+        var quizzes = (await _context.Quizzes.AsNoTracking()
+                .TagWithContext()
+                .Where(q => q.Title != null)
+                .Select(q => new { q.Title, q.Id, q.AchievementId })
+                .ToListAsync(ct))
+            .GroupBy(q => q.Title!)
+            .ToDictionary(g => g.Key, g => (g.First().Id, g.First().AchievementId));
 
         int awards = 0, completions = 0;
 
-        void Award(User user, Achievement achievement, DateTime at)
+        void Award(User user, int achievementId, DateTime at)
         {
-            if (!existingPairs.Add((user.Id, achievement.Id))) return;
-            _context.UserAchievements.Add(new UserAchievement { UserId = user.Id, AchievementId = achievement.Id, AwardedAt = at });
+            if (!existingPairs.Add((user.Id, achievementId))) return;
+            _context.UserAchievements.Add(new UserAchievement { UserId = user.Id, AchievementId = achievementId, AwardedAt = at });
             awards++;
         }
 
-        void AddSocial(User user, SocialMediaPlatform platform, string handle)
+        void AddSocial(User user, int platformId, string handle)
         {
-            if (!existingSocials.Add((user.Id, platform.Id))) return;
+            if (!existingSocials.Add((user.Id, platformId))) return;
             _context.UserSocialMediaIds.Add(new UserSocialMediaId
             {
                 UserId = user.Id,
-                SocialMediaPlatformId = platform.Id,
+                SocialMediaPlatformId = platformId,
                 SocialMediaUserId = handle,
             });
         }
 
         var scanTargets = people.Where(p => p.Key != "demo-dev")
             .OrderBy(p => p.Key, StringComparer.Ordinal)
-            .Select(p => (p.Key, Achievement: achievements.ByCode(ScanCode(p)), p.IsStaff))
+            .Select(p => (p.Key, AchievementId: achievements.ByCode(ScanCode(p)).Id, p.IsStaff))
             .ToList();
 
         foreach (var person in people)
@@ -386,20 +395,20 @@ public class DemoDataSeeder
             var email = user.Email!;
             var join = JoinDate(person, email, horizon, today);
 
-            Award(user, achievements.ByName(MilestoneAchievements.ProfilePic), At(email, join.AddDays(1)));
+            Award(user, achievements.ByName(MilestoneAchievements.ProfilePic).Id, At(email, join.AddDays(1)));
             if (person.Activity >= 0.5)
-                Award(user, achievements.ByName(MilestoneAchievements.LeaderboardTopUsers), At(email, Earlier(join.AddDays(30), today)));
+                Award(user, achievements.ByName(MilestoneAchievements.LeaderboardTopUsers).Id, At(email, Earlier(join.AddDays(30), today)));
 
-            AddSocial(user, platforms[DemoDataSet.CompanyPlatformName], DemoDataSet.CompanyName);
+            AddSocial(user, platforms[DemoDataSet.CompanyPlatformName].Id, DemoDataSet.CompanyName);
             if (person.Twitter is not null)
             {
-                AddSocial(user, platforms["Twitter"], person.Twitter);
-                Award(user, platforms["Twitter"].Achievement, At(email, Earlier(join.AddDays(2), today)));
+                AddSocial(user, platforms["Twitter"].Id, person.Twitter);
+                Award(user, platforms["Twitter"].AchievementId, At(email, Earlier(join.AddDays(2), today)));
             }
             if (person.GitHub is not null)
             {
-                AddSocial(user, platforms["GitHub"], person.GitHub);
-                Award(user, platforms["GitHub"].Achievement, At(email, Earlier(join.AddDays(3), today)));
+                AddSocial(user, platforms["GitHub"].Id, person.GitHub);
+                Award(user, platforms["GitHub"].AchievementId, At(email, Earlier(join.AddDays(3), today)));
             }
 
             // Daily scans — deterministic per (email, day); boosted for the last week so
@@ -416,11 +425,11 @@ public class DemoDataSeeder
                 var pick = pool[(int)(Frac($"target:{email}:{day:yyyyMMdd}") * pool.Count)];
                 scanned.Add(pick.Key);
                 var at = At(email, day);
-                Award(user, pick.Achievement, at);
+                Award(user, pick.AchievementId, at);
                 if (firstStaffScan is null && pick.IsStaff) firstStaffScan = at;
             }
             if (firstStaffScan is not null)
-                Award(user, achievements.ByName(MilestoneAchievements.MeetSSW), firstStaffScan.Value);
+                Award(user, achievements.ByName(MilestoneAchievements.MeetSSW).Id, firstStaffScan.Value);
 
             // Event clusters — cohort bursts on the event date. The flagship founder
             // attends practically everything, which keeps him on top of the leaderboard.
@@ -431,27 +440,28 @@ public class DemoDataSeeder
                 var attendProbability = isFlagship ? 0.95 : e.Attendance * (0.5 + person.Activity / 2);
                 if (Frac($"event:{email}:{e.Slug}") >= attendProbability) continue;
                 var at = e.Date.AddHours(18);
-                Award(user, achievements.ByCode($"demo:event:{e.Slug}"), at);
+                Award(user, achievements.ByCode($"demo:event:{e.Slug}").Id, at);
                 if (e.Slug.StartsWith("ug-")) firstUg ??= at;
                 else if (e.Slug.StartsWith("hackday-")) firstHack ??= at;
                 else if (e.Slug.StartsWith("workshop-")) firstWorkshop ??= at;
             }
-            if (firstUg is not null) Award(user, achievements.ByName(MilestoneAchievements.AttendUG), firstUg.Value);
-            if (firstHack is not null) Award(user, achievements.ByName(MilestoneAchievements.AttendHackday), firstHack.Value);
-            if (firstWorkshop is not null) Award(user, achievements.ByName(MilestoneAchievements.AttendWorkshop), firstWorkshop.Value);
+            if (firstUg is not null) Award(user, achievements.ByName(MilestoneAchievements.AttendUG).Id, firstUg.Value);
+            if (firstHack is not null) Award(user, achievements.ByName(MilestoneAchievements.AttendHackday).Id, firstHack.Value);
+            if (firstWorkshop is not null) Award(user, achievements.ByName(MilestoneAchievements.AttendWorkshop).Id, firstWorkshop.Value);
 
             // Quiz completions — only for quizzes flagged for it. Any passed completion
             // currently blocks ALL further submissions of that quiz (global-pass check in
             // SubmitUserQuizCommandValidator), so playable quizzes stay completion-free.
-            foreach (var (demo, quiz) in DemoDataSet.Quizzes.Zip(quizzes))
+            foreach (var demo in DemoDataSet.Quizzes)
             {
                 if (!demo.SeedCompletions) continue;
                 if (Frac($"quiz:{email}:{demo.Slug}") >= 0.4 * person.Activity) continue;
+                var quiz = quizzes[demo.Title];
                 if (!existingCompletions.Add((user.Id, quiz.Id))) continue;
                 var span = Math.Max((today - join).TotalDays, 1);
                 var at = At(email, join.AddDays(span * Frac($"quizdate:{email}:{demo.Slug}")));
                 _context.CompletedQuizzes.Add(new CompletedQuiz { UserId = user.Id, QuizId = quiz.Id, Passed = true });
-                Award(user, quiz.Achievement, at);
+                Award(user, quiz.AchievementId, at);
                 completions++;
             }
         }
@@ -465,12 +475,12 @@ public class DemoDataSeeder
         List<DemoPerson> people, Dictionary<string, User> users, List<Reward> rewards, DateTime today, CancellationToken ct)
     {
         var userIds = users.Values.Select(u => u.Id).ToList();
-        var existingClaims = (await _context.UserRewards.AsNoTracking()
+        var persistedClaims = (await _context.UserRewards.AsNoTracking()
                 .TagWithContext()
                 .Where(ur => userIds.Contains(ur.UserId))
-                .Select(ur => new { ur.UserId, ur.RewardId, ur.AwardedAt })
+                .Select(ur => new { ur.UserId, ur.AwardedAt, ur.Reward.Cost })
                 .ToListAsync(ct))
-            .Select(x => (x.UserId, x.RewardId, x.AwardedAt.Date)).ToHashSet();
+            .ToLookup(x => x.UserId, x => (x.AwardedAt, Delta: -x.Cost));
         var pendingCostByUser = (await _context.PendingRedemptions.AsNoTracking()
                 .TagWithContext()
                 .Where(pr => userIds.Contains(pr.UserId) && !pr.Completed && !pr.CancelledByUser && !pr.CancelledByAdmin)
@@ -478,9 +488,19 @@ public class DemoDataSeeder
                 .ToListAsync(ct))
             .GroupBy(x => x.UserId)
             .ToDictionary(g => g.Key, g => g.Sum(x => x.Cost));
+        var pendingCodes = (await _context.PendingRedemptions.AsNoTracking()
+                .TagWithContext()
+                .Where(pr => userIds.Contains(pr.UserId) && pr.Code != null)
+                .Select(pr => pr.Code!)
+                .ToListAsync(ct))
+            .ToHashSet();
 
-        var claimAchievement = await _context.Achievements.IgnoreQueryFilters()
-            .FirstAsync(a => a.Name == MilestoneAchievements.ClaimPrize, ct);
+        var claimAchievement = await _context.Achievements.AsNoTracking()
+            .IgnoreQueryFilters()
+            .TagWithContext()
+            .Where(a => a.Name == MilestoneAchievements.ClaimPrize)
+            .Select(a => new { a.Id, a.Value })
+            .FirstAsync(ct);
         var usersWithClaimPrize = (await _context.UserAchievements.AsNoTracking()
                 .TagWithContext()
                 .Where(ua => userIds.Contains(ua.UserId) && ua.AchievementId == claimAchievement.Id)
@@ -490,13 +510,12 @@ public class DemoDataSeeder
 
         // The ClaimPrize milestone is granted below, AFTER the walk — exclude it from the
         // timeline so the deterministic decision stream is identical on every re-run.
-        var timelines = (await _context.UserAchievements.AsNoTracking()
+        var grants = (await _context.UserAchievements.AsNoTracking()
                 .TagWithContext()
                 .Where(ua => userIds.Contains(ua.UserId) && ua.AchievementId != claimAchievement.Id)
                 .Select(ua => new { ua.UserId, ua.AwardedAt, ua.Achievement.Value })
                 .ToListAsync(ct))
-            .GroupBy(x => x.UserId)
-            .ToDictionary(g => g.Key, g => g.OrderBy(x => x.AwardedAt).Select(x => (x.AwardedAt, x.Value)).ToList());
+            .ToLookup(x => x.UserId, x => (x.AwardedAt, Delta: x.Value));
 
         int claims = 0, pendingCount = 0;
         var cheapest = rewards.Min(r => r.Cost);
@@ -505,35 +524,36 @@ public class DemoDataSeeder
         {
             var user = users[person.Key];
             var email = user.Email!;
-            if (!timelines.TryGetValue(user.Id, out var timeline)) continue;
+            var spent = persistedClaims[user.Id].ToList();
+            var timeline = grants[user.Id].Select(g => (g.AwardedAt, g.Delta, IsGrant: true))
+                .Concat(spent.Select(c => (c.AwardedAt, c.Delta, IsGrant: false)))
+                .OrderBy(x => x.AwardedAt).ThenByDescending(x => x.IsGrant)
+                .ToList();
+            if (timeline.Count == 0) continue;
 
-            // Walk the grant timeline chronologically; claim only while the running
-            // balance covers the cost, so no ordering of claims can go negative.
-            // Claims persisted by earlier runs replay with identical bookkeeping; NEW
-            // claims must additionally leave any open pending redemption cost covered.
+            // New claims only go after the latest persisted one (seeded or real): the balance there
+            // already reflects all spending, and history added later (gap-fill, wider --years) only raises it.
+            var lastSpent = spent.Count > 0 ? spent.Max(c => c.AwardedAt) : DateTime.MinValue;
             var reserved = pendingCostByUser.GetValueOrDefault(user.Id);
             int balance = 0, claimed = 0;
             DateTime? firstClaim = null;
-            foreach (var (at, value) in timeline)
+            foreach (var (at, delta, isGrant) in timeline)
             {
-                balance += value;
+                balance += delta;
+                if (!isGrant)
+                {
+                    claimed++;
+                    firstClaim ??= at;
+                    continue;
+                }
                 if (claimed >= 5 || balance < (int)(cheapest * 1.5)) continue;
                 if (Frac($"claim:{email}:{at:yyyyMMddHHmm}") >= 0.12 * person.Activity) continue;
 
                 var affordable = rewards.Where(r => r.Cost <= balance).ToList();
                 var reward = affordable[(int)(Frac($"claimpick:{email}:{at:yyyyMMddHHmm}") * affordable.Count)];
                 var claimDate = at.AddHours(1);
+                if (claimDate <= lastSpent || balance - reward.Cost < reserved) continue;
 
-                if (existingClaims.Contains((user.Id, reward.Id, claimDate.Date)))
-                {
-                    balance -= reward.Cost;
-                    claimed++;
-                    firstClaim ??= claimDate;
-                    continue;
-                }
-                if (balance - reward.Cost < reserved) continue;
-
-                existingClaims.Add((user.Id, reward.Id, claimDate.Date));
                 _context.UserRewards.Add(new UserReward { UserId = user.Id, RewardId = reward.Id, AwardedAt = claimDate });
                 balance -= reward.Cost;
                 claimed++;
@@ -552,9 +572,9 @@ public class DemoDataSeeder
                 balance += claimAchievement.Value;
             }
 
-            // A few open pending redemptions for the AdminUI screens — only when the
-            // remaining balance still covers the pending cost (PLAN invariant #5).
-            if (Frac($"pending:{email}") < 0.08 && !pendingCostByUser.ContainsKey(user.Id))
+            // One seeded pending redemption per user, ever — completed/cancelled ones keep their outcome.
+            var pendingCode = PendingCode(email);
+            if (Frac($"pending:{email}") < 0.08 && !pendingCostByUser.ContainsKey(user.Id) && !pendingCodes.Contains(pendingCode))
             {
                 var affordable = rewards.Where(r => r.Cost <= balance).ToList();
                 if (affordable.Count > 0)
@@ -564,7 +584,7 @@ public class DemoDataSeeder
                     {
                         UserId = user.Id,
                         RewardId = reward.Id,
-                        Code = $"demo:pending:{person.Key}",
+                        Code = pendingCode,
                         ClaimedAt = today.AddDays(-(int)(Frac($"pendingday:{email}") * 10)),
                     });
                     pendingCount++;
@@ -574,6 +594,9 @@ public class DemoDataSeeder
 
         return (claims, pendingCount);
     }
+
+    private static string PendingCode(string email) =>
+        Convert.ToBase64String(Encoding.ASCII.GetBytes($"pnd:demo:{email}"));
 
     private async Task AssertNoNegativeBalances(List<int> userIds, CancellationToken ct)
     {
@@ -594,7 +617,8 @@ public class DemoDataSeeder
 
         if (offenders.Count > 0)
             throw new InvalidOperationException(
-                "Demo seed produced negative balances for: " + string.Join(", ", offenders.Select(o => o.Email)));
+                "Demo seed would leave negative balances for: " + string.Join(", ", offenders.Select(o => o.Email)) +
+                ". Nothing was committed; `rewards-dev db reset` rebuilds a clean dataset.");
     }
 
     // ---- deterministic helpers ----------------------------------------------
@@ -634,12 +658,13 @@ public class DemoDataSeeder
         private readonly Dictionary<string, Achievement> _byCode = [];
         private readonly Dictionary<string, Achievement> _byName = [];
 
-        public Achievement ByCode(string code) => _byCode[code];
+        public Achievement ByCode(string key) => _byCode[key];
         public Achievement ByName(string name) => _byName[name];
 
-        public async Task<Achievement> EnsureByCode(string code, string name, int value, AchievementType type, Icons icon, CancellationToken ct)
+        public async Task<Achievement> EnsureByCode(string key, string name, int value, AchievementType type, Icons icon, CancellationToken ct)
         {
-            if (_byCode.TryGetValue(code, out var cached)) return cached;
+            if (_byCode.TryGetValue(key, out var cached)) return cached;
+            var code = AchievementHelpers.GenerateCode(key, IsReward: false);
             var achievement = await context.Achievements.IgnoreQueryFilters().FirstOrDefaultAsync(a => a.Code == code, ct);
             if (achievement is null)
             {
@@ -647,7 +672,7 @@ public class DemoDataSeeder
                 context.Achievements.Add(achievement);
             }
             achievement.DeletedUtc = null;
-            return _byCode[code] = achievement;
+            return _byCode[key] = achievement;
         }
 
         public async Task<Achievement> EnsureByName(string name, int value, AchievementType type, Icons icon, CancellationToken ct)

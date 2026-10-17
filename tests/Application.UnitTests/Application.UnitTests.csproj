@@ -25,6 +25,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\Application\SSW.Rewards.Application.csproj" />
         <ProjectReference Include="..\..\src\Infrastructure\SSW.Rewards.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\src\ApiClient\ApiClient.csproj" />
     </ItemGroup>
 
 </Project>
