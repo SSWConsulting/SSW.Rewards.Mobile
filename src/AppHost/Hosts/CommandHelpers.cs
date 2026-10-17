@@ -46,7 +46,8 @@ internal static class CommandHelpers
 
     // Run a process, append its combined output to the dashboard resource log,
     // and return (exit, combined output).
-    public static async Task<(int exit, string log)> RunProcess(ExecuteCommandContext ctx, string file, string args)
+    public static async Task<(int exit, string log)> RunProcess(ExecuteCommandContext ctx, string file, string args,
+        IReadOnlyDictionary<string, string?>? env = null)
     {
         var logger = ctx.ServiceProvider.GetRequiredService<ResourceLoggerService>().GetLogger(ctx.ResourceName);
         var psi = new ProcessStartInfo(file, args)
@@ -55,6 +56,10 @@ internal static class CommandHelpers
             RedirectStandardError = true,
             UseShellExecute = false
         };
+        // Secrets (e.g. connection strings) travel via env vars, never argv.
+        if (env is not null)
+            foreach (var (key, value) in env)
+                psi.Environment[key] = value;
 
         Process? p;
         try

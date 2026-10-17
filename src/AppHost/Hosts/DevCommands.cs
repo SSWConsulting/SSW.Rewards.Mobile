@@ -7,7 +7,7 @@ namespace SSW.Rewards.AppHost.Hosts;
 public static class DevCommands
 {
     public static IResourceBuilder<SqlServerServerResource> AddDevCommands(
-        this IResourceBuilder<SqlServerServerResource> sql)
+        this IResourceBuilder<SqlServerServerResource> sql, CommonInfra common)
     {
         var builder = sql.ApplicationBuilder;
 
@@ -15,6 +15,55 @@ public static class DevCommands
         var repoRoot = CommandHelpers.RepoRoot(builder);
         var efProject = Path.Combine(repoRoot, "src", "Infrastructure");
         var startup = Path.Combine(repoRoot, "src", "WebAPI");
+        var seederProject = Path.Combine(repoRoot, "tools", "DataSeeder");
+
+        // The DataSeeder reads these env keys as its connection fallbacks.
+        async Task<Dictionary<string, string?>> SeederEnv(ExecuteCommandContext ctx) => new()
+        {
+            ["ConnectionStrings__DefaultConnection"] =
+                await common.RewardsDatabase.Resource.ConnectionStringExpression.GetValueAsync(ctx.CancellationToken),
+            ["CloudBlobProviderOptions__ContentStorageConnectionString"] =
+                await common.Blobs.Resource.ConnectionStringExpression.GetValueAsync(ctx.CancellationToken),
+        };
+
+        sql.WithCommand("db-seed", "DB: Seed demo data",
+            executeCommand: async ctx =>
+            {
+                var email = await CommandHelpers.PromptText(ctx, "Seed demo data",
+                    "The seeder pre-creates YOUR user (with history) so the app binds to your login.", "Your dev email");
+                if (email is null) return CommandResults.Canceled();
+                email = email.Trim();
+                if (string.IsNullOrWhiteSpace(email)) return CommandResults.Failure("Dev email is required.");
+                var (exit, log) = await CommandHelpers.RunProcess(ctx, "dotnet",
+                    $"run --project \"{seederProject}\" --verbosity quiet -- seed --dev-email \"{email}\"",
+                    await SeederEnv(ctx));
+                return exit == 0 ? CommandResults.Success() : CommandResults.Failure(log);
+            },
+            commandOptions: new CommandOptions
+            {
+                Description = "Idempotent Northwind demo data — users, avatars, years of scans/events, rewards. Re-run any time to top up.",
+                IconName = "DatabaseMultiple"
+            });
+
+        sql.WithCommand("db-reset", "DB: Reset + reseed",
+            executeCommand: async ctx =>
+            {
+                var email = await CommandHelpers.PromptText(ctx, "Reset + reseed",
+                    "Databases are DROPPED and re-created from migrations, then seeded. Enter your dev email.", "Your dev email");
+                if (email is null) return CommandResults.Canceled();
+                email = email.Trim();
+                if (string.IsNullOrWhiteSpace(email)) return CommandResults.Failure("Dev email is required.");
+                var (exit, log) = await CommandHelpers.RunProcess(ctx, "dotnet",
+                    $"run --project \"{seederProject}\" --verbosity quiet -- reset --yes --dev-email \"{email}\"",
+                    await SeederEnv(ctx));
+                return exit == 0 ? CommandResults.Success() : CommandResults.Failure(log);
+            },
+            commandOptions: new CommandOptions
+            {
+                Description = "Drop ssw.rewards + hangfire → migrate → seed demo data. Restart rewards-webapi afterwards.",
+                IconName = "ArrowClockwiseDashes",
+                ConfirmationMessage = "DROP the local databases and reseed from scratch? (Your local data is lost.)"
+            });
 
         sql.WithCommand("ef-migrate", "DB: Apply migrations",
             executeCommand: async ctx =>
