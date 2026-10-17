@@ -133,7 +133,10 @@ points balance.
 - Both are dashboard buttons too: **rewards-sql ▸ DB: Seed demo data / DB: Reset + reseed**.
 - **Local targets only.** Both commands refuse any SQL Server that isn't this machine and any blob
   storage that isn't Azurite, even if a staging connection string is sitting in your environment.
-- Avatars/reward images upload to the local Azurite `demo-assets` container on first seed.
+- Avatars/reward images upload to the local Azurite `demo-assets` container on first seed. Like
+  images uploaded through the local AdminUI, their URLs point at `127.0.0.1:<azurite port>`: they
+  load in the AdminUI and the iOS simulator, but an Android emulator or a phone (via Tailscale)
+  can't reach them and shows placeholders instead.
 
 ## Dashboard commands
 The dashboard groups the local-dev chores under two resources (Actions ▸ Commands):
