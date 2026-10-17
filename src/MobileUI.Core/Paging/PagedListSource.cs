@@ -83,8 +83,9 @@ public sealed partial class PagedListSource<T> : ObservableObject
 
             return ListLoadResult.Ok(Items.Count > 0, fromCache: false);
         }
-        catch (OperationCanceledException)
+        catch (Exception) when (ct.IsCancellationRequested)
         {
+            // Superseded: whatever it hit (even a 401) is no longer the user's problem.
             return ListLoadResult.Ok(Items.Count > 0, IsShowingCachedData);
         }
         catch (Exception ex)
@@ -134,7 +135,7 @@ public sealed partial class PagedListSource<T> : ObservableObject
 
             return ListLoadResult.Ok(hasContent: true, fromCache: false);
         }
-        catch (OperationCanceledException)
+        catch (Exception) when (ct.IsCancellationRequested)
         {
             return ListLoadResult.Ok(Items.Count > 0, IsShowingCachedData);
         }

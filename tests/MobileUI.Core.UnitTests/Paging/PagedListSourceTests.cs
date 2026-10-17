@@ -311,6 +311,48 @@ public class PagedListSourceTests
     }
 
     [Test]
+    public async Task Refresh_SupersededThenFails_ReportsNoError()
+    {
+        var fetch = new FakeFetch().Pending(out var stale).Returns(3, 4);
+        var source = CreateSource(fetch);
+
+        var first = source.RefreshAsync();
+        await source.RefreshAsync();
+        stale.SetException(new HttpRequestException("expired", null, System.Net.HttpStatusCode.Unauthorized));
+        var firstResult = await first;
+
+        firstResult.Error.Should().BeNull("a superseded load's failure must not reach the error policy");
+        source.Items.Select(i => i.Id).Should().Equal(3, 4);
+    }
+
+    [Test]
+    public async Task LoadMore_SupersededByRefreshThenFails_ReportsNoError()
+    {
+        var fetch = new FakeFetch().Returns(1, 2).Pending(out var stalePage).Returns(3, 4);
+        var source = CreateSource(fetch);
+
+        await source.RefreshAsync();
+        var loadMore = source.LoadMoreAsync();
+        await source.RefreshAsync();
+        stalePage.SetException(new HttpRequestException("expired", null, System.Net.HttpStatusCode.Unauthorized));
+        var result = await loadMore;
+
+        result.Error.Should().BeNull();
+        source.Items.Select(i => i.Id).Should().Equal(3, 4);
+    }
+
+    [Test]
+    public async Task Refresh_FetchTimesOut_ReportsError()
+    {
+        var fetch = new FakeFetch().Throws(new TaskCanceledException("HttpClient.Timeout"));
+        var source = CreateSource(fetch);
+
+        var result = await source.RefreshAsync();
+
+        result.Error.Should().BeOfType<TaskCanceledException>("only our own cancellation is silent");
+    }
+
+    [Test]
     public async Task LoadMore_Failure_ReportsErrorWithContent()
     {
         var unauthorized = new HttpRequestException("expired", null, System.Net.HttpStatusCode.Unauthorized);
