@@ -43,12 +43,17 @@ if (sqlConn is null)
     return Fail("could not resolve a SQL connection string. Pass --connection-string, set " +
                 "ConnectionStrings__DefaultConnection, or start the stack first (`aspire run`).");
 
+// Every verb writes (migrations at least): a staging connection string left in env must never be touched.
+if (!LocalTargetGuard.IsLocalSql(sqlConn))
+    return Fail($"refusing to touch non-local SQL server '{DataSourceOf(sqlConn)}'. The seeder only targets local databases.");
+
+var blobConn = ConnectionResolver.ResolveBlob(Arg("--blob-connection-string"));
+if (blobConn is not null && !LocalTargetGuard.IsLocalBlob(blobConn))
+    return Fail("refusing to upload to non-local blob storage. The seeder only targets Azurite (devstoreaccount1 on localhost).");
+
 if (verb == "reset")
 {
     var target = new SqlConnectionStringBuilder(sqlConn);
-    // Never drop a non-local server by accident (e.g. a staging conn string left in env).
-    if (!ConnectionResolver.IsLocalDataSource(sqlConn) && !Flag("--allow-remote"))
-        return Fail($"refusing to reset non-local server '{target.DataSource}'. Pass --allow-remote if you REALLY mean it.");
     if (!Flag("--yes"))
     {
         Console.WriteLine($"About to DROP '{RewardsDb}' and '{HangfireDb}' on {target.DataSource} and re-create from migrations.");
@@ -60,7 +65,7 @@ if (verb == "reset")
     Console.WriteLine("✓ databases dropped");
 }
 
-await using (var services = BuildServices(sqlConn, Arg("--blob-connection-string")))
+await using (var services = BuildServices(sqlConn, blobConn))
 {
     var db = services.GetRequiredService<ApplicationDbContext>();
 
@@ -111,7 +116,7 @@ async Task DropDatabases(string connectionString)
     await create.ExecuteNonQueryAsync();
 }
 
-ServiceProvider BuildServices(string connectionString, string? blobArg)
+ServiceProvider BuildServices(string connectionString, string? blobConn)
 {
     // Deliberately minimal DI — NOT AddInfrastructureServices, which would start a
     // Hangfire server and bind Firebase/email/auth this tool doesn't need.
@@ -129,7 +134,6 @@ ServiceProvider BuildServices(string connectionString, string? blobArg)
             provider.GetRequiredService<AchievementIntegrationIdInterceptor>());
     });
 
-    var blobConn = ConnectionResolver.ResolveBlob(blobArg);
     if (blobConn is not null)
     {
         var assetsDir = Path.Combine(AppContext.BaseDirectory, "Assets");
@@ -149,14 +153,21 @@ int Usage()
         SSW.Rewards demo data seeder (usually via `rewards-dev db …` or the Aspire dashboard)
 
           seed  --dev-email <email> [--dev-name <name>] [--years N]     idempotent demo seed (re-run to top up)
-          reset [--yes] [--no-seed] [seed options]                      drop DBs → migrate → seed (local servers only)
+          reset [--yes] [--no-seed] [seed options]                      drop DBs → migrate → seed
 
           --dev-email is part of the seed identity: keep using the same address. A different
           email seeds an additional developer user rather than renaming the previous one.
           --connection-string / --blob-connection-string override auto-discovery (env vars:
           ConnectionStrings__DefaultConnection, CloudBlobProviderOptions__ContentStorageConnectionString).
+          Both must point at this machine (local SQL Server, Azurite) — anything else is refused.
         """);
     return 0;
+}
+
+string DataSourceOf(string connectionString)
+{
+    try { return new SqlConnectionStringBuilder(connectionString).DataSource; }
+    catch (ArgumentException) { return "(unparseable connection string)"; }
 }
 
 int Fail(string message)

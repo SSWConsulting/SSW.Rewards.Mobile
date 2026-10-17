@@ -44,18 +44,6 @@ public static partial class ConnectionResolver
         }.ConnectionString;
     }
 
-    /// <summary>True when the connection targets a local machine — the reset guard.</summary>
-    public static bool IsLocalDataSource(string connectionString)
-    {
-        var source = new SqlConnectionStringBuilder(connectionString).DataSource;
-        var host = source.Split(',')[0].Split('\\')[0].Replace("tcp:", "", StringComparison.OrdinalIgnoreCase).Trim();
-        return host.Length == 0
-            || host.Equals("localhost", StringComparison.OrdinalIgnoreCase)
-            || host is "127.0.0.1" or "::1" or "." or "(local)"
-            || host.StartsWith("(localdb)", StringComparison.OrdinalIgnoreCase)
-            || host.Equals("host.docker.internal", StringComparison.OrdinalIgnoreCase);
-    }
-
     public static string? ResolveBlob(string? cliValue)
     {
         if (!string.IsNullOrWhiteSpace(cliValue)) return cliValue;

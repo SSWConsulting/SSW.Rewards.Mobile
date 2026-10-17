@@ -131,6 +131,8 @@ points balance.
   running), re-applies migrations and reseeds. **Restart `rewards-webapi` afterwards** so it
   reconnects cleanly. Add `--yes` to skip the prompt, `--no-seed` for an empty schema.
 - Both are dashboard buttons too: **rewards-sql ▸ DB: Seed demo data / DB: Reset + reseed**.
+- **Local targets only.** Both commands refuse any SQL Server that isn't this machine and any blob
+  storage that isn't Azurite, even if a staging connection string is sitting in your environment.
 - Avatars/reward images upload to the local Azurite `demo-assets` container on first seed.
 
 ## Dashboard commands
