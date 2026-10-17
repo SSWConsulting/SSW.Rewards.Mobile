@@ -1,6 +1,6 @@
 using FluentAssertions;
 using NUnit.Framework;
-using SSW.Rewards.Application.System.Commands.Common;
+using SSW.Rewards.Infrastructure.Common;
 
 namespace SSW.Rewards.Application.UnitTests.System;
 
@@ -24,6 +24,8 @@ public class LocalTargetGuardTests
     [TestCase("Server=10.0.0.5,1433;Database=ssw.rewards")]
     [TestCase("Server=localhost.evil.example;Database=ssw.rewards")]
     [TestCase("Server=;Database=ssw.rewards")]
+    [TestCase("Server=localhost;Failover Partner=remote.example;Database=ssw.rewards")]
+    [TestCase("Server=127.0.0.1,1433;FailoverPartner=10.0.0.5;Database=ssw.rewards")]
     [TestCase("not a connection string")]
     public void IsLocalSql_RefusesAnythingElse(string connectionString) =>
         LocalTargetGuard.IsLocalSql(connectionString).Should().BeFalse();
@@ -39,6 +41,7 @@ public class LocalTargetGuardTests
     [TestCase("DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=abc;EndpointSuffix=core.windows.net")]
     [TestCase("DefaultEndpointsProtocol=http;AccountName=prodaccount;AccountKey=abc;BlobEndpoint=http://127.0.0.1:10000/prodaccount;")]
     [TestCase("UseDevelopmentStorage=false")]
+    [TestCase("UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://storage.example.com")]
     [TestCase("not a connection string")]
     public void IsLocalBlob_RefusesAnythingElse(string connectionString) =>
         LocalTargetGuard.IsLocalBlob(connectionString).Should().BeFalse();

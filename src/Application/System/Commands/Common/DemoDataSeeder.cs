@@ -618,7 +618,7 @@ public class DemoDataSeeder
         if (offenders.Count > 0)
             throw new InvalidOperationException(
                 "Demo seed would leave negative balances for: " + string.Join(", ", offenders.Select(o => o.Email)) +
-                ". Nothing was committed; `rewards-dev db reset` rebuilds a clean dataset.");
+                ". No seed rows were committed; `rewards-dev db reset` rebuilds a clean dataset.");
     }
 
     // ---- deterministic helpers ----------------------------------------------

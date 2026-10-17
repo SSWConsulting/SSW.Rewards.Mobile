@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.System.Commands.Common;
 using SSW.Rewards.DataSeeder;
+using SSW.Rewards.Infrastructure.Common;
 using SSW.Rewards.Infrastructure.Persistence;
 using SSW.Rewards.Infrastructure.Persistence.Interceptors;
 
@@ -45,7 +46,7 @@ if (sqlConn is null)
 
 // Every verb writes (migrations at least): a staging connection string left in env must never be touched.
 if (!LocalTargetGuard.IsLocalSql(sqlConn))
-    return Fail($"refusing to touch non-local SQL server '{DataSourceOf(sqlConn)}'. The seeder only targets local databases.");
+    return Fail($"refusing to touch non-local SQL server {DescribeSql(sqlConn)}. The seeder only targets local databases.");
 
 var blobConn = ConnectionResolver.ResolveBlob(Arg("--blob-connection-string"));
 if (blobConn is not null && !LocalTargetGuard.IsLocalBlob(blobConn))
@@ -83,7 +84,7 @@ await using (var services = BuildServices(sqlConn, blobConn))
         };
         Console.WriteLine($"Seeding demo data ({options.Years}y of history, dev = {options.DevEmail})…");
         var seeder = new DemoDataSeeder(db, services.GetService<IDemoAssetProvider>(), Console.WriteLine);
-        // SeedAsync validates balances last and throws, so a bad seed rolls back instead of sticking.
+        // Seed rows only: migrations above and the Azurite uploads are outside this transaction.
         await using var transaction = await db.Database.BeginTransactionAsync();
         DemoSeedSummary summary;
         try
@@ -175,9 +176,15 @@ int Usage()
     return 0;
 }
 
-string DataSourceOf(string connectionString)
+string DescribeSql(string connectionString)
 {
-    try { return new SqlConnectionStringBuilder(connectionString).DataSource; }
+    try
+    {
+        var builder = new SqlConnectionStringBuilder(connectionString);
+        return string.IsNullOrWhiteSpace(builder.FailoverPartner)
+            ? $"'{builder.DataSource}'"
+            : $"'{builder.DataSource}' with failover partner '{builder.FailoverPartner}'";
+    }
     catch (ArgumentException) { return "(unparseable connection string)"; }
 }
 

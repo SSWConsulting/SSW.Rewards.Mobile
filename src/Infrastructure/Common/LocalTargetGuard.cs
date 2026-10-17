@@ -1,7 +1,7 @@
-using System.Data.Common;
+using Azure.Storage.Blobs;
 using Microsoft.Data.SqlClient;
 
-namespace SSW.Rewards.Application.System.Commands.Common;
+namespace SSW.Rewards.Infrastructure.Common;
 
 /// <summary>
 /// Decides whether a connection string points at this machine — the demo seeder and DB reset
@@ -14,17 +14,21 @@ public static class LocalTargetGuard
 
     public static bool IsLocalSql(string connectionString)
     {
-        string source;
+        SqlConnectionStringBuilder builder;
         try
         {
-            source = new SqlConnectionStringBuilder(connectionString).DataSource;
+            builder = new SqlConnectionStringBuilder(connectionString);
         }
         catch (ArgumentException)
         {
             return false;
         }
 
-        var host = source.Trim();
+        // SqlClient silently switches to the failover partner when the primary is down.
+        if (!string.IsNullOrWhiteSpace(builder.FailoverPartner))
+            return false;
+
+        var host = builder.DataSource.Trim();
         foreach (var protocol in new[] { "tcp:", "np:", "lpc:" })
             if (host.StartsWith(protocol, StringComparison.OrdinalIgnoreCase))
                 host = host[protocol.Length..];
@@ -35,26 +39,21 @@ public static class LocalTargetGuard
             || IsLocalHost(host);
     }
 
+    // Checks the endpoint the SDK will actually call, so a DevelopmentStorageProxyUri can't redirect it.
     public static bool IsLocalBlob(string connectionString)
     {
-        var parts = new DbConnectionStringBuilder();
+        BlobServiceClient client;
         try
         {
-            parts.ConnectionString = connectionString;
+            client = new BlobServiceClient(connectionString);
         }
-        catch (ArgumentException)
+        catch (Exception e) when (e is FormatException or ArgumentException or InvalidOperationException)
         {
             return false;
         }
 
-        if (parts.TryGetValue("UseDevelopmentStorage", out var dev) && bool.TryParse(dev?.ToString(), out var isDev) && isDev)
-            return true;
-
-        return parts.TryGetValue("AccountName", out var account)
-            && string.Equals(account?.ToString(), AzuriteAccountName, StringComparison.OrdinalIgnoreCase)
-            && parts.TryGetValue("BlobEndpoint", out var endpoint)
-            && Uri.TryCreate(endpoint?.ToString(), UriKind.Absolute, out var uri)
-            && IsLocalHost(uri.Host);
+        return string.Equals(client.AccountName, AzuriteAccountName, StringComparison.OrdinalIgnoreCase)
+            && IsLocalHost(client.Uri.Host);
     }
 
     private static bool IsLocalHost(string host) =>
