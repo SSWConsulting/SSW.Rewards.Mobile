@@ -13,6 +13,7 @@ public interface IAuthenticationService
     bool HasCachedAccount { get; }
     bool IsLoggedIn { get; }
     event EventHandler DetailsUpdated;
+    event EventHandler SignedOut;
     void NavigateToLoginPage();
 }
 
@@ -27,6 +28,7 @@ public class AuthenticationService : IAuthenticationService
     private readonly IAlertService _alertService;
 
     public event EventHandler DetailsUpdated;
+    public event EventHandler SignedOut;
     public bool HasCachedAccount => _authStorage.HasCachedAccount;
     public bool IsLoggedIn => _tokenManager.IsLoggedIn;
 
@@ -152,6 +154,9 @@ public class AuthenticationService : IAuthenticationService
     public async Task SignOut()
     {
         _logger.LogInformation("Signing out user");
+
+        // Raised before the cache reset so in-flight user loads are void by the time it runs.
+        SignedOut?.Invoke(this, EventArgs.Empty);
         await _tokenManager.ClearTokensAsync();
 
         // No cached user data may outlive the session (see #1527).

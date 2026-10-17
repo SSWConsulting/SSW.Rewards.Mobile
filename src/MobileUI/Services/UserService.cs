@@ -53,6 +53,8 @@ public class UserService : IUserService
     private readonly IFileCacheService _fileCacheService;
     private readonly ILogger<UserService> _logger;
 
+    private CancellationTokenSource _session = new();
+
     private readonly BehaviorSubject<int> _myUserId = new(0);
     private readonly BehaviorSubject<string> _myName = new(string.Empty);
     private readonly BehaviorSubject<string> _myEmail = new(string.Empty);
@@ -79,6 +81,7 @@ public class UserService : IUserService
         _fileCacheService = fileCacheService;
         _logger = logger;
         _authService.DetailsUpdated += UpdateMyDetailsAsync;
+        _authService.SignedOut += EndSession;
 
         MainThread.BeginInvokeOnMainThread(async () => await LoadCachedProfileDataAsync());
     }
@@ -118,19 +121,36 @@ public class UserService : IUserService
 
     public async Task UpdateMyDetailsAsync()
     {
+        var session = _session.Token;
         try
         {
-            var user = await _userClient.GetCurrentUser();
+            var user = await _userClient.GetCurrentUser(session);
+            if (session.IsCancellationRequested)
+            {
+                return;
+            }
+
             UpdateObservablesFromUser(user);
 
             // Through the cache service so the logout cache reset removes it.
             await _fileCacheService.SetAsync(MyCachedProfileKey, user);
+        }
+        catch (OperationCanceledException) when (session.IsCancellationRequested)
+        {
+            // Signed out mid-request; the response belongs to the previous session.
         }
         catch (HttpRequestException ex)
         {
             // Network connectivity issues - silently fail and keep existing data
             _logger.LogWarning(ex, "Network error while updating current user details");
         }
+    }
+
+    private void EndSession(object sender, EventArgs args)
+    {
+        var ended = _session;
+        _session = new CancellationTokenSource();
+        ended.Cancel();
     }
 
     public async Task<IEnumerable<Achievement>> GetAchievementsAsync()
@@ -340,7 +360,13 @@ public class UserService : IUserService
     {
         DeleteLegacyProfileFile();
 
+        var session = _session.Token;
         var cachedUser = await _fileCacheService.GetAsync<CurrentUserDto>(MyCachedProfileKey);
+        if (session.IsCancellationRequested)
+        {
+            return;
+        }
+
         if (cachedUser == null)
         {
             _logger.LogInformation("No cached profile data found");
