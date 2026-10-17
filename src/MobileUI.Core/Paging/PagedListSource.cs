@@ -20,6 +20,8 @@ public sealed partial class PagedListSource<T> : ObservableObject
     private int _fetchedCount;
     private bool _endReached;
     private bool _isRefreshing;
+    private bool _loadMoreQueued;
+    private TaskCompletionSource _refreshIdle = new();
 
     public ObservableRangeCollection<T> Items { get; } = [];
 
@@ -48,7 +50,11 @@ public sealed partial class PagedListSource<T> : ObservableObject
     public async Task<ListLoadResult> RefreshAsync(bool queryChanged = false)
     {
         var ct = RestartToken();
-        _isRefreshing = true;
+        if (!_isRefreshing)
+        {
+            _refreshIdle = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            _isRefreshing = true;
+        }
         if (queryChanged)
         {
             _fetchedCount = 0;
@@ -98,6 +104,7 @@ public sealed partial class PagedListSource<T> : ObservableObject
             if (!ct.IsCancellationRequested)
             {
                 _isRefreshing = false;
+                _refreshIdle.TrySetResult();
             }
         }
     }
@@ -105,12 +112,34 @@ public sealed partial class PagedListSource<T> : ObservableObject
     /// <summary>
     /// Appends the next page (network-only). A failed page can be retried;
     /// only a successful short/empty page marks the end of the list.
+    /// Requested during a refresh, it runs once the refresh settles (at most one waits).
     /// </summary>
     public async Task<ListLoadResult> LoadMoreAsync()
     {
+        if (_isRefreshing)
+        {
+            if (_loadMoreQueued)
+            {
+                return ListLoadResult.Ok(Items.Count > 0, IsShowingCachedData);
+            }
+
+            // The scroll threshold may not fire again if the refresh changes nothing visible.
+            _loadMoreQueued = true;
+            try
+            {
+                while (_isRefreshing)
+                {
+                    await _refreshIdle.Task;
+                }
+            }
+            finally
+            {
+                _loadMoreQueued = false;
+            }
+        }
+
         // No successful refresh yet (e.g. showing cache offline) — appending could duplicate page 1.
-        // While a refresh is in flight the next page would belong to the list being replaced.
-        if (_endReached || _fetchedCount == 0 || _isRefreshing)
+        if (_endReached || _fetchedCount == 0)
         {
             return ListLoadResult.Ok(Items.Count > 0, IsShowingCachedData);
         }

@@ -295,19 +295,42 @@ public class PagedListSourceTests
     }
 
     [Test]
-    public async Task LoadMore_WhileRefreshPending_DoesNotFetchOrCancelRefresh()
+    public async Task LoadMore_DuringRefresh_RunsOnceAfterRefreshSettles()
     {
-        var fetch = new FakeFetch().Returns(1, 2).Pending(out var refreshed);
+        var fetch = new FakeFetch().Returns(1, 2).Pending(out var refreshed).Returns(5, 6);
         var source = CreateSource(fetch);
 
         await source.RefreshAsync();
         var refresh = source.RefreshAsync();
-        await source.LoadMoreAsync();
-        refreshed.SetResult(CachedItems(3, 4));
-        await refresh;
+        var queued = source.LoadMoreAsync();
+        var duplicate = await source.LoadMoreAsync();
+        fetch.RequestedSkips.Should().Equal(new[] { 0, 0 }, "nothing may be appended to the list being replaced");
 
-        fetch.RequestedSkips.Should().Equal(new[] { 0, 0 }, "the next page would belong to the list being replaced");
-        source.Items.Select(i => i.Id).Should().Equal(3, 4);
+        refreshed.SetResult(CachedItems(1, 2)); // identical refresh: no redraw, so no new threshold event
+        await refresh;
+        var appended = await queued;
+
+        duplicate.Error.Should().BeNull();
+        appended.Error.Should().BeNull();
+        fetch.RequestedSkips.Should().Equal(new[] { 0, 0, 2 }, "exactly one queued page runs after the refresh");
+        source.Items.Select(i => i.Id).Should().Equal(1, 2, 5, 6);
+    }
+
+    [Test]
+    public async Task LoadMore_QueuedBehindFailedQueryChange_DoesNotFetch()
+    {
+        var fetch = new FakeFetch().Returns(1, 2).Pending(out var switched);
+        var source = CreateSource(fetch);
+
+        await source.RefreshAsync();
+        var refresh = source.RefreshAsync(queryChanged: true);
+        var queued = source.LoadMoreAsync();
+        switched.SetException(new HttpRequestException("offline"));
+        await refresh;
+        await queued;
+
+        fetch.RequestedSkips.Should().Equal(0, 0);
+        source.Items.Select(i => i.Id).Should().Equal(1, 2);
     }
 
     [Test]
