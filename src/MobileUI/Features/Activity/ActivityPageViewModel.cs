@@ -29,7 +29,6 @@ public partial class ActivityPageViewModel : BaseViewModel
     private readonly OfflineAwareListErrorHandler _errorHandler;
 
     private ActivityPageSegments _currentSegment;
-    private bool _loaded;
 
     public PagedListSource<ActivityFeedItemDto> Feed { get; }
 
@@ -88,7 +87,6 @@ public partial class ActivityPageViewModel : BaseViewModel
     public async Task LoadFeed()
     {
         var result = await Feed.RefreshAsync();
-        _loaded = true;
 
         // Background refresh: a failure behind cached content stays quiet.
         await _errorHandler.HandleAsync(result, userRequestedNewData: false, FeedTitle, OfflineMessage, GenericMessage);
@@ -110,15 +108,17 @@ public partial class ActivityPageViewModel : BaseViewModel
         await _errorHandler.HandleAsync(result, userRequestedNewData: false, FeedTitle, OfflineMessage, GenericMessage);
     }
 
-    [RelayCommand]
+    // Concurrent so a tap made while the previous segment loads isn't dropped; the newer refresh supersedes it.
+    [RelayCommand(AllowConcurrentExecutions = true)]
     private async Task FilterBySegment()
     {
-        if (!_loaded || SelectedSegment == null || _currentSegment == (ActivityPageSegments)SelectedSegment.Value)
+        if (SelectedSegment == null || _currentSegment == (ActivityPageSegments)SelectedSegment.Value)
         {
             return;
         }
 
-        _currentSegment = (ActivityPageSegments)SelectedSegment.Value;
+        var segment = (ActivityPageSegments)SelectedSegment.Value;
+        _currentSegment = segment;
         ShowPosts = _currentSegment == ActivityPageSegments.Posts;
         ShowActivityFeed = !ShowPosts;
 
@@ -129,6 +129,10 @@ public partial class ActivityPageViewModel : BaseViewModel
         }
 
         var result = await Feed.RefreshAsync(queryChanged: true);
+        if (segment != _currentSegment)
+        {
+            return;
+        }
 
         // The user asked for different data — report a failure even though the
         // previous segment's items are still visible.
