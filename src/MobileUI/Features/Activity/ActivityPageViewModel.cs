@@ -1,5 +1,6 @@
 #nullable enable
 
+using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SSW.Rewards.ApiClient.Services;
@@ -17,18 +18,17 @@ public enum ActivityPageSegments
     Posts
 }
 
-public partial class ActivityPageViewModel : BaseViewModel, IDisposable
+public partial class ActivityPageViewModel : BaseViewModel
 {
     private const string FeedTitle = "Activity Feed";
     private const string OfflineMessage = "You're offline. The activity feed will load once you're back online.";
     private const string GenericMessage = "There seems to be a problem loading the activity feed. Please try again soon.";
 
+    private readonly IUserService _userService;
     private readonly IAppNavigator _navigator;
     private readonly OfflineAwareListErrorHandler _errorHandler;
-    private readonly IDisposable _myUserIdSubscription;
 
     private ActivityPageSegments _currentSegment;
-    private int _myUserId;
     private bool _loaded;
 
     public PagedListSource<ActivityFeedItemDto> Feed { get; }
@@ -62,6 +62,7 @@ public partial class ActivityPageViewModel : BaseViewModel, IDisposable
         OfflineAwareListErrorHandler errorHandler,
         IFileCacheService fileCacheService)
     {
+        _userService = userService;
         _navigator = navigator;
         _errorHandler = errorHandler;
         PostsViewModel = postsViewModel;
@@ -82,8 +83,6 @@ public partial class ActivityPageViewModel : BaseViewModel, IDisposable
             CacheKey = "ActivityFeedCache",
             ShouldUseCache = () => _currentSegment == ActivityPageSegments.All,
         });
-
-        _myUserIdSubscription = userService.MyUserIdObservable().Subscribe(myUserId => _myUserId = myUserId);
     }
 
     public async Task LoadFeed()
@@ -139,7 +138,9 @@ public partial class ActivityPageViewModel : BaseViewModel, IDisposable
     [RelayCommand]
     private async Task ActivityTapped(ActivityFeedItemDto item)
     {
-        if (_myUserId == item.UserId)
+        // Read on demand: a subscription would tie this transient VM to the singleton UserService.
+        var myUserId = await _userService.MyUserIdObservable().FirstAsync();
+        if (myUserId == item.UserId)
         {
             await _navigator.GoToMyProfileAsync();
         }
@@ -151,6 +152,4 @@ public partial class ActivityPageViewModel : BaseViewModel, IDisposable
 
     [RelayCommand]
     private Task ClosePage() => _navigator.PopModalAsync();
-
-    public void Dispose() => _myUserIdSubscription.Dispose();
 }
