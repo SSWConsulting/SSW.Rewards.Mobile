@@ -30,13 +30,13 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
-        // Initialise Akavache (v11 builder pattern) before anything resolves the cache service.
+        // Initialise Akavache before anything resolves the cache service.
         AppBuilder.CreateSplatBuilder()
-            .WithAkavacheCacheDatabase<SystemJsonSerializer>(cache =>
-                cache.WithApplicationName("SSW.Rewards")
-                     .WithSqliteProvider()
-                     .UseForcedDateTimeKind(DateTimeKind.Utc)
-                     .WithSqliteDefaults());
+            .WithAkavacheCacheDatabase<SystemJsonSerializer>(
+                cache => cache.WithSqliteProvider()
+                              .UseForcedDateTimeKind(DateTimeKind.Utc)
+                              .WithSqliteDefaults(),
+                "SSW.Rewards");
 
         var builder = MauiApp.CreateBuilder();
         builder.UseMauiApp<App>().ConfigureFonts(fonts =>

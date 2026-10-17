@@ -9,7 +9,7 @@ namespace SSW.Rewards.Mobile.Core.IntegrationTests;
 
 /// <summary>
 /// Initialises a real Akavache SQLite database once for the whole test assembly —
-/// no emulator, the host's e_sqlite3 native is used. A unique application name
+/// no emulator, the host's SQLite native is used. A unique application name
 /// isolates each run's store.
 /// </summary>
 [SetUpFixture]
@@ -19,11 +19,11 @@ public class AkavacheTestSetup
     public void Init()
     {
         AppBuilder.CreateSplatBuilder()
-            .WithAkavacheCacheDatabase<SystemJsonSerializer>(cache =>
-                cache.WithApplicationName($"SSW.Rewards.CoreTests-{Guid.NewGuid():N}")
-                     .WithSqliteProvider()
-                     .UseForcedDateTimeKind(DateTimeKind.Utc)
-                     .WithSqliteDefaults());
+            .WithAkavacheCacheDatabase<SystemJsonSerializer>(
+                cache => cache.WithSqliteProvider()
+                              .UseForcedDateTimeKind(DateTimeKind.Utc)
+                              .WithSqliteDefaults(),
+                $"SSW.Rewards.CoreTests-{Guid.NewGuid():N}");
     }
 
     [OneTimeTearDown]
