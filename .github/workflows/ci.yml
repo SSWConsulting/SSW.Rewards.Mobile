@@ -84,7 +84,7 @@ jobs:
 
       - name: Restore Dependencies
         run: |
-          dotnet restore SSW.Rewards.sln
+          dotnet restore SSW.Rewards.slnx
 
       - name: Update google-services.json
         shell: bash

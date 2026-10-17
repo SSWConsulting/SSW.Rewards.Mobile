@@ -102,7 +102,7 @@ public partial class HomeViewModel : ObservableObject
 
 ```bash
 # Build solution
-dotnet build SSW.Rewards.sln
+dotnet build SSW.Rewards.slnx
 
 # Run tests
 dotnet test

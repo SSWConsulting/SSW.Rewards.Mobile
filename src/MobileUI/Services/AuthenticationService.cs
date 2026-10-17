@@ -13,6 +13,7 @@ public interface IAuthenticationService
     bool HasCachedAccount { get; }
     bool IsLoggedIn { get; }
     event EventHandler DetailsUpdated;
+    event EventHandler SignedOut;
     void NavigateToLoginPage();
 }
 
@@ -22,10 +23,12 @@ public class AuthenticationService : IAuthenticationService
     private readonly IOidcAuthenticationProvider _oidcProvider;
     private readonly IServiceProvider _serviceProvider;
     private readonly IAuthStorageService _authStorage;
+    private readonly IFileCacheService _cacheService;
     private readonly ILogger<AuthenticationService> _logger;
     private readonly IAlertService _alertService;
 
     public event EventHandler DetailsUpdated;
+    public event EventHandler SignedOut;
     public bool HasCachedAccount => _authStorage.HasCachedAccount;
     public bool IsLoggedIn => _tokenManager.IsLoggedIn;
 
@@ -34,6 +37,7 @@ public class AuthenticationService : IAuthenticationService
         IOidcAuthenticationProvider oidcProvider,
         IServiceProvider serviceProvider,
         IAuthStorageService authStorage,
+        IFileCacheService cacheService,
         ILogger<AuthenticationService> logger,
         IAlertService alertService)
     {
@@ -41,6 +45,7 @@ public class AuthenticationService : IAuthenticationService
         _oidcProvider = oidcProvider;
         _serviceProvider = serviceProvider;
         _authStorage = authStorage;
+        _cacheService = cacheService;
         _logger = logger;
         _alertService = alertService;
 
@@ -149,7 +154,13 @@ public class AuthenticationService : IAuthenticationService
     public async Task SignOut()
     {
         _logger.LogInformation("Signing out user");
+
+        // Raised before the cache reset so in-flight user loads are void by the time it runs.
+        SignedOut?.Invoke(this, EventArgs.Empty);
         await _tokenManager.ClearTokensAsync();
+
+        // No cached user data may outlive the session (see #1527).
+        await _cacheService.ResetAsync();
     }
 
     public void NavigateToLoginPage()

@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace SSW.Rewards.DevTool.Core;
 
-// Resolves the repo root (the dir with SSW.Rewards.sln) and the override-file
+// Resolves the repo root (the dir with SSW.Rewards.slnx) and the override-file
 // paths each app reads.
 public sealed class RepoPaths
 {
@@ -60,7 +60,7 @@ public sealed class RepoPaths
             var d = new DirectoryInfo(start);
             while (d is not null)
             {
-                if (File.Exists(Path.Combine(d.FullName, "SSW.Rewards.sln"))) return new RepoPaths(d.FullName);
+                if (File.Exists(Path.Combine(d.FullName, "SSW.Rewards.slnx"))) return new RepoPaths(d.FullName);
                 d = d.Parent;
             }
         }

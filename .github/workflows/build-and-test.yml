@@ -23,3 +23,13 @@ jobs:
     with:
       project_path: src/MobileUI/MobileUI.csproj
       test_mobile: true
+
+  mobile-core-unit:
+    uses: ./.github/workflows/ci.yml
+    with:
+      project_path: tests/MobileUI.Core.UnitTests/MobileUI.Core.UnitTests.csproj
+
+  mobile-core-integration:
+    uses: ./.github/workflows/ci.yml
+    with:
+      project_path: tests/MobileUI.Core.IntegrationTests/MobileUI.Core.IntegrationTests.csproj

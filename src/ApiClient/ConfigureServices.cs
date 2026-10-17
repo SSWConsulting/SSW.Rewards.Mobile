@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Http.Resilience;
 using SSW.Rewards.ApiClient.Services;
 
 namespace SSW.Rewards.ApiClient;
@@ -21,7 +22,11 @@ public static class ConfigureServices
             var cleintNameHeaderValue = includeAdminServices ? Constants.RewardsAppClientName_AdminUI : Constants.RewardsAppClientName_MobileApp;
             client.DefaultRequestHeaders.Add(Constants.RewardsAppClientNameHeaderKey, cleintNameHeaderValue);
         })
-        .AddHttpMessageHandler<THandler>();
+        .AddHttpMessageHandler<THandler>()
+        // Standard resilience pipeline (retry + circuit breaker + timeouts). Retries are limited to
+        // idempotent/safe HTTP methods so non-idempotent calls (quiz submit, redeem, scan) are never
+        // replayed — DisableForUnsafeHttpMethods() opts POST/PUT/PATCH/DELETE/CONNECT out of retrying.
+        .AddStandardResilienceHandler(options => options.Retry.DisableForUnsafeHttpMethods());
 
         if (includeAdminServices)
         {

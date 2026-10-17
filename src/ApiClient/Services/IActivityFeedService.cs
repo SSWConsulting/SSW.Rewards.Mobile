@@ -30,7 +30,7 @@ public class ActivityFeedService(IHttpClientFactory clientFactory) : IActivityFe
         }
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-        throw new Exception($"Failed to get all activities: {responseContent}");
+        throw new HttpRequestException($"Failed to get all activities: {responseContent}", null, result.StatusCode);
     }
     
     public async Task<ActivityFeedViewModel> GetFriendsActivities(int take, int skip, CancellationToken cancellationToken)
@@ -48,6 +48,6 @@ public class ActivityFeedService(IHttpClientFactory clientFactory) : IActivityFe
         }
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-        throw new Exception($"Failed to get friends activities: {responseContent}");
+        throw new HttpRequestException($"Failed to get friends activities: {responseContent}", null, result.StatusCode);
     }
 }
