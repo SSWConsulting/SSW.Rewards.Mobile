@@ -35,11 +35,11 @@ public class DemoDataSeederTests
 
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(_dbName)
+            .AddInterceptors(
+                new AuditableEntitySaveChangesInterceptor(currentUser.Object, dateTime.Object),
+                new AchievementIntegrationIdInterceptor())
             .Options;
-        return new ApplicationDbContext(
-            options,
-            new AuditableEntitySaveChangesInterceptor(currentUser.Object, dateTime.Object),
-            new AchievementIntegrationIdInterceptor());
+        return new ApplicationDbContext(options);
     }
 
     private async Task<DemoSeedSummary> Seed(DateTime today, int years = 1)

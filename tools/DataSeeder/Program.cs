@@ -118,11 +118,16 @@ ServiceProvider BuildServices(string connectionString, string? blobArg)
     var services = new ServiceCollection();
     services.AddSingleton<ICurrentUserService, SeederCurrentUserService>();
     services.AddSingleton<IDateTime, UtcDateTimeService>();
-    services.AddScoped<AuditableEntitySaveChangesInterceptor>();
-    services.AddScoped<AchievementIntegrationIdInterceptor>();
-    services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
-        connectionString,
-        builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+    services.AddSingleton<AuditableEntitySaveChangesInterceptor>();
+    services.AddSingleton<AchievementIntegrationIdInterceptor>();
+    services.AddDbContext<ApplicationDbContext>((provider, options) =>
+    {
+        options.UseSqlServer(connectionString,
+            builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
+        options.AddInterceptors(
+            provider.GetRequiredService<AuditableEntitySaveChangesInterceptor>(),
+            provider.GetRequiredService<AchievementIntegrationIdInterceptor>());
+    });
 
     var blobConn = ConnectionResolver.ResolveBlob(blobArg);
     if (blobConn is not null)
