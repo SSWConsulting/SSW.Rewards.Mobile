@@ -6,6 +6,10 @@ namespace SSW.Rewards.AppHost.Hosts;
 // resource. Mobile/Tailscale commands live on the virtual mobile resource (MobileHost).
 public static class DevCommands
 {
+    // The email is passed on the seeder's command line: allow only characters that can't break out of the quotes.
+    private static bool IsPlainEmail(string email) =>
+        System.Text.RegularExpressions.Regex.IsMatch(email, @"^[A-Za-z0-9._%+'-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$");
+
     public static IResourceBuilder<SqlServerServerResource> AddDevCommands(
         this IResourceBuilder<SqlServerServerResource> sql, CommonInfra common)
     {
@@ -33,7 +37,7 @@ public static class DevCommands
                     "The seeder pre-creates YOUR user (with history) so the app binds to your login.", "Your dev email");
                 if (email is null) return CommandResults.Canceled();
                 email = email.Trim();
-                if (string.IsNullOrWhiteSpace(email)) return CommandResults.Failure("Dev email is required.");
+                if (!IsPlainEmail(email)) return CommandResults.Failure("Enter a plain email address, e.g. you@ssw.com.au.");
                 var (exit, log) = await CommandHelpers.RunProcess(ctx, "dotnet",
                     $"run --project \"{seederProject}\" --verbosity quiet -- seed --dev-email \"{email}\"",
                     await SeederEnv(ctx));
@@ -52,7 +56,7 @@ public static class DevCommands
                     "Databases are DROPPED and re-created from migrations, then seeded. Enter your dev email.", "Your dev email");
                 if (email is null) return CommandResults.Canceled();
                 email = email.Trim();
-                if (string.IsNullOrWhiteSpace(email)) return CommandResults.Failure("Dev email is required.");
+                if (!IsPlainEmail(email)) return CommandResults.Failure("Enter a plain email address, e.g. you@ssw.com.au.");
                 var (exit, log) = await CommandHelpers.RunProcess(ctx, "dotnet",
                     $"run --project \"{seederProject}\" --verbosity quiet -- reset --yes --dev-email \"{email}\"",
                     await SeederEnv(ctx));

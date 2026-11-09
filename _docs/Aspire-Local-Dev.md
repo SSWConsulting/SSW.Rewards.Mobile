@@ -126,10 +126,13 @@ points balance.
   (Admin access still comes from the identity provider's role claims, not the database.)
 - **Re-runs are safe and gap-filling.** Every decision is a stable hash of (person, calendar
   date) — running it again after months away tops up the missing weeks without duplicating
-  anything (`--years N` widens the history window, default 3).
+  anything (`--years N` widens the history window: 1-20, default 3). Nothing is timestamped after the
+  moment you run it.
 - `db reset` force-drops `ssw.rewards` + `ssw.rewards.hangfire` (even while the stack is
   running), re-applies migrations and reseeds. **Restart `rewards-webapi` afterwards** so it
-  reconnects cleanly. Add `--yes` to skip the prompt, `--no-seed` for an empty schema.
+  reconnects cleanly. Add `--yes` to skip the prompt, `--no-seed` for an empty schema. A connection string that
+  names a different database is refused (use `seed` for that), and every option is checked before
+  anything is dropped.
 - Both are dashboard buttons too: **rewards-sql ▸ DB: Seed demo data / DB: Reset + reseed**.
 - A seed run writes its database rows in one transaction and checks balances before committing, so a
   failed run leaves no seed rows behind. Migrations, `reset`'s drop and image uploads to Azurite are

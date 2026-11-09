@@ -39,6 +39,13 @@ if ((verb == "seed" || (verb == "reset" && !noSeed)) && string.IsNullOrWhiteSpac
     return Fail("--dev-email is required (the seeder pre-creates YOUR user so the app binds to your login). " +
                 "Use --no-seed with reset to skip seeding.");
 
+// Validate everything before reset drops anything: a bad value must not fail after the databases are gone.
+var years = 3;
+var yearsArg = Arg("--years");
+if (yearsArg is not null &&
+    (!int.TryParse(yearsArg, out years) || years is < DemoSeedOptions.MinYears or > DemoSeedOptions.MaxYears))
+    return Fail($"--years must be a whole number from {DemoSeedOptions.MinYears} to {DemoSeedOptions.MaxYears} (got '{yearsArg}').");
+
 var sqlConn = ConnectionResolver.ResolveSql(Arg("--connection-string"), RewardsDb);
 if (sqlConn is null)
     return Fail("could not resolve a SQL connection string. Pass --connection-string, set " +
@@ -55,6 +62,11 @@ if (blobConn is not null && !LocalTargetGuard.IsLocalBlob(blobConn))
 if (verb == "reset")
 {
     var target = new SqlConnectionStringBuilder(sqlConn);
+    // reset drops the fixed dev databases, then migrates + seeds the connection string's catalog: they must match,
+    // or the dev databases are deleted while a different database is modified.
+    if (!string.Equals(target.InitialCatalog, RewardsDb, StringComparison.OrdinalIgnoreCase))
+        return Fail($"reset only rebuilds '{RewardsDb}', but the connection string targets '{target.InitialCatalog}'. " +
+                    $"Point it at '{RewardsDb}', or use `seed` for another database.");
     if (!Flag("--yes"))
     {
         Console.WriteLine($"About to DROP '{RewardsDb}' and '{HangfireDb}' on {target.DataSource} and re-create from migrations.");
@@ -80,7 +92,7 @@ await using (var services = BuildServices(sqlConn, blobConn))
         {
             DevEmail = devEmail!,
             DevName = Arg("--dev-name"),
-            Years = int.TryParse(Arg("--years"), out var y) ? y : 3,
+            Years = years,
         };
         Console.WriteLine($"Seeding demo data ({options.Years}y of history, dev = {options.DevEmail})…");
         var seeder = new DemoDataSeeder(db, services.GetService<IDemoAssetProvider>(), Console.WriteLine);
