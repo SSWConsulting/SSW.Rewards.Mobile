@@ -18,6 +18,18 @@ jobs:
     with:
       project_path: src/WebAPI/WebAPI.csproj
 
+  # The AppHost dashboard's DB seed/reset buttons `dotnet run` this tool, so a compile break must fail the PR.
+  data-seeder:
+    uses: ./.github/workflows/ci.yml
+    with:
+      project_path: tools/DataSeeder/DataSeeder.csproj
+
+  # Runs the Application unit tests (incl. the demo seeder and local-target guard tests).
+  application-tests:
+    uses: ./.github/workflows/ci.yml
+    with:
+      project_path: tests/Application.UnitTests/Application.UnitTests.csproj
+
   mobile:
     uses: ./.github/workflows/ci.yml
     with:
