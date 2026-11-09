@@ -26,6 +26,7 @@ if (cmd == "show") return Commands.Show(paths, args.Contains("--json"));
 if (cmd == "reset") return Commands.Reset(paths);
 if (cmd == "secrets") return Secrets.Dispatch(paths, args);
 if (cmd == "mobile") return Mobile.Dispatch(paths, args);
+if (cmd == "db") return Db.Dispatch(paths, args);
 
 // The mobile override is the canonical current state; preserve the dimension a command isn't changing.
 var current = MobileConfig.ReadCurrent(paths);
@@ -54,5 +55,5 @@ switch (cmd)
         return Commands.Apply(paths, new TargetState(a, au), changeIdentity: true);
 
     default:
-        return Commands.Fail($"unknown command '{cmd}'. Use identity | api | env | secrets | mobile | show | reset.");
+        return Commands.Fail($"unknown command '{cmd}'. Use identity | api | env | secrets | mobile | db | show | reset.");
 }

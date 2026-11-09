@@ -27,6 +27,6 @@ builder.AddMobileApp();
 
 // Dashboard command buttons for the database + tooling chores (EF migrate, dev cert,
 // install dotnet-ef) — grouped on the SQL resource.
-common.SqlServer.AddDevCommands();
+common.SqlServer.AddDevCommands(common);
 
 builder.Build().Run();

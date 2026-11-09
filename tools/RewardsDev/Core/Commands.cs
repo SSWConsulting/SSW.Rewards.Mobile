@@ -34,6 +34,7 @@ COMMANDS
   env      <target>   Set both identity AND api      → all of the above
   secrets  <action>   Manage secrets (check | edit | path | sync-mobile)
   mobile   <action>   Build/run MAUI for one platform (android | android-build | ios | ios-build)
+  db       <action>   Demo data: seed --dev-email <you> [--years N] | reset [--yes] [--no-seed]
   show     [--json]   Print the current effective targets (and where each comes from)
   reset               Delete the local override files → back to committed defaults
   help                Show this help
@@ -51,6 +52,8 @@ EXAMPLES
   rewards-dev api tailscale      # stable phone URL + auto `tailscale serve`
   rewards-dev identity local     # all apps → local SSW Identity
   rewards-dev secrets check      # validate the AppHost secrets store (Keeper blob)
+  rewards-dev db seed --dev-email you@ssw.com.au   # idempotent Northwind demo data (re-run to top up)
+  rewards-dev db reset                             # drop DBs -> migrate -> seed (asks to confirm)
   rewards-dev secrets edit       # open secrets.json to paste the Keeper record
   rewards-dev secrets sync-mobile # isolate the 2 Firebase keys + write mobile config files
   rewards-dev mobile android     # build + run on a connected Android emulator/device
