@@ -6,6 +6,7 @@ using NUnit.Framework;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.System.Commands.Common;
 using SSW.Rewards.Domain.Entities;
+using SSW.Rewards.Enums;
 using SSW.Rewards.Infrastructure.Persistence;
 using SSW.Rewards.Infrastructure.Persistence.Interceptors;
 using ApiClientConstants = SSW.Rewards.ApiClient.Constants;
@@ -22,6 +23,8 @@ namespace SSW.Rewards.Application.UnitTests.System;
 public class DemoDataSeederTests
 {
     private static readonly DateTime Today = new(2026, 6, 1, 0, 0, 0, DateTimeKind.Utc);
+    // Seeding at 03:00 UTC (13:00 AEST): today's hash-picked 08:00-18:00 hours are still in the future.
+    private const int SeedHourUtc = 3;
     private const string DevEmail = "dev@example.com";
 
     private string _dbName = null!;
@@ -50,7 +53,7 @@ public class DemoDataSeederTests
         await using var context = CreateContext();
         var seeder = new DemoDataSeeder(context);
         return await seeder.SeedAsync(
-            new DemoSeedOptions { DevEmail = DevEmail, Years = years, Today = today },
+            new DemoSeedOptions { DevEmail = DevEmail, Years = years, Now = today.AddHours(SeedHourUtc) },
             CancellationToken.None);
     }
 
@@ -232,5 +235,80 @@ public class DemoDataSeederTests
         // Any passed completion blocks ALL further submissions of a quiz
         // (SubmitUserQuizCommandValidator checks globally, not per-user).
         playable.Should().OnlyContain(q => q.Completions == 0);
+    }
+
+    [Test]
+    public async Task Seed_NeverTimestampsAnythingAfterNow()
+    {
+        await Seed(Today);
+
+        var now = Today.AddHours(SeedHourUtc);
+        await using var context = CreateContext();
+        (await context.UserAchievements.CountAsync(ua => ua.AwardedAt > now))
+            .Should().Be(0, "the This Week leaderboard filters AwardedAt <= now, so future awards would vanish from it");
+        (await context.UserRewards.CountAsync(ur => ur.AwardedAt > now)).Should().Be(0);
+        (await context.PendingRedemptions.CountAsync(pr => pr.ClaimedAt > now)).Should().Be(0);
+    }
+
+    [Test]
+    public async Task Seed_CommunityUsersGetScansToday()
+    {
+        await Seed(Today);
+
+        await using var context = CreateContext();
+        var staffEmails = DemoDataSet.Everyone.Where(p => p.IsStaff).Select(p => p.Email).ToList();
+        (await context.UserAchievements.CountAsync(ua =>
+                ua.AwardedAt >= Today
+                && ua.Achievement.Type == AchievementType.Scanned
+                && !staffEmails.Contains(ua.User.Email!)))
+            .Should().BeGreaterThan(0, "the last week is boosted, and today is part of it for community users too");
+    }
+
+    [Test]
+    public async Task Seed_QuizCompletions_HaveACorrectAnswerForEveryQuestion()
+    {
+        await Seed(Today);
+
+        await using var context = CreateContext();
+        var completions = await context.CompletedQuizzes
+            .Select(cq => new
+            {
+                Questions = cq.Quiz.Questions.Count,
+                Answers = cq.Answers.Count,
+                AllCorrect = cq.Answers.All(a => a.Correct && a.QuizQuestionId != null),
+            })
+            .ToListAsync();
+
+        completions.Should().NotBeEmpty();
+        // GetQuizResultsQueryValidator.BeFinished and CheckQuizCompletionQuery compare these counts.
+        completions.Should().OnlyContain(c => c.Answers == c.Questions && c.AllCorrect);
+    }
+
+    [Test]
+    public async Task Seed_BackfillsAnswersForCompletionsSeededWithoutThem()
+    {
+        await Seed(Today);
+        await using (var context = CreateContext())
+        {
+            context.SubmittedAnswers.RemoveRange(await context.SubmittedAnswers.ToListAsync());
+            await context.SaveChangesAsync();
+        }
+
+        await Seed(Today);
+
+        await using var verify = CreateContext();
+        (await verify.CompletedQuizzes.CountAsync(cq => cq.Answers.Count != cq.Quiz.Questions.Count)).Should().Be(0);
+    }
+
+    [TestCase(0)]
+    [TestCase(-1)]
+    [TestCase(DemoSeedOptions.MaxYears + 1)]
+    public async Task Seed_YearsOutOfRange_IsRefusedBeforeWritingAnything(int years)
+    {
+        var seed = () => Seed(Today, years);
+
+        await seed.Should().ThrowAsync<ArgumentOutOfRangeException>();
+        await using var context = CreateContext();
+        (await context.Users.CountAsync()).Should().Be(0);
     }
 }

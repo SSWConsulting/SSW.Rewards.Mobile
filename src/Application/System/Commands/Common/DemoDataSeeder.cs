@@ -9,7 +9,12 @@ public sealed record DemoSeedOptions
     public required string DevEmail { get; init; }
     public string? DevName { get; init; }
     public int Years { get; init; } = 3;
-    public DateTime Today { get; init; } = DateTime.UtcNow.Date;
+
+    /// <summary>The seed's "now" (UTC). Nothing is timestamped after it; its date is "today".</summary>
+    public DateTime Now { get; init; } = DateTime.UtcNow;
+
+    public const int MinYears = 1;
+    public const int MaxYears = 20;
 }
 
 public sealed record DemoSeedSummary(
@@ -32,6 +37,7 @@ public class DemoDataSeeder
     private readonly Action<string> _log;
 
     private string _devEmail = string.Empty;
+    private DateTime _now = DateTime.UtcNow;
 
     public DemoDataSeeder(IApplicationDbContext context, IDemoAssetProvider? assets = null, Action<string>? log = null)
     {
@@ -42,8 +48,13 @@ public class DemoDataSeeder
 
     public async Task<DemoSeedSummary> SeedAsync(DemoSeedOptions options, CancellationToken ct)
     {
+        if (options.Years is < DemoSeedOptions.MinYears or > DemoSeedOptions.MaxYears)
+            throw new ArgumentOutOfRangeException(nameof(options),
+                $"Years must be between {DemoSeedOptions.MinYears} and {DemoSeedOptions.MaxYears} (was {options.Years}).");
+
         _devEmail = options.DevEmail.Trim().ToLowerInvariant();
-        var today = options.Today.Date;
+        _now = options.Now;
+        var today = options.Now.Date;
         var horizon = today.AddYears(-options.Years);
 
         var people = BuildPeople(options);
@@ -363,13 +374,16 @@ public class DemoDataSeeder
                 .ToListAsync(ct))
             .GroupBy(q => q.Title!)
             .ToDictionary(g => g.Key, g => (g.First().Id, g.First().AchievementId));
+        var correctAnswers = await CorrectAnswersByQuiz(quizzes.Values.Select(q => q.Id).ToList(), ct);
 
         int awards = 0, completions = 0;
 
         void Award(User user, int achievementId, DateTime at)
         {
             if (!existingPairs.Add((user.Id, achievementId))) return;
-            _context.UserAchievements.Add(new UserAchievement { UserId = user.Id, AchievementId = achievementId, AwardedAt = at });
+            // Today's hash-picked hour (08:00-18:00 UTC) can still be ahead of now: never future-date an award,
+            // or the leaderboard's This Week filter (AwardedAt <= now) disagrees with Today.
+            _context.UserAchievements.Add(new UserAchievement { UserId = user.Id, AchievementId = achievementId, AwardedAt = Earlier(at, _now) });
             awards++;
         }
 
@@ -460,13 +474,58 @@ public class DemoDataSeeder
                 if (!existingCompletions.Add((user.Id, quiz.Id))) continue;
                 var span = Math.Max((today - join).TotalDays, 1);
                 var at = At(email, join.AddDays(span * Frac($"quizdate:{email}:{demo.Slug}")));
-                _context.CompletedQuizzes.Add(new CompletedQuiz { UserId = user.Id, QuizId = quiz.Id, Passed = true });
+                var completion = new CompletedQuiz { UserId = user.Id, QuizId = quiz.Id, Passed = true };
+                // One correct answer per question — quiz results/completion checks compare answer and question counts.
+                completion.Answers.AddRange(SeededAnswers(correctAnswers, quiz.Id));
+                _context.CompletedQuizzes.Add(completion);
                 Award(user, quiz.AchievementId, at);
                 completions++;
             }
         }
 
+        await BackfillCompletionAnswers(userIds, correctAnswers, ct);
+
         return new HistoryCounts(awards, completions);
+    }
+
+    private sealed record CorrectAnswer(int QuestionId, int AnswerId, string Text);
+
+    private async Task<ILookup<int, CorrectAnswer>> CorrectAnswersByQuiz(List<int> quizIds, CancellationToken ct) =>
+        (await _context.QuizAnswers.AsNoTracking()
+            .TagWithContext()
+            .Where(a => a.IsCorrect && quizIds.Contains(a.Question.QuizId))
+            .Select(a => new { a.Question.QuizId, a.QuestionId, a.Id, a.Text })
+            .ToListAsync(ct))
+        .GroupBy(a => a.QuestionId)
+        .Select(g => g.OrderBy(a => a.Id).First())
+        .ToLookup(a => a.QuizId, a => new CorrectAnswer(a.QuestionId, a.Id, a.Text ?? string.Empty));
+
+    private static IEnumerable<SubmittedQuizAnswer> SeededAnswers(ILookup<int, CorrectAnswer> correctAnswers, int quizId) =>
+        correctAnswers[quizId].Select(a => new SubmittedQuizAnswer
+        {
+            QuizQuestionId = a.QuestionId,
+            AnswerId = a.AnswerId,
+            AnswerText = a.Text,
+            Correct = true,
+            GPTConfidence = 100,
+            GPTExplanation = "Seeded demo answer.",
+        });
+
+    // Completions seeded before answers were added have none, so their results can't be opened — fill them in.
+    private async Task BackfillCompletionAnswers(List<int> userIds, ILookup<int, CorrectAnswer> correctAnswers, CancellationToken ct)
+    {
+        var quizIds = correctAnswers.Select(g => g.Key).ToList();
+        var unanswered = await _context.CompletedQuizzes.AsNoTracking()
+            .TagWithContext()
+            .Where(cq => userIds.Contains(cq.UserId) && quizIds.Contains(cq.QuizId) && cq.Passed && !cq.Answers.Any())
+            .Select(cq => new { cq.Id, cq.QuizId })
+            .ToListAsync(ct);
+        foreach (var completion in unanswered)
+            foreach (var answer in SeededAnswers(correctAnswers, completion.QuizId))
+            {
+                answer.SubmissionId = completion.Id;
+                _context.SubmittedAnswers.Add(answer);
+            }
     }
 
     // ---- phase 4: claims ----------------------------------------------------
@@ -551,8 +610,10 @@ public class DemoDataSeeder
 
                 var affordable = rewards.Where(r => r.Cost <= balance).ToList();
                 var reward = affordable[(int)(Frac($"claimpick:{email}:{at:yyyyMMddHHmm}") * affordable.Count)];
+                // `at > lastSpent` means the walk has already charged every persisted claim; a claim dated
+                // in the future waits for a later run.
                 var claimDate = at.AddHours(1);
-                if (claimDate <= lastSpent || balance - reward.Cost < reserved) continue;
+                if (at <= lastSpent || claimDate > _now || balance - reward.Cost < reserved) continue;
 
                 _context.UserRewards.Add(new UserReward { UserId = user.Id, RewardId = reward.Id, AwardedAt = claimDate });
                 balance -= reward.Cost;
@@ -585,7 +646,7 @@ public class DemoDataSeeder
                         UserId = user.Id,
                         RewardId = reward.Id,
                         Code = pendingCode,
-                        ClaimedAt = today.AddDays(-(int)(Frac($"pendingday:{email}") * 10)),
+                        ClaimedAt = Earlier(today.AddDays(-(int)(Frac($"pendingday:{email}") * 10)), _now),
                     });
                     pendingCount++;
                 }
@@ -631,7 +692,8 @@ public class DemoDataSeeder
         // hash-picked point in the first 80% of the window.
         if (person.IsStaff) return horizon;
         var window = (today - horizon).TotalDays * 0.8;
-        return horizon.AddDays(Frac($"join:{email}") * window);
+        // Calendar day only: a time of day would make the scan loop's `day <= today` skip today.
+        return horizon.AddDays(Frac($"join:{email}") * window).Date;
     }
 
     private static DateTime At(string email, DateTime day) =>
