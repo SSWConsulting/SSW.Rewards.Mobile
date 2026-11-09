@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Common\Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="MobileUI.Core.IntegrationTests" />
+  </ItemGroup>
+
 </Project>

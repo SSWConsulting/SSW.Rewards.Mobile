@@ -1,10 +1,13 @@
+using SSW.Rewards.ApiClient.Resilience;
+
 namespace SSW.Rewards.Mobile.Services;
 
 /// <summary>
 /// MAUI-backed <see cref="IConnectivityService"/> wrapping <see cref="Connectivity.Current"/>.
-/// Forwards MAUI's connectivity change events as a simple online/offline boolean.
+/// Forwards MAUI's connectivity change events as a simple online/offline boolean, and tells the
+/// API client not to retry requests while offline.
 /// </summary>
-public sealed class MauiConnectivityService : IConnectivityService
+public sealed class MauiConnectivityService : IConnectivityService, IApiNetworkStatus
 {
     private readonly IConnectivity _connectivity;
 

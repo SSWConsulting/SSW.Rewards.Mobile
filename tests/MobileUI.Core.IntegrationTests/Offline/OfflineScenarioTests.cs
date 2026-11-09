@@ -2,7 +2,10 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
+using Polly.CircuitBreaker;
+using Polly.Timeout;
 using SSW.Rewards.ApiClient;
+using SSW.Rewards.ApiClient.Resilience;
 using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Mobile.Common;
 using SSW.Rewards.Mobile.Services;
@@ -62,14 +65,29 @@ public class OfflineScenarioTests
         public event EventHandler<bool>? ConnectivityChanged { add { } remove { } }
     }
 
+    /// <summary>The app's connectivity as the API client sees it.</summary>
+    private sealed class FakeNetworkStatus : IApiNetworkStatus
+    {
+        public bool IsOnline { get; set; } = true;
+    }
+
+    private sealed class ThrowingHandler(Exception exception) : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            => throw exception;
+    }
+
     private WireMockServer _server = null!;
     private ServiceProvider _services = null!;
+    private FakeNetworkStatus _network = null!;
 
     [SetUp]
     public void SetUp()
     {
         _server = WireMockServer.Start();
+        _network = new FakeNetworkStatus();
         var collection = new ServiceCollection();
+        collection.AddSingleton<IApiNetworkStatus>(_network);
         collection.AddTransient<PassthroughAuthHandler>();
         collection.AddApiClientServices<PassthroughAuthHandler>(_server.Url!);
         _services = collection.BuildServiceProvider();
@@ -116,10 +134,16 @@ public class OfflineScenarioTests
         online.Error.Should().BeNull();
         onlineSession.Items.Should().HaveCount(3);
 
-        // "Airplane mode": the API is gone. A fresh source = app cold start.
+        // "Airplane mode": no network, so the API is unreachable. A fresh source = app cold start.
+        _network.IsOnline = false;
         _server.Stop();
         var offlineSession = CreateFeedSource(cacheKey);
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         var offline = await offlineSession.RefreshAsync();
+        stopwatch.Stop();
+
+        // Three retries would add ~14s of backoff. (A refused localhost connect alone takes ~2s per address on Windows.)
+        stopwatch.Elapsed.Should().BeLessThan(TimeSpan.FromSeconds(10), "offline failures aren't retried, so backoff doesn't delay the error");
 
         offline.Error.Should().NotBeNull("the network leg failed");
         offline.HasContent.Should().BeTrue("cached content is on screen");
@@ -187,6 +211,33 @@ public class OfflineScenarioTests
 
         result.Feed.Single().UserId.Should().Be(42, "the resilience pipeline retried the transient 503");
         _server.LogEntries.Count().Should().Be(2, "exactly one retry was needed");
+    }
+
+    [Test]
+    public async Task TransientServerError_WhileOffline_IsNotRetried()
+    {
+        _network.IsOnline = false;
+        _server.Given(Request.Create().WithPath(FeedRoute).UsingGet())
+            .RespondWith(Response.Create().WithStatusCode(503));
+
+        var act = () => _services.GetRequiredService<IActivityFeedService>().GetAllActivities(50, 0, CancellationToken.None);
+
+        await act.Should().ThrowAsync<HttpRequestException>();
+        _server.LogEntries.Count().Should().Be(1, "retrying offline only delays the error");
+    }
+
+    [Test]
+    public async Task PipelineRejections_SurfaceAsHttpRequestException()
+    {
+        foreach (Exception rejection in new Exception[] { new TimeoutRejectedException(), new BrokenCircuitException() })
+        {
+            using var client = new HttpClient(new ResilienceRejectionHandler { InnerHandler = new ThrowingHandler(rejection) });
+
+            var act = () => client.GetAsync("http://localhost/api/anything");
+
+            (await act.Should().ThrowAsync<HttpRequestException>("callers catch HttpRequestException for network failures"))
+                .WithInnerException(rejection.GetType());
+        }
     }
 
     [Test]
