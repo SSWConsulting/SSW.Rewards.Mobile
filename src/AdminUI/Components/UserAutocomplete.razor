@@ -23,12 +23,19 @@
         MinCharacters="MinCharacters"
         MaxItems="MaxItems"
         Class="flex-grow-1">
+        <ItemTemplate Context="usr">
+            <MudText Typo="Typo.body2">@usr.Name</MudText>
+            @if (!string.IsNullOrWhiteSpace(usr.Email))
+            {
+                <MudText Typo="Typo.caption" Color="Color.Secondary">@usr.Email</MudText>
+            }
+        </ItemTemplate>
     </MudAutocomplete>
-    <MudButton 
-        OnClick="HandleButtonClick" 
-        Color="@ButtonColor" 
-        Variant="Variant.Filled" 
-        Disabled="@(SelectedUser == null || ButtonDisabled)">
+    <MudButton
+        OnClick="HandleButtonClick"
+        Color="@ButtonColor"
+        Variant="Variant.Filled"
+        Disabled="@(SelectedUser == null || ButtonDisabled || _isBusy)">
         @ButtonText
     </MudButton>
 </MudStack>
@@ -37,6 +44,7 @@
     private List<LeaderboardUserDto> _usersList = [];
     private LeaderboardUserDto? _syncedUser;
     private string _text = string.Empty;
+    private bool _isBusy;
 
     [Parameter]
     public LeaderboardUserDto? SelectedUser { get; set; }
@@ -108,22 +116,40 @@
 
     private async Task HandleButtonClick()
     {
-        if (OnButtonClick.HasDelegate)
+        // Ignore a second tap while the first request is in flight, so one tap is one claim
+        if (_isBusy || !OnButtonClick.HasDelegate)
+        {
+            return;
+        }
+
+        _isBusy = true;
+        try
         {
             await OnButtonClick.InvokeAsync();
+        }
+        finally
+        {
+            _isBusy = false;
         }
     }
 
     private Task<IEnumerable<LeaderboardUserDto>> SearchUsers(string value)
     {
-        if (string.IsNullOrWhiteSpace(value) || value.Length < MinCharacters)
+        // Trim, because mobile keyboards add a trailing space after an accepted suggestion
+        var search = value?.Trim() ?? string.Empty;
+        if (search.Length < MinCharacters)
         {
             return Task.FromResult(Enumerable.Empty<LeaderboardUserDto>());
         }
 
+        // Every word must match the name or the email, so "jo smi" finds "John Smith"
+        var terms = search.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        // MudAutocomplete's MaxItems caps the list shown
         var filteredUsers = _usersList
-            .Where(u => u.Name != null && u.Name.Contains(value, StringComparison.OrdinalIgnoreCase))
-            .Take(MaxItems)
+            .Where(u => terms.All(term =>
+                (u.Name?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (u.Email?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false)))
             .ToList();
 
         return Task.FromResult<IEnumerable<LeaderboardUserDto>>(filteredUsers);
