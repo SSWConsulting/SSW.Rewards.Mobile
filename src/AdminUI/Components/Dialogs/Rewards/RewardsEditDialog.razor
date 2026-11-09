@@ -10,7 +10,6 @@
 @using Icons = MudBlazor.Icons
 
 @inject ISnackbar Snackbar
-@inject ILeaderboardService leaderboardService
 @inject IRewardAdminService rewardAdminService
 @inject IDialogService DialogService
 
@@ -29,24 +28,10 @@
             </MudStack>
             <MudTextField @bind-Value="@Dto.Cost" Label="Cost" AutoFocus="true"/>
             <MudTextField Class="d-inline" T="string" Label="Reward Description" @bind-Value="@Dto.Description" AutoFocus="true" Required="true"/>
-            <MudStack Row="true" Spacing="2" Class="align-center">
-                <MudSelect
-                    @bind-Value="_selectedValue"
-                    T="@LeaderboardUserDto"
-                    Label="Assign to User"
-                    AnchorOrigin="Origin.TopCenter"
-                    TransformOrigin="Origin.BottomCenter"
-                    Variant="Variant.Outlined"
-                    AdornmentIcon="@Icons.Material.Filled.Search"
-                    AdornmentColor="Color.Primary"
-                    Class="flex-grow-1">
-                    @foreach (var usr in _usersList.OrderBy(u => u.Name))
-                    {
-                        <MudSelectItem Value="@usr">@usr.Name</MudSelectItem>
-                    }
-                </MudSelect>
-                <MudButton OnClick="AssignReward" Color="Color.Info" Variant="Variant.Filled" Disabled="@(_selectedValue == null)">Redeem</MudButton>
-            </MudStack>
+            <UserAutocomplete 
+                @bind-SelectedUser="_selectedValue" 
+                ButtonText="Redeem" 
+                OnButtonClick="AssignReward" />
             <MudStack Row="true" Justify="Justify.SpaceBetween" Class="align-items-center">
                 @if (!string.IsNullOrEmpty(Dto.ImageUri))
                 {
@@ -139,14 +124,6 @@
     [Parameter]
     public RewardEditDto Dto { get; set; } = new();
     private LeaderboardUserDto? _selectedValue;
-    private IEnumerable<LeaderboardUserDto> _usersList = Enumerable.Empty<LeaderboardUserDto>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        _usersList = (await leaderboardService.GetLeaderboard(CancellationToken.None)).Users;
-        Console.WriteLine($"On init - reward type is {Dto.RewardType}");
-    }
 
     void Submit() => MudDialog?.Close(DialogResult.Ok(Dto));
 
@@ -241,9 +218,29 @@
 
         try
         {
-            await rewardAdminService.ClaimForUser(Dto.Code, _selectedValue.UserId, false, CancellationToken.None);
-            Snackbar.Add($"Reward redeemed for {_selectedValue.Name}", Severity.Success);
-            _selectedValue = null;
+            var result = await rewardAdminService.ClaimForUser(Dto.Code, _selectedValue.UserId, false, CancellationToken.None);
+
+            // The API returns 200 for every outcome, so the status says whether the redemption happened
+            switch (result.status)
+            {
+                case RewardStatus.Claimed:
+                case RewardStatus.Confirmed:
+                    Snackbar.Add($"Reward redeemed for {_selectedValue.Name}", Severity.Success);
+                    _selectedValue = null;
+                    break;
+                case RewardStatus.NotEnoughPoints:
+                    Snackbar.Add($"{_selectedValue.Name} doesn't have enough points for this reward", Severity.Warning);
+                    break;
+                case RewardStatus.Duplicate:
+                    Snackbar.Add($"{_selectedValue.Name} has already redeemed this reward", Severity.Warning);
+                    break;
+                case RewardStatus.NotFound:
+                    Snackbar.Add("Reward or user not found", Severity.Error);
+                    break;
+                default:
+                    Snackbar.Add($"Failed to redeem reward for {_selectedValue.Name}", Severity.Error);
+                    break;
+            }
         }
         catch (Exception ex)
         {
