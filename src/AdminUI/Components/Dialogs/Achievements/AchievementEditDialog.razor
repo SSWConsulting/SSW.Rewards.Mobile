@@ -95,9 +95,25 @@
 
         try
         {
-            await achievementService.ClaimAchievementForUser(dto.Code, _selectedValue.UserId, CancellationToken.None);
-            Snackbar.Add($"Achievement claimed for {_selectedValue.Name}", Severity.Success);
-            _selectedValue = null;
+            var result = await achievementService.ClaimAchievementForUser(dto.Code, _selectedValue.UserId, CancellationToken.None);
+
+            // The API returns 200 for every outcome, so the status says whether the claim happened
+            switch (result.status)
+            {
+                case ClaimAchievementStatus.Claimed:
+                    Snackbar.Add($"Achievement claimed for {_selectedValue.Name}", Severity.Success);
+                    _selectedValue = null;
+                    break;
+                case ClaimAchievementStatus.Duplicate:
+                    Snackbar.Add($"{_selectedValue.Name} has already claimed this achievement", Severity.Warning);
+                    break;
+                case ClaimAchievementStatus.NotFound:
+                    Snackbar.Add("Achievement or user not found", Severity.Error);
+                    break;
+                default:
+                    Snackbar.Add($"Failed to claim achievement for {_selectedValue.Name}", Severity.Error);
+                    break;
+            }
         }
         catch (Exception ex)
         {

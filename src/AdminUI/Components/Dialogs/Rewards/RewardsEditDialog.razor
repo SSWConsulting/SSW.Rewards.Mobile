@@ -218,9 +218,29 @@
 
         try
         {
-            await rewardAdminService.ClaimForUser(Dto.Code, _selectedValue.UserId, false, CancellationToken.None);
-            Snackbar.Add($"Reward redeemed for {_selectedValue.Name}", Severity.Success);
-            _selectedValue = null;
+            var result = await rewardAdminService.ClaimForUser(Dto.Code, _selectedValue.UserId, false, CancellationToken.None);
+
+            // The API returns 200 for every outcome, so the status says whether the redemption happened
+            switch (result.status)
+            {
+                case RewardStatus.Claimed:
+                case RewardStatus.Confirmed:
+                    Snackbar.Add($"Reward redeemed for {_selectedValue.Name}", Severity.Success);
+                    _selectedValue = null;
+                    break;
+                case RewardStatus.NotEnoughPoints:
+                    Snackbar.Add($"{_selectedValue.Name} doesn't have enough points for this reward", Severity.Warning);
+                    break;
+                case RewardStatus.Duplicate:
+                    Snackbar.Add($"{_selectedValue.Name} has already redeemed this reward", Severity.Warning);
+                    break;
+                case RewardStatus.NotFound:
+                    Snackbar.Add("Reward or user not found", Severity.Error);
+                    break;
+                default:
+                    Snackbar.Add($"Failed to redeem reward for {_selectedValue.Name}", Severity.Error);
+                    break;
+            }
         }
         catch (Exception ex)
         {
