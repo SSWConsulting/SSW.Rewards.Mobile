@@ -18,6 +18,7 @@ public class PagedListSourceTests
         public Dictionary<string, object?> Store { get; } = [];
         public int Reads { get; private set; }
         public int Writes { get; private set; }
+        public long Generation { get; private set; }
 
         public Task<T?> GetAsync<T>(string cacheKey)
         {
@@ -25,8 +26,13 @@ public class PagedListSourceTests
             return Task.FromResult(Store.TryGetValue(cacheKey, out var value) ? (T?)value : default);
         }
 
-        public Task SetAsync<T>(string cacheKey, T value, TimeSpan? expiry = null)
+        public Task SetAsync<T>(string cacheKey, T value, TimeSpan? expiry = null, long? generation = null)
         {
+            if (generation is { } expected && expected != Generation)
+            {
+                return Task.CompletedTask;
+            }
+
             Writes++;
             Store[cacheKey] = value;
             return Task.CompletedTask;
@@ -34,6 +40,7 @@ public class PagedListSourceTests
 
         public Task ResetAsync()
         {
+            Generation++;
             Store.Clear();
             return Task.CompletedTask;
         }
@@ -276,7 +283,56 @@ public class PagedListSourceTests
         await source.LoadMoreAsync();
 
         fetch.RequestedSkips.Should().Equal(new[] { 0, 0 }, "page 2 of the new query must not follow the old list");
-        source.Items.Select(i => i.Id).Should().Equal(1, 2);
+        source.Items.Should().BeEmpty();
+    }
+
+    [Test]
+    public async Task Refresh_QueryChangedAndFails_ClearsThePreviousQuerysItems()
+    {
+        var fetch = new FakeFetch().Returns(1, 2).Throws();
+        var source = CreateSource(fetch);
+
+        await source.RefreshAsync();
+        var result = await source.RefreshAsync(queryChanged: true);
+
+        result.Error.Should().NotBeNull();
+        result.HasContent.Should().BeFalse();
+        source.Items.Should().BeEmpty("the previous segment's items would be shown under the new one");
+    }
+
+    [Test]
+    public async Task Refresh_QueryChangedBackToCachedQueryAndFails_ShowsItsCache()
+    {
+        var useCache = true;
+        var cache = new FakeCache();
+        var fetch = new FakeFetch().Returns(1, 2).Returns(5, 6).Throws();
+        var source = CreateSource(fetch, cache, shouldUseCache: () => useCache);
+
+        await source.RefreshAsync();                    // "All" online: cached
+        useCache = false;
+        await source.RefreshAsync(queryChanged: true);  // "Friends": not cached
+        useCache = true;
+        var result = await source.RefreshAsync(queryChanged: true); // back to "All", offline
+
+        result.Error.Should().NotBeNull();
+        source.Items.Select(i => i.Id).Should().Equal(new[] { 1, 2 }, "the cached list for this query beats the other query's items");
+        source.IsShowingCachedData.Should().BeTrue();
+    }
+
+    [Test]
+    public async Task Refresh_CacheResetWhileLoading_DoesNotWriteTheOldSessionBack()
+    {
+        var cache = new FakeCache();
+        var fetch = new FakeFetch().Pending(out var fresh);
+        var source = CreateSource(fetch, cache);
+
+        var refresh = source.RefreshAsync();
+        await cache.ResetAsync(); // logout while the load is in flight
+        fresh.SetResult(CachedItems(1, 2));
+        await refresh;
+
+        cache.Writes.Should().Be(0);
+        cache.Store.Should().BeEmpty();
     }
 
     [Test]
@@ -330,7 +386,7 @@ public class PagedListSourceTests
         await queued;
 
         fetch.RequestedSkips.Should().Equal(0, 0);
-        source.Items.Select(i => i.Id).Should().Equal(1, 2);
+        source.Items.Should().BeEmpty();
     }
 
     [Test]

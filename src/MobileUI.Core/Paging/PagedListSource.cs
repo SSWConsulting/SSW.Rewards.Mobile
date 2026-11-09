@@ -23,6 +23,9 @@ public sealed partial class PagedListSource<T> : ObservableObject
     private bool _loadMoreQueued;
     private TaskCompletionSource _refreshIdle = new();
 
+    // False while Items still hold the previous query's list (segment or filter switch in flight).
+    private bool _showsCurrentQuery = true;
+
     public ObservableRangeCollection<T> Items { get; } = [];
 
     [ObservableProperty]
@@ -39,9 +42,10 @@ public sealed partial class PagedListSource<T> : ObservableObject
     }
 
     /// <summary>
-    /// Replaces the list: shows cached items immediately (first load only),
+    /// Replaces the list: shows cached items immediately (first load or query switch),
     /// then the fresh first page. Safe to call repeatedly (refresh, segment switch).
-    /// A failed refresh keeps the shown items and their pagination position.
+    /// A failed refresh keeps the shown items and their pagination position, unless they
+    /// belong to the previous query: those are cleared rather than shown under the new one.
     /// </summary>
     /// <param name="queryChanged">
     /// True when <see cref="PagedListSourceOptions{T}.FetchPage"/> now returns a different list
@@ -59,11 +63,15 @@ public sealed partial class PagedListSource<T> : ObservableObject
         {
             _fetchedCount = 0;
             _endReached = false;
+            _showsCurrentQuery = Items.Count == 0;
         }
+
+        // Captured before any await: a cache reset (logout) during this load voids its write.
+        var cacheGeneration = _options.Cache?.Generation ?? 0;
 
         try
         {
-            if (UseCache && Items.Count == 0)
+            if (UseCache && (Items.Count == 0 || !_showsCurrentQuery))
             {
                 var cached = await _options.Cache!.GetAsync<List<T>>(_options.CacheKey!);
                 if (cached is { Count: > 0 } && !ct.IsCancellationRequested)
@@ -84,7 +92,7 @@ public sealed partial class PagedListSource<T> : ObservableObject
 
             if (UseCache)
             {
-                await _options.Cache!.SetAsync(_options.CacheKey!, fresh);
+                await _options.Cache!.SetAsync(_options.CacheKey!, fresh, generation: cacheGeneration);
             }
 
             return ListLoadResult.Ok(Items.Count > 0, fromCache: false);
@@ -96,6 +104,14 @@ public sealed partial class PagedListSource<T> : ObservableObject
         }
         catch (Exception ex)
         {
+            if (!_showsCurrentQuery)
+            {
+                // The previous query's items would be mislabelled under the new one.
+                Items.Clear();
+                IsShowingCachedData = false;
+                _showsCurrentQuery = true;
+            }
+
             return ListLoadResult.Fail(ex, Items.Count > 0);
         }
         finally
@@ -191,6 +207,7 @@ public sealed partial class PagedListSource<T> : ObservableObject
         }
 
         IsShowingCachedData = fromCache;
+        _showsCurrentQuery = true;
     }
 
     private bool SameAsShown(List<T> items)

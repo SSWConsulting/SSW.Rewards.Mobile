@@ -95,6 +95,8 @@ Rules:
    segment/filter switches (those always alert).
 2. **API client methods throw `HttpRequestException` with `StatusCode`** on failure — a plain
    `Exception` hides 401s from the handler, so an expired session behind cached content never logs in.
+   The resilience pipeline's own failures (timeout, open circuit) also arrive as `HttpRequestException`,
+   and nothing is retried while `IApiNetworkStatus` says the device is offline, so offline errors are immediate.
 3. **No MAUI statics in ViewModels.** Use the Core seams: `IConnectivityService` (not
    `Connectivity.Current`), `IAppNavigator` (not `Shell.Current` + `ActivatorUtilities`),
    `IApiExceptionHandler` (not the static `ExceptionHandler`), `IAlertService`. This is what keeps
@@ -102,7 +104,8 @@ Rules:
 4. **`RefreshAsync` replaces, `LoadMoreAsync` appends.** Pagination is network-only and can't
    duplicate page 1 while cached data is shown; only a successful short/empty page marks the end.
    A failed refresh keeps the shown items *and* their paging position — pass `queryChanged: true`
-   when `FetchPage` now returns a different list (segment/filter), so a failure can't page the old one.
+   when `FetchPage` now returns a different list (segment/filter): the new query's cache is shown if it
+   has one, and a failure clears the old query's items rather than showing them under the new one.
 5. **Loads supersede each other.** A newer refresh cancels older loads, whose results (successes
    *and* failures) come back as no-error; a `LoadMore` requested mid-refresh runs once it settles.
 6. **`AreSame` must compare every displayed field.** When all items match, the shown instances are
@@ -113,8 +116,10 @@ Rules:
    the singleton keeps them alive, and page-pop hooks don't run when auth replaces the root page. Read
    the current value when needed (`await observable.FirstAsync()`); if a page must react live,
    subscribe in `OnAppearing` and dispose in `OnDisappearing`.
-9. **User data is session-scoped.** Cache it only through `IFileCacheService` (reset on logout), and
-   drop any in-flight result that outlives the session (see `UserService`'s session token).
+9. **User data is session-scoped.** Cache it only through `IFileCacheService` (reset on logout and on
+   a 401), and drop any in-flight result that outlives the session (see `UserService`'s session token).
+   Writing outside `PagedListSource`/`FetchAndRefresh`? Capture `Generation` before the load and pass it
+   to `SetAsync`, so a load that outlives a reset can't write the previous user's data back.
 10. `PagedListSource` is bindable — `Feed.Items` in XAML, `Feed.IsShowingCachedData` for
    stale-data indicators (global offline banner lands with #1567).
 11. Online-only actions (submit, redeem) check `Connectivity.Current.NetworkAccess` and tell the

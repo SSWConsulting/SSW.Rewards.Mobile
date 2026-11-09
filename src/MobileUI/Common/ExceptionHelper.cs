@@ -21,6 +21,10 @@ public static class ExceptionHandler
 
     private static async Task NavigateToLoginPage()
     {
+        // End the rejected session first: its tokens are useless, and its cached data must not be
+        // shown to whoever signs in next.
+        await App.SignOutAsync();
+
         await IPlatformApplication.Current.DisplayAlertAsync("Authentication Failure", "Your session has expired. Please log in again.", "OK");
         App.NavigateToLoginPage();
     }

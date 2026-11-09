@@ -358,7 +358,7 @@ public class UserService : IUserService
 
     private async Task LoadCachedProfileDataAsync()
     {
-        DeleteLegacyProfileFile();
+        _ = Task.Run(() => LegacyFileCache.Delete(_logger));
 
         var session = _session.Token;
         var cachedUser = await _fileCacheService.GetAsync<CurrentUserDto>(MyCachedProfileKey);
@@ -381,19 +381,6 @@ public class UserService : IUserService
 
         UpdateObservablesFromUser(cachedUser);
         _logger.LogInformation("Loaded cached profile data for user {UserId}", cachedUser.Id);
-    }
-
-    // Older versions wrote the profile straight to disk, where it survived logout.
-    private void DeleteLegacyProfileFile()
-    {
-        try
-        {
-            File.Delete(Path.Combine(FileSystem.CacheDirectory, MyCachedProfileKey + ".json"));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "Failed to delete the legacy cached profile file");
-        }
     }
 
     private void UpdateObservablesFromUser(CurrentUserDto user)

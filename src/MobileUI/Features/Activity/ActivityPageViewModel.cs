@@ -86,6 +86,12 @@ public partial class ActivityPageViewModel : BaseViewModel
 
     public async Task LoadFeed()
     {
+        // The feed is hidden behind the Posts tab; switching back refreshes it.
+        if (_currentSegment == ActivityPageSegments.Posts)
+        {
+            return;
+        }
+
         var result = await Feed.RefreshAsync();
 
         // Background refresh: a failure behind cached content stays quiet.

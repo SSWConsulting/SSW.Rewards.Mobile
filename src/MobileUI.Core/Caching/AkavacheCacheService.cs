@@ -14,10 +14,16 @@ public class AkavacheCacheService : IFileCacheService
 {
     private readonly ILogger<AkavacheCacheService> _logger;
 
+    // Serialises writes against resets, so a write that passed the generation check can't land after a reset.
+    private readonly SemaphoreSlim _writeGate = new(1, 1);
+    private long _generation;
+
     public AkavacheCacheService(ILogger<AkavacheCacheService> logger)
     {
         _logger = logger;
     }
+
+    public long Generation => Interlocked.Read(ref _generation);
 
     public async Task<T?> GetAsync<T>(string cacheKey)
     {
@@ -37,10 +43,17 @@ public class AkavacheCacheService : IFileCacheService
         }
     }
 
-    public async Task SetAsync<T>(string cacheKey, T value, TimeSpan? expiry = null)
+    public async Task SetAsync<T>(string cacheKey, T value, TimeSpan? expiry = null, long? generation = null)
     {
+        await _writeGate.WaitAsync();
         try
         {
+            if (generation is { } expected && expected != Generation)
+            {
+                _logger.LogInformation("Skipped caching {CacheKey}: the cache was reset while it loaded", cacheKey);
+                return;
+            }
+
             if (expiry.HasValue)
             {
                 await CacheDatabase.LocalMachine.InsertObject(cacheKey, value, expiry.Value).FirstAsync();
@@ -54,12 +67,19 @@ public class AkavacheCacheService : IFileCacheService
         {
             _logger.LogError(e, "Failed to cache data for key {CacheKey}", cacheKey);
         }
+        finally
+        {
+            _writeGate.Release();
+        }
     }
 
     public async Task ResetAsync()
     {
+        await _writeGate.WaitAsync();
         try
         {
+            // First, so loads in flight are void even if the wipe below fails.
+            Interlocked.Increment(ref _generation);
             await CacheDatabase.LocalMachine.InvalidateAll().FirstAsync();
             await CacheDatabase.LocalMachine.Flush().FirstAsync();
         }
@@ -68,11 +88,16 @@ public class AkavacheCacheService : IFileCacheService
             // Logout must never fail because the cache couldn't be cleared.
             _logger.LogError(e, "Failed to reset the cache");
         }
+        finally
+        {
+            _writeGate.Release();
+        }
     }
 
     /// <summary>
     /// Reads any cached value first (invoking <paramref name="dataCallback"/> only when found), then
     /// fetches fresh data, caches it and invokes the callback again. Fetch failures are logged and rethrown.
+    /// A fetch that outlived a <see cref="ResetAsync"/> (logout) is dropped: neither cached nor delivered.
     /// </summary>
     /// <typeparam name="T">Serialized type</typeparam>
     /// <param name="cacheKey">Cache key</param>
@@ -81,8 +106,10 @@ public class AkavacheCacheService : IFileCacheService
     /// <param name="tag">Context token forwarded to the callback so stale callbacks can be ignored</param>
     public async Task FetchAndRefresh<T>(string cacheKey, Func<Task<T>> fetchCallback, Func<T, bool, object?, Task> dataCallback, object? tag = null)
     {
+        var generation = Generation;
+
         var cached = await GetAsync<T>(cacheKey);
-        if (cached != null)
+        if (cached != null && generation == Generation)
         {
             await dataCallback.Invoke(cached, true, tag);
         }
@@ -90,7 +117,13 @@ public class AkavacheCacheService : IFileCacheService
         try
         {
             T fresh = await fetchCallback();
-            await SetAsync(cacheKey, fresh);
+            if (generation != Generation)
+            {
+                _logger.LogInformation("Dropped fresh data for {CacheKey}: the cache was reset while it loaded", cacheKey);
+                return;
+            }
+
+            await SetAsync(cacheKey, fresh, generation: generation);
             await dataCallback.Invoke(fresh, false, tag);
         }
         catch (Exception e)

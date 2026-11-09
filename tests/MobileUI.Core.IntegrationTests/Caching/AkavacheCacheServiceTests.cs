@@ -95,4 +95,34 @@ public class AkavacheCacheServiceTests
         await act.Should().ThrowAsync<HttpRequestException>();
         calls.Should().Equal(true);
     }
+
+    [Test]
+    public async Task FetchAndRefresh_ResetWhileFetching_DropsThePreviousSessionsData()
+    {
+        var key = NewKey();
+        var fetch = new TaskCompletionSource<Payload>();
+        var delivered = new List<string>();
+
+        var load = _cache.FetchAndRefresh(key,
+            () => fetch.Task,
+            (value, _, _) => { delivered.Add(value.Name); return Task.CompletedTask; });
+        await _cache.ResetAsync(); // logout while the load is in flight
+        fetch.SetResult(new Payload(1, "previous user's"));
+        await load;
+
+        delivered.Should().BeEmpty("the next session must not be shown the previous user's data");
+        (await _cache.GetAsync<Payload>(key)).Should().BeNull("nor may it be written back after the wipe");
+    }
+
+    [Test]
+    public async Task Set_WithGenerationFromBeforeReset_IsSkipped()
+    {
+        var key = NewKey();
+        var generation = _cache.Generation;
+
+        await _cache.ResetAsync();
+        await _cache.SetAsync(key, new Payload(1, "stale"), generation: generation);
+
+        (await _cache.GetAsync<Payload>(key)).Should().BeNull();
+    }
 }
