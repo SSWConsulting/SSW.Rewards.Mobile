@@ -27,6 +27,14 @@ jobs:
         run: |
           echo ${{ vars.GOOGLESERVICE_INFO_PLIST }} | base64 --decode > src/MobileUI/Platforms/iOS/GoogleService-Info.plist
 
+      # The macos-26 image preinstalls a newer SDK band (e.g. 10.0.4xx) whose workload set
+      # needs a newer Xcode (iOS 27.x SDK) than the image ships. With rollForward=latestMinor
+      # the build silently picks it up and fails with MT4162. Keep CI on the global.json band.
+      - name: Pin .NET SDK feature band
+        run: |
+          sed -i '' 's/"rollForward": *"[A-Za-z]*"/"rollForward": "latestPatch"/' global.json
+          cat global.json
+
       - name: Setup DotNet Environment
         uses: actions/setup-dotnet@v4
         with:
