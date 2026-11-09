@@ -123,6 +123,8 @@
                                        HorizontalTextAlignment="Center"
                                        TextDecorations="Underline"
                                        Margin="0,0,0,30"
+                                       SemanticProperties.Description="{Binding TinaCmsStoreLinkText}"
+                                       SemanticProperties.Hint="Double tap to open the TinaCMS store in your browser"
                                        IsVisible="{Binding IsTinaCmsStoreLinkVisible}">
                                     <Label.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding OpenTinaCmsStoreCommand}" />

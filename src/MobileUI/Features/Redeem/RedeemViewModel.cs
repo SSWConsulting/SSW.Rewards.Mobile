@@ -255,7 +255,7 @@ public partial class RedeemViewModel : BaseViewModel
     {
         if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
         {
-            await _alertService.DisplayAlertAsync("Device Offline", "You must be online to redeem a reward.", "OK");
+            await _alertService.DisplayAlertAsync("Device Offline", "You must be online to view or redeem a reward.", "OK");
             return;
         }
 

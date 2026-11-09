@@ -34,14 +34,14 @@ public partial class RedeemRewardViewModel(
     private string _description;
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(RedeemInPersonClickedCommand), nameof(RedeemDigitalClickedCommand), nameof(ConfirmClickedCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RedeemInPersonClickedCommand), nameof(RedeemDigitalClickedCommand))]
     private int _cost;
 
     [ObservableProperty]
     private bool _isDigital;
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(RedeemInPersonClickedCommand), nameof(RedeemDigitalClickedCommand), nameof(ConfirmClickedCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RedeemInPersonClickedCommand), nameof(RedeemDigitalClickedCommand))]
     private int _userBalance;
 
     [ObservableProperty]
@@ -212,6 +212,30 @@ public partial class RedeemRewardViewModel(
         ClaimSuccess = true;
     }
 
+    private void ShowNotEnoughPointsState()
+    {
+        // The server is the authority on the balance. ClaimReward/CreatePendingRedemption already
+        // refreshed UserBalance, so return to the reward details and explain the shortfall
+        // instead of showing the generic error.
+        SendingClaim = false;
+        ConfirmEnabled = false;
+        IsAddressVisible = false;
+        IsBalanceVisible = true;
+        Heading = $"You are about to get:{Environment.NewLine}{_reward.Name}";
+        Description = _reward.Description;
+        ShouldCallCallback = true;
+
+        UpdateInsufficientPointsState();
+
+        if (!IsInsufficientPointsVisible)
+        {
+            // The local balance still looks sufficient, but the server refused the claim.
+            IsRewardActionsVisible = false;
+            InsufficientPointsMessage = "You don't have enough points for this reward";
+            IsInsufficientPointsVisible = true;
+        }
+    }
+
     private void ShowErrorState()
     {
         SendingClaim = false;
@@ -226,7 +250,8 @@ public partial class RedeemRewardViewModel(
         {
             { "reward_id", _reward.Id.ToString() },
             { "reward_name", _reward.Name },
-            { "reward_value", _reward.Cost.ToString() }
+            { "reward_value", _reward.Cost.ToString() },
+            { "can_afford", CanAffordReward().ToString() }
         });
     }
 
@@ -319,6 +344,10 @@ public partial class RedeemRewardViewModel(
             ShowQrCode(claimResult.Code);
             LogEvent(Constants.AnalyticsEvents.RewardRedemptionPending);
         }
+        else if (claimResult.status == RewardStatus.NotEnoughPoints)
+        {
+            ShowNotEnoughPointsState();
+        }
         else
         {
             ShowErrorState();
@@ -350,6 +379,10 @@ public partial class RedeemRewardViewModel(
             ShowSuccessState("Your digital reward will be sent to your email!");
             LogEvent(Constants.AnalyticsEvents.RewardRedeemed);
         }
+        else if (claimResult.status == RewardStatus.NotEnoughPoints)
+        {
+            ShowNotEnoughPointsState();
+        }
         else
         {
             ShowErrorState();
@@ -377,7 +410,9 @@ public partial class RedeemRewardViewModel(
         LogEvent(Constants.AnalyticsEvents.RewardRedemptionCancelled);
     }
 
-    [RelayCommand(CanExecute = nameof(CanAffordReward))]
+    // No CanAffordReward guard here: if the balance drops mid-flow, let the server refuse the claim
+    // so the user sees the shortfall instead of a silently disabled Confirm button.
+    [RelayCommand]
     private async Task ConfirmClicked()
     {
         if (SelectedAddress is null)
@@ -407,6 +442,10 @@ public partial class RedeemRewardViewModel(
         {
             ShowSuccessState("Your reward is on the way!");
             LogEvent(Constants.AnalyticsEvents.RewardRedeemed);
+        }
+        else if (claimResult.status == RewardStatus.NotEnoughPoints)
+        {
+            ShowNotEnoughPointsState();
         }
         else
         {
