@@ -53,6 +53,8 @@ public class UserService : IUserService
     private readonly IFileCacheService _fileCacheService;
     private readonly ILogger<UserService> _logger;
 
+    private CancellationTokenSource _session = new();
+
     private readonly BehaviorSubject<int> _myUserId = new(0);
     private readonly BehaviorSubject<string> _myName = new(string.Empty);
     private readonly BehaviorSubject<string> _myEmail = new(string.Empty);
@@ -79,9 +81,9 @@ public class UserService : IUserService
         _fileCacheService = fileCacheService;
         _logger = logger;
         _authService.DetailsUpdated += UpdateMyDetailsAsync;
+        _authService.SignedOut += EndSession;
 
-        // Load cached profile data on startup
-        LoadCachedProfileData();
+        MainThread.BeginInvokeOnMainThread(async () => await LoadCachedProfileDataAsync());
     }
 
     public IObservable<int> MyUserIdObservable() => _myUserId.AsObservable();
@@ -119,29 +121,60 @@ public class UserService : IUserService
 
     public async Task UpdateMyDetailsAsync()
     {
+        var session = _session.Token;
         try
         {
-            var user = await _userClient.GetCurrentUser();
+            var user = await _userClient.GetCurrentUser(session);
+            if (session.IsCancellationRequested)
+            {
+                return;
+            }
+
             UpdateObservablesFromUser(user);
 
-            // Persist to file cache for offline access
-            try
-            {
-                var filePath = Path.Combine(FileSystem.CacheDirectory, MyCachedProfileKey + ".json");
-                using var stream = File.Create(filePath);
-                await System.Text.Json.JsonSerializer.SerializeAsync(stream, user);
-                _logger.LogInformation("Saved profile data to cache for user {UserId}", user.Id);
-            }
-            catch (Exception cacheEx)
-            {
-                _logger.LogError(cacheEx, "Failed to save profile data to cache");
-            }
+            // Through the cache service so the logout cache reset removes it.
+            await _fileCacheService.SetAsync(MyCachedProfileKey, user);
+        }
+        catch (OperationCanceledException) when (session.IsCancellationRequested)
+        {
+            // Signed out mid-request; the response belongs to the previous session.
         }
         catch (HttpRequestException ex)
         {
             // Network connectivity issues - silently fail and keep existing data
             _logger.LogWarning(ex, "Network error while updating current user details");
         }
+    }
+
+    private void EndSession(object sender, EventArgs args)
+    {
+        var ended = _session;
+        _session = new CancellationTokenSource();
+        ended.Cancel();
+
+        // The next account must not see this user's name/points, nor be compared against their ID.
+        if (MainThread.IsMainThread)
+        {
+            ClearMyProfile();
+        }
+        else
+        {
+            MainThread.BeginInvokeOnMainThread(ClearMyProfile);
+        }
+    }
+
+    private void ClearMyProfile()
+    {
+        _myUserId.OnNext(0);
+        _myName.OnNext(string.Empty);
+        _myEmail.OnNext(string.Empty);
+        _myProfilePic.OnNext(string.Empty);
+        _myPoints.OnNext(0);
+        _myBalance.OnNext(0);
+        _myQrCode.OnNext(string.Empty);
+        _isStaff.OnNext(false);
+        _myAllTimeRank.OnNext(0);
+        ClearSocialMedia();
     }
 
     public async Task<IEnumerable<Achievement>> GetAchievementsAsync()
@@ -347,30 +380,31 @@ public class UserService : IUserService
         }
     }
 
-    private void LoadCachedProfileData()
+    private async Task LoadCachedProfileDataAsync()
     {
-        try
-        {
-            var filePath = Path.Combine(FileSystem.CacheDirectory, MyCachedProfileKey + ".json");
-            if (!File.Exists(filePath))
-            {
-                _logger.LogInformation("No cached profile data found");
-                return;
-            }
+        _ = Task.Run(() => LegacyFileCache.Delete(_logger));
 
-            using var stream = File.OpenRead(filePath);
-            var cachedUser = System.Text.Json.JsonSerializer.Deserialize<CurrentUserDto>(stream);
-
-            if (cachedUser != null)
-            {
-                UpdateObservablesFromUser(cachedUser);
-                _logger.LogInformation("Loaded cached profile data for user {UserId}", cachedUser.Id);
-            }
-        }
-        catch (Exception ex)
+        var session = _session.Token;
+        var cachedUser = await _fileCacheService.GetAsync<CurrentUserDto>(MyCachedProfileKey);
+        if (session.IsCancellationRequested)
         {
-            _logger.LogError(ex, "Failed to load cached profile data");
+            return;
         }
+
+        if (cachedUser == null)
+        {
+            _logger.LogInformation("No cached profile data found");
+            return;
+        }
+
+        // The live profile may have arrived while the cache was being read.
+        if (_myUserId.Value != 0)
+        {
+            return;
+        }
+
+        UpdateObservablesFromUser(cachedUser);
+        _logger.LogInformation("Loaded cached profile data for user {UserId}", cachedUser.Id);
     }
 
     private void UpdateObservablesFromUser(CurrentUserDto user)

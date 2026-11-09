@@ -42,7 +42,7 @@ jobs:
 
       - name: Restore Dependencies
         run: |
-          dotnet restore SSW.Rewards.sln
+          dotnet restore SSW.Rewards.slnx
 
       - name: Decode keystore file
         run: |

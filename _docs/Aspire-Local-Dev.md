@@ -215,6 +215,13 @@ app targets **both iOS and Android**; build one platform at a time.
   identical ([dotnet/macios#25658](https://github.com/dotnet/macios/issues/25658)). `MobileUI.csproj`
   sets `<ValidateXcodeVersion>false</ValidateXcodeVersion>` for iOS, so this is already handled —
   remove that property once a workload that formally validates Xcode 26.6 is adopted.
+- **`error MT4162: The type 'UIKit.…' … is not available in iOS 26.5 (it was introduced in iOS 27.x)`**
+  (usually in Release / ILLink builds) — `global.json` uses `rollForward: latestMinor`, so if a
+  **10.0.4xx** SDK is installed it wins over `10.0.301`, and its workload set ships iOS 27.x bindings
+  that need Xcode 27. Check with `dotnet --version` / `dotnet workload --version`. Fix: stay on the
+  10.0.3xx band until you're on Xcode 27 — e.g. `dotnet workload install maui-ios --version 10.0.303.1`
+  under a 10.0.3xx SDK, or locally (don't commit) set `rollForward` to `latestPatch`. CI does the same
+  in `.github/workflows/ios-build.yml` (`DOTNET_WORKLOAD_VERSION` + `XCODE_VERSION`).
 - **`actool error: No simulator runtime version ... available to use with iphonesimulator SDK
   version`** — the matching iOS simulator runtime isn't installed. Install it with
   `xcodebuild -downloadPlatform iOS` (~8.5 GB), then confirm with `xcrun simctl runtime list`.
@@ -261,5 +268,5 @@ No more per-session URL churn in `Constants.cs`.
   ```
   That's the whole mobile fix (idempotent; safe to re-run). Prereq: the machine's AppHost store must
   already hold the Keeper record — a one-time-per-machine `rewards-dev secrets edit`, not per-worktree.
-  Building the full `SSW.Rewards.sln` compiles MobileUI, so skipping this makes the *solution* build
+  Building the full `SSW.Rewards.slnx` compiles MobileUI, so skipping this makes the *solution* build
   fail on Firebase even though the backend projects build and test fine.

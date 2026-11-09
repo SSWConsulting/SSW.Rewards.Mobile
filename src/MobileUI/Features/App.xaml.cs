@@ -91,6 +91,8 @@ public partial class App : Application
         _authService.NavigateToLoginPage();
     }
 
+    public static Task SignOutAsync() => _authService.SignOut();
+
     private void OnUnhandledException(object sender, UnhandledExceptionEventArgs args)
     {
         if (args.ExceptionObject is Exception exception)

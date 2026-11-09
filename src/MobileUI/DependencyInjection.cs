@@ -82,6 +82,12 @@ public static class DependencyInjection
         services.AddSingleton<IFirebaseAnalyticsService, FirebaseAnalyticsService>();
         services.AddSingleton<IFirstRunService, FirstRunService>();
         services.AddSingleton<IAlertService, AlertService>();
+        services.AddSingleton<MauiConnectivityService>();
+        services.AddSingleton<IConnectivityService>(sp => sp.GetRequiredService<MauiConnectivityService>());
+        services.AddSingleton<SSW.Rewards.ApiClient.Resilience.IApiNetworkStatus>(sp => sp.GetRequiredService<MauiConnectivityService>());
+        services.AddSingleton<IAppNavigator, AppNavigator>();
+        services.AddSingleton<IApiExceptionHandler, ApiExceptionHandler>();
+        services.AddTransient<SSW.Rewards.Mobile.Common.OfflineAwareListErrorHandler>();
 
         // Configure authentication options
         services.Configure<AuthenticationOptions>(options =>

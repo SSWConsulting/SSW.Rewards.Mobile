@@ -435,7 +435,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             : string.Empty
     };
 
-    public void OnDisappearing()
+    public virtual void OnDisappearing()
     {
         IsBusy = false;
         IsLoading = false;
