@@ -261,5 +261,5 @@ No more per-session URL churn in `Constants.cs`.
   ```
   That's the whole mobile fix (idempotent; safe to re-run). Prereq: the machine's AppHost store must
   already hold the Keeper record — a one-time-per-machine `rewards-dev secrets edit`, not per-worktree.
-  Building the full `SSW.Rewards.sln` compiles MobileUI, so skipping this makes the *solution* build
+  Building the full `SSW.Rewards.slnx` compiles MobileUI, so skipping this makes the *solution* build
   fail on Firebase even though the backend projects build and test fine.
