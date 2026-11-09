@@ -48,12 +48,12 @@ public class DemoDataSeederTests
         return new ApplicationDbContext(options);
     }
 
-    private async Task<DemoSeedSummary> Seed(DateTime today, int years = 1)
+    private async Task<DemoSeedSummary> Seed(DateTime today, int years = 1, string devEmail = DevEmail)
     {
         await using var context = CreateContext();
         var seeder = new DemoDataSeeder(context);
         return await seeder.SeedAsync(
-            new DemoSeedOptions { DevEmail = DevEmail, Years = years, Now = today.AddHours(SeedHourUtc) },
+            new DemoSeedOptions { DevEmail = devEmail, Years = years, Now = today.AddHours(SeedHourUtc) },
             CancellationToken.None);
     }
 
@@ -77,9 +77,18 @@ public class DemoDataSeederTests
     public async Task Seed_ReRunAfterAGap_TopsUpNewDaysOnly()
     {
         await Seed(Today);
+        int lastSeededId;
+        await using (var context = CreateContext())
+            lastSeededId = await context.UserAchievements.MaxAsync(ua => ua.Id);
         var topUp = await Seed(Today.AddDays(60));
 
         topUp.AwardsAdded.Should().BeGreaterThan(0, "two months of new activity should be generated");
+        await using (var context = CreateContext())
+        {
+            var previousRun = Today.AddHours(SeedHourUtc);
+            (await context.UserAchievements.CountAsync(ua => ua.Id > lastSeededId && ua.AwardedAt < previousRun))
+                .Should().Be(0, "a top-up fills the gap; it must not backdate activity into already-seeded history");
+        }
 
         var again = await Seed(Today.AddDays(60));
         again.AwardsAdded.Should().Be(0, "the topped-up window must itself be idempotent");
@@ -310,5 +319,57 @@ public class DemoDataSeederTests
         await seed.Should().ThrowAsync<ArgumentOutOfRangeException>();
         await using var context = CreateContext();
         (await context.Users.CountAsync()).Should().Be(0);
+    }
+
+    [Test]
+    public async Task Seed_StaffDomainDev_IsSetUpAsStaffLikeTheAppDoes()
+    {
+        const string staffEmail = "dev@ssw.com.au";
+        await Seed(Today, devEmail: staffEmail);
+
+        await using var context = CreateContext();
+        var dev = await context.Users
+            .Include(u => u.Roles).ThenInclude(r => r.Role)
+            .SingleAsync(u => u.Email == staffEmail);
+        dev.Roles.Select(r => r.Role.Name).Should().BeEquivalentTo(["User", "Staff"]);
+        dev.AchievementId.Should().BeNull("like UserService.CreateUser, a staff user's QR is their StaffMember's");
+
+        var staff = await context.StaffMembers
+            .Include(s => s.StaffAchievement)
+            .SingleAsync(s => s.Email == staffEmail);
+        staff.StaffAchievement.Should().NotBeNull();
+        staff.StaffAchievement!.Type.Should().Be(AchievementType.Scanned, "GetStaffQRCode serves this code to the dev");
+    }
+
+    [Test]
+    public async Task Seed_NonStaffDev_GetsNoStaffSetup()
+    {
+        await Seed(Today);
+
+        await using var context = CreateContext();
+        var dev = await context.Users
+            .Include(u => u.Roles).ThenInclude(r => r.Role)
+            .SingleAsync(u => u.Email == DevEmail);
+        dev.Roles.Select(r => r.Role.Name).Should().BeEquivalentTo(["User"]);
+        (await context.StaffMembers.IgnoreQueryFilters().AnyAsync(s => s.Email == DevEmail)).Should().BeFalse();
+    }
+
+    [Test]
+    public async Task Seed_KeepsTheDevsRename()
+    {
+        const string staffEmail = "dev@ssw.com.au";
+        await Seed(Today, devEmail: staffEmail);
+        await using (var context = CreateContext())
+        {
+            (await context.Users.SingleAsync(u => u.Email == staffEmail)).FullName = "Real Name";
+            (await context.StaffMembers.SingleAsync(s => s.Email == staffEmail)).Name = "Real Name";
+            await context.SaveChangesAsync();
+        }
+
+        await Seed(Today, devEmail: staffEmail);
+
+        await using var verify = CreateContext();
+        (await verify.Users.SingleAsync(u => u.Email == staffEmail)).FullName.Should().Be("Real Name");
+        (await verify.StaffMembers.SingleAsync(s => s.Email == staffEmail)).Name.Should().Be("Real Name");
     }
 }

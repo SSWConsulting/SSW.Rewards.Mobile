@@ -13,6 +13,13 @@ public sealed record DemoSeedOptions
     /// <summary>The seed's "now" (UTC). Nothing is timestamped after it; its date is "today".</summary>
     public DateTime Now { get; init; } = DateTime.UtcNow;
 
+    /// <summary>
+    /// A dev email on this domain is set up as staff, the way the app sets up a staff sign-in
+    /// (UserService.CreateUser): Staff role + a StaffMember with its staff QR. Mirrors the WebAPI's
+    /// <c>UserServiceOptions:StaffSMTPDomain</c>.
+    /// </summary>
+    public string StaffEmailDomain { get; init; } = "ssw.com.au";
+
     public const int MinYears = 1;
     public const int MaxYears = 20;
 }
@@ -36,7 +43,11 @@ public class DemoDataSeeder
     private readonly IDemoAssetProvider? _assets;
     private readonly Action<string> _log;
 
+    private const string DevKey = "demo-dev";
+
     private string _devEmail = string.Empty;
+    private bool _devNameGiven;
+    private string _staffEmailDomain = string.Empty;
     private DateTime _now = DateTime.UtcNow;
 
     public DemoDataSeeder(IApplicationDbContext context, IDemoAssetProvider? assets = null, Action<string>? log = null)
@@ -53,6 +64,8 @@ public class DemoDataSeeder
                 $"Years must be between {DemoSeedOptions.MinYears} and {DemoSeedOptions.MaxYears} (was {options.Years}).");
 
         _devEmail = options.DevEmail.Trim().ToLowerInvariant();
+        _devNameGiven = !string.IsNullOrWhiteSpace(options.DevName);
+        _staffEmailDomain = options.StaffEmailDomain;
         _now = options.Now;
         var today = options.Now.Date;
         var horizon = today.AddYears(-options.Years);
@@ -92,13 +105,22 @@ public class DemoDataSeeder
         return summary;
     }
 
-    private static List<DemoPerson> BuildPeople(DemoSeedOptions options)
+    private List<DemoPerson> BuildPeople(DemoSeedOptions options)
     {
         var people = DemoDataSet.Everyone.ToList();
-        var devName = options.DevName ?? GuessNameFromEmail(options.DevEmail);
-        people.Add(new DemoPerson("demo-dev", devName, null, IsStaff: false, Activity: 0.9, Skills: []));
+        var devName = _devNameGiven ? options.DevName!.Trim() : GuessNameFromEmail(options.DevEmail);
+        var devIsStaff = IsStaffEmail(_devEmail);
+        people.Add(new DemoPerson(DevKey, devName, devIsStaff ? "Developer" : null, IsStaff: devIsStaff, Activity: 0.9, Skills: []));
         return people;
     }
+
+    private bool IsStaffEmail(string email) =>
+        !string.IsNullOrWhiteSpace(_staffEmailDomain)
+        && email.EndsWith("@" + _staffEmailDomain, StringComparison.OrdinalIgnoreCase);
+
+    // The dev user is pre-created before they ever sign in, and the app only takes the sign-in name
+    // when it creates a user - so a guessed name is set once and a later rename is kept (unless --dev-name).
+    private bool ShouldSetName(DemoPerson person, bool created) => person.Key != DevKey || created || _devNameGiven;
 
     private static string GuessNameFromEmail(string email)
     {
@@ -107,7 +129,7 @@ public class DemoDataSeeder
             .Select(w => char.ToUpperInvariant(w[0]) + w[1..]));
     }
 
-    private string EmailFor(DemoPerson person) => person.Key == "demo-dev" ? _devEmail : person.Email;
+    private string EmailFor(DemoPerson person) => person.Key == DevKey ? _devEmail : person.Email;
 
     // ---- phase 1: catalog --------------------------------------------------
 
@@ -212,7 +234,8 @@ public class DemoDataSeeder
     // own achievement instead of sharing one row across two developer users.
     private string ScanCode(DemoPerson person) => person.Key switch
     {
-        "demo-dev" => $"demo:user:dev:{_devEmail}",
+        DevKey when person.IsStaff => $"demo:staff:dev:{_devEmail}",
+        DevKey => $"demo:user:dev:{_devEmail}",
         _ when person.IsStaff => $"demo:staff:{person.Key}",
         _ => $"demo:user:{person.Key}",
     };
@@ -263,23 +286,31 @@ public class DemoDataSeeder
         int count = 0;
         foreach (var person in people.Where(p => p.IsStaff))
         {
+            var email = EmailFor(person);
             var staff = await _context.StaffMembers
                 .IgnoreQueryFilters()
                 .Include(s => s.StaffMemberSkills)
-                .FirstOrDefaultAsync(s => s.Email == person.Email, ct);
+                .FirstOrDefaultAsync(s => s.Email == email, ct);
+            var created = staff is null;
             if (staff is null)
             {
-                staff = new StaffMember { Email = person.Email };
+                staff = new StaffMember { Email = email };
                 _context.StaffMembers.Add(staff);
             }
             staff.DeletedUtc = null;
-            staff.Name = person.Name;
-            staff.Title = person.Title;
-            staff.Profile = $"{person.Name} is part of the Northwind Traders crew as {person.Title}.";
-            staff.TwitterUsername = person.Twitter;
-            staff.GitHubUsername = person.GitHub;
+            if (ShouldSetName(person, created))
+                staff.Name = person.Name;
+            // The dev's own profile is theirs to edit: only the Northwind crew is reset on every seed.
+            if (person.Key != DevKey || created)
+            {
+                staff.Title = person.Title;
+                staff.Profile = $"{person.Name} is part of the Northwind Traders crew as {person.Title}.";
+                staff.TwitterUsername = person.Twitter;
+                staff.GitHubUsername = person.GitHub;
+            }
+            // Keeps the staff QR the app already created if the dev signed in before seeding.
             staff.StaffAchievement ??= achievements.ByCode(ScanCode(person));
-            if (string.IsNullOrEmpty(staff.ProfilePhoto) && _assets is not null)
+            if (string.IsNullOrEmpty(staff.ProfilePhoto) && person.Key != DevKey && _assets is not null)
                 staff.ProfilePhoto = await _assets.GetAssetUriAsync(person.Key, ct);
 
             var assigned = staff.StaffMemberSkills.Select(s => s.SkillId).ToHashSet();
@@ -305,6 +336,18 @@ public class DemoDataSeeder
             _context.Roles.Add(userRole);
         }
 
+        // Staff-domain sign-ins also get "Staff" (UserService.AssignUserRolesAsync); seeded by migration too.
+        Role? staffRole = null;
+        if (people.Any(p => IsStaffEmail(EmailFor(p))))
+        {
+            staffRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Staff", ct);
+            if (staffRole is null)
+            {
+                staffRole = new Role { Name = "Staff" };
+                _context.Roles.Add(staffRole);
+            }
+        }
+
         var result = new Dictionary<string, User>();
         foreach (var person in people)
         {
@@ -312,21 +355,32 @@ public class DemoDataSeeder
             var user = await _context.Users
                 .Include(u => u.Roles)
                 .FirstOrDefaultAsync(u => u.Email == email, ct);
+            var created = user is null;
             if (user is null)
             {
                 user = new User { Email = email };
                 _context.Users.Add(user);
             }
-            user.FullName = person.Name;
+            if (ShouldSetName(person, created))
+                user.FullName = person.Name;
             user.Activated = true;
-            user.Achievement ??= achievements.ByCode(ScanCode(person));
-            if (string.IsNullOrEmpty(user.Avatar) && person.Key != "demo-dev" && _assets is not null)
+            // Like the app: a staff-domain user's QR is their StaffMember's, not a user achievement.
+            if (!(person.Key == DevKey && person.IsStaff))
+                user.Achievement ??= achievements.ByCode(ScanCode(person));
+            if (string.IsNullOrEmpty(user.Avatar) && person.Key != DevKey && _assets is not null)
                 user.Avatar = await _assets.GetAssetUriAsync(person.Key, ct);
-            if (!user.Roles.Any(r => ReferenceEquals(r.Role, userRole) || (userRole.Id != 0 && r.RoleId == userRole.Id)))
-                user.Roles.Add(new UserRole { Role = userRole });
+            EnsureRole(user, userRole);
+            if (staffRole is not null && IsStaffEmail(email))
+                EnsureRole(user, staffRole);
             result[person.Key] = user;
         }
         return result;
+    }
+
+    private static void EnsureRole(User user, Role role)
+    {
+        if (!user.Roles.Any(r => ReferenceEquals(r.Role, role) || (role.Id != 0 && r.RoleId == role.Id)))
+            user.Roles.Add(new UserRole { Role = role });
     }
 
     // ---- phase 3: history ---------------------------------------------------
@@ -398,7 +452,7 @@ public class DemoDataSeeder
             });
         }
 
-        var scanTargets = people.Where(p => p.Key != "demo-dev")
+        var scanTargets = people.Where(p => p.Key != DevKey)
             .OrderBy(p => p.Key, StringComparer.Ordinal)
             .Select(p => (p.Key, AchievementId: achievements.ByCode(ScanCode(p)).Id, p.IsStaff))
             .ToList();
