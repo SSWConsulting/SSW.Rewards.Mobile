@@ -122,12 +122,17 @@ DevCon*, monthly user groups, hack days, quiz passes, reward claims) so every le
 points balance.
 
 - `--dev-email` is required: the seeder pre-creates **your** user (with history and its own QR
-  achievement) keyed on that email, so the app binds to it the first time you log in.
-  (Admin access still comes from the identity provider's role claims, not the database.)
+  achievement) keyed on that email, so the app binds to it the first time you log in. An
+  `@ssw.com.au` email is set up the way the app sets up staff: Staff role plus a staff profile with
+  its staff QR code. The name is guessed from the email once (or pass `--dev-name`); a later rename
+  is kept. (Admin access still comes from the identity provider's role claims, not the database.)
 - **Re-runs are safe and gap-filling.** Every decision is a stable hash of (person, calendar
   date) — running it again after months away tops up the missing weeks without duplicating
   anything (`--years N` widens the history window: 1-20, default 3). Nothing is timestamped after the
-  moment you run it.
+  moment you run it. The WebAPI caches the leaderboard for up to 5 minutes, so restart
+  `rewards-webapi` after a seed to see the new data straight away.
+- **The demo dataset is restored on every seed.** Deleting a Northwind staff member or demo
+  achievement in the AdminUI only lasts until the next seed; use `db reset --no-seed` for an empty DB.
 - `db reset` force-drops `ssw.rewards` + `ssw.rewards.hangfire` (even while the stack is
   running), re-applies migrations and reseeds. **Restart `rewards-webapi` afterwards** so it
   reconnects cleanly. Add `--yes` to skip the prompt, `--no-seed` for an empty schema. A connection string that

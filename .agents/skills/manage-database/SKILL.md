@@ -20,7 +20,7 @@ history, your own dev user):
 ```
 
 Both exist as Aspire dashboard buttons on `rewards-sql` (**DB: Seed demo data**,
-**DB: Reset + reseed**). After a reset, restart `rewards-webapi`. Use the backup/restore steps
+**DB: Reset + reseed**). After a seed or reset, restart `rewards-webapi` (it caches the leaderboard and holds DB connections). Use the backup/restore steps
 below only when you need REAL data (e.g. reproducing a production issue).
 
 ## Applying migrations (not a restore)

@@ -1,3 +1,4 @@
+using System.Net.Mail;
 using Azure.Storage.Blobs;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -25,10 +26,12 @@ var verb = args.Length > 0 ? args[0].ToLowerInvariant() : "help";
 if (verb is "help" or "-h" or "--help") return Usage();
 if (verb is not ("seed" or "reset")) return Fail($"unknown command '{verb}'. Use: seed | reset");
 
+// An option's value is the next argument, unless that is another option: `--dev-email --years 3`
+// means the email is missing, not that it is "--years".
 string? Arg(string name)
 {
     var i = Array.FindIndex(args, a => a.Equals(name, StringComparison.OrdinalIgnoreCase));
-    return i >= 0 && i + 1 < args.Length ? args[i + 1] : null;
+    return i >= 0 && i + 1 < args.Length && !args[i + 1].StartsWith("--") ? args[i + 1] : null;
 }
 bool Flag(string name) => args.Any(a => a.Equals(name, StringComparison.OrdinalIgnoreCase));
 
@@ -38,6 +41,8 @@ var noSeed = Flag("--no-seed");
 if ((verb == "seed" || (verb == "reset" && !noSeed)) && string.IsNullOrWhiteSpace(devEmail))
     return Fail("--dev-email is required (the seeder pre-creates YOUR user so the app binds to your login). " +
                 "Use --no-seed with reset to skip seeding.");
+if (devEmail is not null && !IsPlainEmail(devEmail))
+    return Fail($"--dev-email must be an email address like you@ssw.com.au (got '{devEmail}').");
 
 // Validate everything before reset drops anything: a bad value must not fail after the databases are gone.
 var years = 3;
@@ -111,7 +116,11 @@ await using (var services = BuildServices(sqlConn, blobConn))
         Console.WriteLine($"✓ {summary.Users} users · {summary.StaffMembers} staff · {summary.Rewards} rewards · " +
                           $"{summary.Quizzes} quizzes · +{summary.AwardsAdded} achievements · +{summary.ClaimsAdded} claims · " +
                           $"+{summary.CompletionsAdded} quiz completions · +{summary.PendingAdded} pending redemptions");
-        Console.WriteLine("Done. If the WebAPI was running during a reset, restart it (rewards-webapi in the dashboard).");
+        Console.WriteLine(verb == "reset"
+            ? "Done. If the WebAPI was running, restart it (rewards-webapi in the dashboard) so it reconnects."
+            // The seed bypasses the API, so its cache isn't cleared (leaderboard: 5 min, CacheOptions.DefaultExpiration).
+            : "Done. A running WebAPI keeps showing its cached leaderboard for up to 5 minutes — restart " +
+              "rewards-webapi in the dashboard to see the new data straight away.");
     }
 }
 
@@ -199,6 +208,9 @@ string DescribeSql(string connectionString)
     }
     catch (ArgumentException) { return "(unparseable connection string)"; }
 }
+
+static bool IsPlainEmail(string value) =>
+    MailAddress.TryCreate(value, out var address) && address.Address == value && value.Contains('.', StringComparison.Ordinal);
 
 int Fail(string message)
 {
