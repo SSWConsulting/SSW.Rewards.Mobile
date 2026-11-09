@@ -49,10 +49,14 @@ public class AuthenticationService : IAuthenticationService
         _logger = logger;
         _alertService = alertService;
 
-        _tokenManager.TokensCleared += (_, _) =>
+        // The refresh token was rejected or is missing: the session is over, so end it like a sign-out
+        // (the tokens are already cleared) before the next account can sign in.
+        _tokenManager.TokensCleared += async (_, _) =>
         {
-            _logger.LogInformation("Tokens have been cleared - navigating to login");
-            NavigateToLoginPage();
+            _logger.LogInformation("Tokens have been cleared - ending the session and navigating to login");
+            SignedOut?.Invoke(this, EventArgs.Empty);
+            MainThread.BeginInvokeOnMainThread(NavigateToLoginPage);
+            await _cacheService.ResetAsync(); // never throws
         };
 
         // Forward token updates to authentication service listeners

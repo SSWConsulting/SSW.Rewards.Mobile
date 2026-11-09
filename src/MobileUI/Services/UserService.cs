@@ -151,6 +151,30 @@ public class UserService : IUserService
         var ended = _session;
         _session = new CancellationTokenSource();
         ended.Cancel();
+
+        // The next account must not see this user's name/points, nor be compared against their ID.
+        if (MainThread.IsMainThread)
+        {
+            ClearMyProfile();
+        }
+        else
+        {
+            MainThread.BeginInvokeOnMainThread(ClearMyProfile);
+        }
+    }
+
+    private void ClearMyProfile()
+    {
+        _myUserId.OnNext(0);
+        _myName.OnNext(string.Empty);
+        _myEmail.OnNext(string.Empty);
+        _myProfilePic.OnNext(string.Empty);
+        _myPoints.OnNext(0);
+        _myBalance.OnNext(0);
+        _myQrCode.OnNext(string.Empty);
+        _isStaff.OnNext(false);
+        _myAllTimeRank.OnNext(0);
+        ClearSocialMedia();
     }
 
     public async Task<IEnumerable<Achievement>> GetAchievementsAsync()
