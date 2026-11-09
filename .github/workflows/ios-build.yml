@@ -15,6 +15,11 @@ jobs:
     runs-on: macos-26
     environment: ${{ inputs.environment }}
     name: iOS Build
+    env:
+      # Workload set pinned to match the Xcode selected below (10.0.303.1 ships iOS 26.5 -> Xcode 26.x).
+      # Bump both deliberately together, e.g. to a 10.0.4xx set once Xcode 27 is on the runner image.
+      DOTNET_WORKLOAD_VERSION: 10.0.303.1
+      XCODE_VERSION: '26.6'
 
     steps:
       - uses: actions/checkout@v3
@@ -34,6 +39,7 @@ jobs:
         run: |
           sed -i '' 's/"rollForward": *"[A-Za-z]*"/"rollForward": "latestPatch"/' global.json
           cat global.json
+          grep -q '"rollForward": "latestPatch"' global.json || { echo "::error::Failed to pin rollForward in global.json"; exit 1; }
 
       - name: Setup DotNet Environment
         uses: actions/setup-dotnet@v4
@@ -43,15 +49,17 @@ jobs:
       - name: Install MAUI Workload
         run: |
           dotnet nuget locals all --clear
-          dotnet workload install maui --ignore-failed-sources
-          dotnet workload install ios maui wasm-tools --source https://api.nuget.org/v3/index.json --ignore-failed-sources
+          dotnet workload install maui --version "$DOTNET_WORKLOAD_VERSION" --ignore-failed-sources
+          dotnet workload install ios maui wasm-tools --version "$DOTNET_WORKLOAD_VERSION" --source https://api.nuget.org/v3/index.json --ignore-failed-sources
+          dotnet --version
+          dotnet workload --version
 
       - name: Set XCode Version
         if: runner.os == 'macOS'
         shell: bash
         run: |
-          sudo xcode-select -s "/Applications/Xcode_26.6.app"
-          echo "MD_APPLE_SDK_ROOT=/Applications/Xcode_26.6.app" >> $GITHUB_ENV
+          sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
+          echo "MD_APPLE_SDK_ROOT=/Applications/Xcode_${XCODE_VERSION}.app" >> $GITHUB_ENV
 
       - name: Import Code-Signing Certificates
         uses: Apple-Actions/import-codesign-certs@v2
