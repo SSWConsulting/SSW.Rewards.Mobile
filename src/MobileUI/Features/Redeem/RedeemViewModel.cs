@@ -255,7 +255,7 @@ public partial class RedeemViewModel : BaseViewModel
     {
         if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
         {
-            await _alertService.DisplayAlertAsync("Device Offline", "You must be online to redeem a reward.", "OK");
+            await _alertService.DisplayAlertAsync("Device Offline", "You must be online to view or redeem a reward.", "OK");
             return;
         }
 
@@ -265,7 +265,8 @@ public partial class RedeemViewModel : BaseViewModel
             var popup = new RedeemRewardPage(
                 _firebaseAnalyticsService,
                 new RedeemRewardViewModel(_userService, _rewardService, _addressService, _firebaseAnalyticsService, _alertService),
-                reward);
+                reward,
+                Credits);
             EventHandler<object> handler = null;
             handler = async (_, __) =>
             {

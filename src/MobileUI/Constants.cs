@@ -20,6 +20,7 @@ public static partial class Constants
 
     public const string AuthRedirectUrl = "msauth.com.ssw.consulting://auth";
     public const string AutologinRedirectUrl = "sswrewards://autologin";
+    public const string TinaCmsStoreUrl = "";
 
 #if DEBUG
     public static readonly string AuthorityUri = LocalAuthorityUri;   // switch via `rewards-dev identity <target>`
