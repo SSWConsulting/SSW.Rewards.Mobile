@@ -8,6 +8,7 @@ using FFImageLoading.Maui;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
 using Mopups.Hosting;
+using Plugin.Firebase.Analytics;
 using Plugin.Firebase.Crashlytics;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using Splat.Builder;
@@ -19,7 +20,6 @@ using Plugin.Firebase.CloudMessaging;
 using Foundation;
 #elif ANDROID
 using Microsoft.Maui.Platform;
-using Plugin.Firebase.Analytics;
 using Plugin.Firebase.Core.Platforms.Android;
 #endif
 
@@ -140,6 +140,8 @@ public static class MauiProgram
                 CrossFirebase.Initialize();
                 FirebaseCloudMessagingImplementation.Initialize();
                 CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
+                // Override IS_ANALYTICS_ENABLED=false that ships in the prod plist.
+                CrossFirebaseAnalytics.Current.IsAnalyticsCollectionEnabled = true;
                 return false;
             }));
 #elif ANDROID

@@ -1,0 +1,157 @@
+@using SSW.Rewards.Shared.DTOs.Leaderboard
+@using SSW.Rewards.ApiClient.Services
+
+@inject ILeaderboardService LeaderboardService
+@inject ISnackbar Snackbar
+
+<MudStack Row="true" Spacing="2" Class="align-center">
+    <MudAutocomplete
+        T="LeaderboardUserDto"
+        Value="@SelectedUser"
+        ValueChanged="@OnSelectedUserChanged"
+        Text="@_text"
+        TextChanged="@OnTextChanged"
+        Label="@Label"
+        SearchFunc="@SearchUsers"
+        ToStringFunc="@(usr => usr?.Name ?? string.Empty)"
+        Variant="Variant.Outlined"
+        AdornmentIcon="@Icons.Material.Filled.Search"
+        AdornmentColor="Color.Primary"
+        ResetValueOnEmptyText="true"
+        CoerceText="false"
+        CoerceValue="false"
+        MinCharacters="MinCharacters"
+        MaxItems="MaxItems"
+        Class="flex-grow-1">
+        <ItemTemplate Context="usr">
+            <MudText Typo="Typo.body2">@usr.Name</MudText>
+            @if (!string.IsNullOrWhiteSpace(usr.Email))
+            {
+                <MudText Typo="Typo.caption" Color="Color.Secondary">@usr.Email</MudText>
+            }
+        </ItemTemplate>
+    </MudAutocomplete>
+    <MudButton
+        OnClick="HandleButtonClick"
+        Color="@ButtonColor"
+        Variant="Variant.Filled"
+        Disabled="@(SelectedUser == null || ButtonDisabled || _isBusy)">
+        @ButtonText
+    </MudButton>
+</MudStack>
+
+@code {
+    private List<LeaderboardUserDto> _usersList = [];
+    private LeaderboardUserDto? _syncedUser;
+    private string _text = string.Empty;
+    private bool _isBusy;
+
+    [Parameter]
+    public LeaderboardUserDto? SelectedUser { get; set; }
+
+    [Parameter]
+    public EventCallback<LeaderboardUserDto?> SelectedUserChanged { get; set; }
+
+    [Parameter]
+    public string Label { get; set; } = "Assign to User";
+
+    [Parameter]
+    public string ButtonText { get; set; } = "Assign";
+
+    [Parameter]
+    public Color ButtonColor { get; set; } = Color.Info;
+
+    [Parameter]
+    public bool ButtonDisabled { get; set; }
+
+    [Parameter]
+    public EventCallback OnButtonClick { get; set; }
+    
+    private const int MinCharacters = 2;
+    private const int MaxItems = 50;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        try
+        {
+            var users = (await LeaderboardService.GetLeaderboard(CancellationToken.None)).Users;
+            
+            _usersList = users
+                .OrderBy(u => u.Name)
+                .ToList();
+        }
+        catch (Exception ex)
+        {
+            _usersList = [];
+            Snackbar.Add($"Failed to load users: {ex.Message}", Severity.Error);
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (!ReferenceEquals(SelectedUser, _syncedUser))
+        {
+            _syncedUser = SelectedUser;
+            _text = SelectedUser?.Name ?? string.Empty;
+        }
+    }
+
+    private async Task OnSelectedUserChanged(LeaderboardUserDto? value)
+    {
+        SelectedUser = value;
+        _syncedUser = value;
+        await SelectedUserChanged.InvokeAsync(value);
+    }
+
+    private async Task OnTextChanged(string? text)
+    {
+        _text = text ?? string.Empty;
+        if (SelectedUser != null && text != SelectedUser.Name)
+        {
+            await OnSelectedUserChanged(null);
+        }
+    }
+
+    private async Task HandleButtonClick()
+    {
+        // Ignore a second tap while the first request is in flight, so one tap is one claim
+        if (_isBusy || !OnButtonClick.HasDelegate)
+        {
+            return;
+        }
+
+        _isBusy = true;
+        try
+        {
+            await OnButtonClick.InvokeAsync();
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private Task<IEnumerable<LeaderboardUserDto>> SearchUsers(string value)
+    {
+        // Trim, because mobile keyboards add a trailing space after an accepted suggestion
+        var search = value?.Trim() ?? string.Empty;
+        if (search.Length < MinCharacters)
+        {
+            return Task.FromResult(Enumerable.Empty<LeaderboardUserDto>());
+        }
+
+        // Every word must match the name or the email, so "jo smi" finds "John Smith"
+        var terms = search.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        // MudAutocomplete's MaxItems caps the list shown
+        var filteredUsers = _usersList
+            .Where(u => terms.All(term =>
+                (u.Name?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (u.Email?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false)))
+            .ToList();
+
+        return Task.FromResult<IEnumerable<LeaderboardUserDto>>(filteredUsers);
+    }
+}
