@@ -183,13 +183,23 @@ jobs:
           $endpointName = "${{ inputs.frontDoorEndpointName }}"
           if ($routeName) {
             Write-Host "Associating rule set with route: $routeName"
-            az afd route update `
+            # Capture stderr so a failure is visible in the log instead of silently swallowed
+            $routeOutput = az afd route update `
               --resource-group $resourceGroup `
               --profile-name $profileName `
               --endpoint-name $endpointName `
               --route-name $routeName `
-              --rule-sets $ruleSetName 2>$null
-            Write-Host "✓ Rule set associated with route (or already associated)"
+              --rule-sets $ruleSetName `
+              --query "ruleSets[].id" -o tsv 2>&1
+            if ($LASTEXITCODE -eq 0) {
+              Write-Host "✓ Rule set associated with route: $routeOutput"
+            } else {
+              # Best-effort: don't block the cache purge / prod deploy, but make the failure obvious
+              Write-Host "::warning title=Front Door rule set association failed::az afd route update exited with $LASTEXITCODE. Check the route's rule sets in the portal. Output: $($routeOutput -join ' ')"
+              $routeOutput | ForEach-Object { Write-Host "  $_" }
+              # GitHub's pwsh wrapper exits with $LASTEXITCODE, so reset it to keep the step green
+              $global:LASTEXITCODE = 0
+            }
           } else {
             Write-Host ""
             Write-Host "⚠ No frontDoorRouteName provided - manual association required:"
