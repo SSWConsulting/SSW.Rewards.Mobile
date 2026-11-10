@@ -183,13 +183,41 @@ jobs:
           $endpointName = "${{ inputs.frontDoorEndpointName }}"
           if ($routeName) {
             Write-Host "Associating rule set with route: $routeName"
-            az afd route update `
+            # Capture stderr so a failure is visible in the log instead of silently swallowed
+            $routeOutput = az afd route update `
               --resource-group $resourceGroup `
               --profile-name $profileName `
               --endpoint-name $endpointName `
               --route-name $routeName `
-              --rule-sets $ruleSetName 2>$null
-            Write-Host "✓ Rule set associated with route (or already associated)"
+              --rule-sets $ruleSetName `
+              --query "ruleSets[].id" -o tsv 2>&1
+            $updateExitCode = $LASTEXITCODE
+            if ($updateExitCode -eq 0) {
+              # Drop stderr (az WARNING: lines) on success - print only the rule set IDs
+              $ruleSetIds = $routeOutput | Where-Object { $_ -isnot [System.Management.Automation.ErrorRecord] }
+              Write-Host "✓ Rule set associated with route: $($ruleSetIds -join ', ')"
+            } else {
+              Write-Host "az afd route update exited with $updateExitCode. Output:"
+              $routeOutput | ForEach-Object { Write-Host "  $_" }
+
+              # The update failing is only harmless if the rule set is already on the route
+              $attachedIds = az afd route show `
+                --resource-group $resourceGroup `
+                --profile-name $profileName `
+                --endpoint-name $endpointName `
+                --route-name $routeName `
+                --query "ruleSets[].id" -o tsv
+              # -like is case-insensitive; ARM resource IDs can come back in a different case
+              $attached = $LASTEXITCODE -eq 0 -and ($attachedIds | Where-Object { $_ -like "*/ruleSets/$ruleSetName" })
+              # $attached implies the `az afd route show` above succeeded, so $LASTEXITCODE is already 0 here
+              # and the step stays green (GitHub's pwsh wrapper exits with $LASTEXITCODE)
+              if ($attached) {
+                Write-Host "::warning title=Front Door rule set association failed::az afd route update exited with $updateExitCode, but '$ruleSetName' is already on route '$routeName' - continuing. Output: $($routeOutput -join ' ')"
+              } else {
+                Write-Host "::error title=Front Door rule set not attached::'$ruleSetName' is not on route '$routeName' and az afd route update failed (exit $updateExitCode). Without it, index.html and blazor.webassembly.js fall back to the route's default caching."
+                exit 1
+              }
+            }
           } else {
             Write-Host ""
             Write-Host "⚠ No frontDoorRouteName provided - manual association required:"
