@@ -109,6 +109,7 @@ Use a physical device where possible.
 - Launch app (no crash) and reaches sign-in screen.
 - Sign in succeeds.
 - App resumes from background without error.
+- Works offline: while signed in, turn on airplane mode, relaunch the app and open each tab (Earn, Network, Redeem, Profile, Leaderboard). There should be no crash, cached data should show, and online-only actions (e.g. scanning, redeeming) should fail gracefully without crashing. See [Do you test mobile apps in airplane mode?](https://www.ssw.com.au/rules/test-mobile-apps-in-airplane-mode)
 
 Gold plating:
 
@@ -135,6 +136,7 @@ Gold plating:
 ## References
 
 - [Deployment Steps](Instructions-Deployment.md)
+- SSW Rule: [Do you test mobile apps in airplane mode?](https://www.ssw.com.au/rules/test-mobile-apps-in-airplane-mode)
 - Apple TestFlight docs: https://developer.apple.com/testflight/
 - Google Play testing tracks: https://support.google.com/googleplay/android-developer/answer/9845334
 - Google Play release rollout docs: https://support.google.com/googleplay/android-developer/answer/9859348
