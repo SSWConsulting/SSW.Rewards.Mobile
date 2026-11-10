@@ -209,10 +209,10 @@ jobs:
                 --query "ruleSets[].id" -o tsv
               # -like is case-insensitive; ARM resource IDs can come back in a different case
               $attached = $LASTEXITCODE -eq 0 -and ($attachedIds | Where-Object { $_ -like "*/ruleSets/$ruleSetName" })
+              # $attached implies the `az afd route show` above succeeded, so $LASTEXITCODE is already 0 here
+              # and the step stays green (GitHub's pwsh wrapper exits with $LASTEXITCODE)
               if ($attached) {
                 Write-Host "::warning title=Front Door rule set association failed::az afd route update exited with $updateExitCode, but '$ruleSetName' is already on route '$routeName' - continuing. Output: $($routeOutput -join ' ')"
-                # GitHub's pwsh wrapper exits with $LASTEXITCODE, so reset it to keep the step green
-                $global:LASTEXITCODE = 0
               } else {
                 Write-Host "::error title=Front Door rule set not attached::'$ruleSetName' is not on route '$routeName' and az afd route update failed (exit $updateExitCode). Without it, index.html and blazor.webassembly.js fall back to the route's default caching."
                 exit 1
