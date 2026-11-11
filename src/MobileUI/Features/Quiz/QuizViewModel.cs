@@ -44,6 +44,9 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
             Cache = fileCacheService,
             CacheKey = "QuizzesList",
         });
+
+        // Cached quizzes land before the network: show the carousel and drop the spinner then.
+        Quizzes.Items.CollectionChanged += (_, _) => OnQuizzesShown();
     }
 
     public async Task Initialise()
@@ -65,7 +68,6 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
         try
         {
             var result = await Quizzes.RefreshAsync();
-            CarouselQuizzes.ReplaceRange(Quizzes.AllItems.Where(q => q.IsCarousel));
 
             // Quiet behind cached quizzes, except a 401, which still goes to re-login.
             await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: false, QuizzesSubject);
@@ -75,6 +77,20 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
             IsBusy = false;
             IsRefreshing = false;
             _timer.Start();
+        }
+    }
+
+    private void OnQuizzesShown()
+    {
+        if (Quizzes.HasContent)
+        {
+            IsBusy = false;
+        }
+
+        var carousel = Quizzes.AllItems.Where(q => q.IsCarousel).ToList();
+        if (!carousel.SequenceEqual(CarouselQuizzes))
+        {
+            CarouselQuizzes.ReplaceRange(carousel);
         }
     }
 

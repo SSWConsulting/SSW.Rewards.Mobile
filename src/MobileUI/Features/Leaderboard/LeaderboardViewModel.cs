@@ -173,9 +173,10 @@ public partial class LeaderboardViewModel : BaseViewModel
 
         IsRunning = false;
 
-        // The user asked for a different period: report a failure even though the previous
-        // period's leaders were on screen.
-        await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: true, LeaderboardSubject);
+        // A failed switch never leaves the previous period on screen: it's cleared (nothing to show,
+        // so the failure is reported) or replaced by this period's cached leaders (quiet, like any
+        // refresh behind cached data).
+        await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: false, LeaderboardSubject);
     }
 
     [RelayCommand]

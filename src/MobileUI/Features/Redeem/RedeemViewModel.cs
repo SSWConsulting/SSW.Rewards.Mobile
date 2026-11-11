@@ -67,6 +67,9 @@ public partial class RedeemViewModel : BaseViewModel
             CacheKey = "RewardsList",
         });
 
+        // Cached rewards land before the network: show the carousel and drop the spinner then.
+        Rewards.Items.CollectionChanged += (_, _) => OnRewardsShown();
+
         _userService.MyBalanceObservable().Subscribe(OnBalanceChanged);
         _userService.MyUserIdObservable().DistinctUntilChanged().Subscribe(OnUserChanged);
 
@@ -139,11 +142,11 @@ public partial class RedeemViewModel : BaseViewModel
 
         try
         {
-            // Ensure reward affordability is calculated against the user's latest credit balance.
-            await _userService.UpdateMyDetailsAsync();
-
+            // The latest credit balance decides affordability. Fetched alongside the rewards, so it
+            // doesn't hold back the cached ones (offline it only fails after the request does).
+            var updateDetails = _userService.UpdateMyDetailsAsync();
             var result = await Rewards.RefreshAsync();
-            CarouselRewards.ReplaceRange(Rewards.AllItems.Where(r => r.IsCarousel));
+            await updateDetails;
             UpdateRewardsAffordability();
 
             // Quiet behind cached rewards, except a 401, which still goes to re-login.
@@ -154,6 +157,20 @@ public partial class RedeemViewModel : BaseViewModel
             IsBusy = false;
             IsRefreshing = false;
             _timer.Start();
+        }
+    }
+
+    private void OnRewardsShown()
+    {
+        if (Rewards.HasContent)
+        {
+            IsBusy = false;
+        }
+
+        var carousel = Rewards.AllItems.Where(r => r.IsCarousel).ToList();
+        if (!carousel.SequenceEqual(CarouselRewards))
+        {
+            CarouselRewards.ReplaceRange(carousel);
         }
     }
 

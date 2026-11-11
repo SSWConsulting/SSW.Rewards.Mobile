@@ -56,6 +56,9 @@ public partial class NetworkPageViewModel : BaseViewModel
             Cache = fileCacheService,
             CacheKey = "NetworkProfilesCache",
         });
+
+        // Cached profiles land before the network: drop the spinner then.
+        Profiles.Items.CollectionChanged += (_, _) => IsBusy &= !Profiles.HasContent;
     }
 
     public async Task Initialise()
