@@ -9,8 +9,9 @@ public partial class OthersProfileViewModel(
     IServiceProvider provider,
     IFileCacheService fileCacheService,
     IAlertService alertService,
+    SSW.Rewards.Mobile.Common.IApiErrorPresenter errorPresenter,
     ILogger<ProfileViewModelBase> logger)
-    : ProfileViewModelBase(false, userService, devService, provider, fileCacheService, alertService, logger)
+    : ProfileViewModelBase(false, userService, devService, provider, fileCacheService, alertService, errorPresenter, logger)
 {
     public async Task Initialise()
     {

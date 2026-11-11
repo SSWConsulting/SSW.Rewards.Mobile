@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
 using SSW.Rewards.Mobile.PopupPages;
+using SSW.Rewards.Mobile.Common;
 using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Mobile.ViewModels
@@ -15,6 +16,8 @@ namespace SSW.Rewards.Mobile.ViewModels
         private readonly IUserService _userService;
         private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
         private readonly IAlertService _alertService;
+        private readonly IApiErrorPresenter _errorPresenter;
+        private readonly IConnectivityService _connectivity;
         private int _quizId;
         private int _submissionId;
 
@@ -84,20 +87,22 @@ namespace SSW.Rewards.Mobile.ViewModels
 
         public SnackbarOptions SnackOptions { get; set; }
 
-        public QuizDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService, IUserService userService, IFirebaseAnalyticsService firebaseAnalyticsService, IAlertService alertService)
+        public QuizDetailsViewModel(IQuizService quizService, ISnackbarService snackbarService, IUserService userService, IFirebaseAnalyticsService firebaseAnalyticsService, IAlertService alertService,
+            IApiErrorPresenter errorPresenter, IConnectivityService connectivity)
         {
             _quizService = quizService;
             _snackbarService = snackbarService;
             _userService = userService;
             _firebaseAnalyticsService = firebaseAnalyticsService;
             _alertService = alertService;
+            _errorPresenter = errorPresenter;
+            _connectivity = connectivity;
         }
 
         public async Task Initialise(int quizId)
         {
-            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            if (!await _errorPresenter.EnsureOnlineAsync("start a quiz"))
             {
-                await _alertService.DisplayAlertAsync("Device Offline", "You must be online to start a quiz.", "OK");
                 await Shell.Current.GoToAsync("..");
                 return;
             }
@@ -143,7 +148,7 @@ namespace SSW.Rewards.Mobile.ViewModels
         private async Task SubmitAnswer()
         {
             // Silently skip submission if offline - this prevents error dialogs on every "Next" press
-            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            if (!_connectivity.IsOnline)
             {
                 MoveTo(Questions.IndexOf(CurrentQuestion) + 1);
                 return;
@@ -174,9 +179,8 @@ namespace SSW.Rewards.Mobile.ViewModels
         [RelayCommand]
         private async Task SubmitResponses()
         {
-            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            if (!await _errorPresenter.EnsureOnlineAsync("submit the quiz"))
             {
-                await _alertService.DisplayAlertAsync("Device Offline", "You must be online to submit the quiz. Please reconnect and try again.", "OK");
                 return;
             }
 

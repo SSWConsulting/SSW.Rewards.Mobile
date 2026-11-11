@@ -12,15 +12,10 @@ namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
 {
-    private const string PostTitle = "Post";
-    private const string OfflineMessage = "You're offline. This post will load once you're back online.";
-    private const string GenericMessage = "There seems to be a problem loading this post. Please try again soon.";
-
     private readonly IPostsService _postsService;
     private readonly IFileCacheService _fileCacheService;
-    private readonly IConnectivityService _connectivity;
     private readonly IAlertService _alertService;
-    private readonly OfflineAwareListErrorHandler _errorHandler;
+    private readonly IApiErrorPresenter _errorPresenter;
     private readonly ILogger<PostDetailViewModel> _logger;
 
     private int _postId;
@@ -29,16 +24,14 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
     public PostDetailViewModel(
         IPostsService postsService,
         IFileCacheService fileCacheService,
-        IConnectivityService connectivity,
         IAlertService alertService,
-        OfflineAwareListErrorHandler errorHandler,
+        IApiErrorPresenter errorPresenter,
         ILogger<PostDetailViewModel> logger)
     {
         _postsService = postsService;
         _fileCacheService = fileCacheService;
-        _connectivity = connectivity;
         _alertService = alertService;
-        _errorHandler = errorHandler;
+        _errorPresenter = errorPresenter;
         _logger = logger;
     }
 
@@ -94,7 +87,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
                 ct);
 
             // A failure behind the cached post stays quiet.
-            await _errorHandler.HandleAsync(result, userRequestedNewData: false, PostTitle, OfflineMessage, GenericMessage);
+            await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: false, "this post");
         }
         finally
         {
@@ -117,7 +110,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     private async Task ToggleLikeAsync()
     {
-        if (IsLoadingAction || !await EnsureOnlineAsync("like this post"))
+        if (IsLoadingAction || !await _errorPresenter.EnsureOnlineAsync("like this post"))
             return;
 
         IsLoadingAction = true;
@@ -136,7 +129,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error toggling like");
-            await _alertService.DisplayAlertAsync("Error", "Failed to update like", "OK");
+            await _errorPresenter.HandleActionErrorAsync(ex, "update your like");
         }
         finally
         {
@@ -147,7 +140,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     private async Task AddCommentAsync()
     {
-        if (string.IsNullOrWhiteSpace(NewComment) || IsLoadingAction || !await EnsureOnlineAsync("comment"))
+        if (string.IsNullOrWhiteSpace(NewComment) || IsLoadingAction || !await _errorPresenter.EnsureOnlineAsync("comment"))
             return;
 
         IsLoadingAction = true;
@@ -164,7 +157,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error adding comment");
-            await _alertService.DisplayAlertAsync("Error", "Failed to add comment", "OK");
+            await _errorPresenter.HandleActionErrorAsync(ex, "add your comment");
         }
         finally
         {
@@ -175,7 +168,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     private async Task DeleteCommentAsync(PostCommentDto comment)
     {
-        if (IsLoadingAction || !await EnsureOnlineAsync("delete a comment"))
+        if (IsLoadingAction || !await _errorPresenter.EnsureOnlineAsync("delete a comment"))
             return;
 
         bool confirm = await _alertService.DisplayConfirmationAsync(
@@ -196,23 +189,11 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error deleting comment");
-            await _alertService.DisplayAlertAsync("Error", "Failed to delete comment", "OK");
+            await _errorPresenter.HandleActionErrorAsync(ex, "delete the comment");
         }
         finally
         {
             IsLoadingAction = false;
         }
-    }
-
-    // Writes stay online-only (no outbox), so say why up front instead of failing the request.
-    private async Task<bool> EnsureOnlineAsync(string action)
-    {
-        if (_connectivity.IsOnline)
-        {
-            return true;
-        }
-
-        await _alertService.DisplayAlertAsync("You're offline", $"Connect to the internet to {action}.", "OK");
-        return false;
     }
 }

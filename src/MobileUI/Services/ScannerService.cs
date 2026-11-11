@@ -17,15 +17,20 @@ public class ScannerService : IScannerService
     private readonly IRewardService _rewardService;
     private readonly IUserService _userService;
     private readonly ScannerConfig _scannerConfig;
+    private readonly IApiExceptionHandler _apiExceptionHandler;
+    private readonly IConnectivityService _connectivity;
 
     private bool _isStaff;
 
-    public ScannerService(IRewardService rewardService, IAchievementService achievementClient, IUserService userService, ScannerConfig scannerConfig)
+    public ScannerService(IRewardService rewardService, IAchievementService achievementClient, IUserService userService, ScannerConfig scannerConfig,
+        IApiExceptionHandler apiExceptionHandler, IConnectivityService connectivity)
     {
         _rewardService = rewardService;
         _achievementClient = achievementClient;
         _userService = userService;
         _scannerConfig = scannerConfig;
+        _apiExceptionHandler = apiExceptionHandler;
+        _connectivity = connectivity;
         _userService.IsStaffObservable().Subscribe(isStaff => _isStaff = isStaff);
     }
 
@@ -76,10 +81,7 @@ public class ScannerService : IScannerService
         }
         catch (Exception e)
         {
-            if (!await ExceptionHandler.HandleApiException(e))
-            {
-                vm.result = ScanResult.Error;
-            }
+            vm.result = await ToFailedScanResultAsync(e);
         }
 
         return vm;
@@ -145,10 +147,7 @@ public class ScannerService : IScannerService
         }
         catch (Exception e)
         {
-            if (!await ExceptionHandler.HandleApiException(e))
-            {
-                vm.result = ScanResult.Error;
-            }
+            vm.result = await ToFailedScanResultAsync(e);
         }
 
         return vm;
@@ -167,9 +166,30 @@ public class ScannerService : IScannerService
             && ApiClientConstants.SupportedQRCodeBodyPrefixes.Any(decodedQR.StartsWith);
     }
 
+    // Scans are online-only: a claim is never queued for later.
+    private async Task<ScanResult> ToFailedScanResultAsync(Exception e)
+    {
+        // A 401 goes to re-login. Error (rather than the enum default, Added) keeps the popup from
+        // claiming success behind it.
+        if (await _apiExceptionHandler.TryHandleAsync(e))
+        {
+            return ScanResult.Error;
+        }
+
+        // The connection can drop between the up-front check and the response.
+        return _connectivity.IsOnline ? ScanResult.Error : ScanResult.Offline;
+    }
+
     public async Task<ScanResponseViewModel> ValidateQRCodeAsync(string rawQRCodeData)
     {
         var (decodedQR, qrCodeData) = DecodeQrCode(rawQRCodeData);
+
+        // Checked after decoding so an unrecognised code still says so offline.
+        if (!_connectivity.IsOnline && ApiClientConstants.SupportedQRCodeBodyPrefixes.Any(decodedQR.StartsWith))
+        {
+            return ScanResponseViewModel.Offline();
+        }
+
         if (decodedQR.StartsWith(ApiClientConstants.RewardsQRCodeAchievementPrefix))
         {
             return await PostAchievementAsync(qrCodeData);

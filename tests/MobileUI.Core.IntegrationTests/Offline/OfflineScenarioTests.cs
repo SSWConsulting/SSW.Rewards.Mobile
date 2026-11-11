@@ -162,11 +162,11 @@ public class OfflineScenarioTests
         StubUnauthorized();
         var redirect = new LoginRedirectHandler();
         var alerts = new FakeAlertService();
-        var errorHandler = new OfflineAwareListErrorHandler(redirect, new OnlineConnectivity(), alerts);
+        var errorHandler = new ApiErrorPresenter(redirect, new OnlineConnectivity(), alerts);
 
         var coldStart = CreateFeedSource(cacheKey);
         var result = await coldStart.RefreshAsync();
-        await errorHandler.HandleAsync(result, userRequestedNewData: false, "Activity Feed", "offline", "generic");
+        await errorHandler.HandleLoadAsync(result, userRequestedNewData: false, "the activity feed");
 
         coldStart.IsShowingCachedData.Should().BeTrue();
         result.Error.Should().BeOfType<HttpRequestException>()
@@ -185,10 +185,10 @@ public class OfflineScenarioTests
         _server.Reset();
         StubUnauthorized();
         var redirect = new LoginRedirectHandler();
-        var errorHandler = new OfflineAwareListErrorHandler(redirect, new OnlineConnectivity(), new FakeAlertService());
+        var errorHandler = new ApiErrorPresenter(redirect, new OnlineConnectivity(), new FakeAlertService());
 
         var result = await source.LoadMoreAsync();
-        await errorHandler.HandleAsync(result, userRequestedNewData: false, "Activity Feed", "offline", "generic");
+        await errorHandler.HandleLoadAsync(result, userRequestedNewData: false, "the activity feed");
 
         redirect.LoginRedirects.Should().Be(1);
         source.Items.Should().HaveCount(2);

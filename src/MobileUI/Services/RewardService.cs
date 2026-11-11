@@ -20,44 +20,36 @@ public class RewardService : IRewardService
     private readonly IApiRewardService _rewardClient;
     private readonly IRewardAdminService _adminRewardClient;
     private readonly IUserService _userService;
+    private readonly IApiExceptionHandler _apiExceptionHandler;
 
-    public RewardService(IApiRewardService rewardClient, IUserService userService, IRewardAdminService adminRewardService)
+    public RewardService(IApiRewardService rewardClient, IUserService userService, IRewardAdminService adminRewardService, IApiExceptionHandler apiExceptionHandler)
     {
         _rewardClient = rewardClient;
         _userService = userService;
         _adminRewardClient = adminRewardService;
+        _apiExceptionHandler = apiExceptionHandler;
     }
 
+    // Errors (including a 401) propagate: the Redeem page reports them through IApiErrorPresenter,
+    // so handling the 401 here as well would run the re-login flow twice.
     public async Task<List<Reward>> GetRewards()
     {
-        try
-        {
-            var rewards = await _rewardClient.GetRewards(CancellationToken.None);
+        var rewards = await _rewardClient.GetRewards(CancellationToken.None);
 
-            return rewards.Rewards
-                .Select(reward => new Reward
-                {
-                    Cost = reward.Cost,
-                    Id = reward.Id,
-                    ImageUri = reward.ImageUri,
-                    Name = reward.Name,
-                    Description = reward.Description,
-                    CarouselImageUri = reward.CarouselImageUri,
-                    IsCarousel = reward.IsCarousel,
-                    IsHidden = reward.IsHidden,
-                    IsDigital = reward.RewardType == RewardType.Digital
-                })
-                .ToList();
-        }
-        catch (Exception e)
-        {
-            if (!await ExceptionHandler.HandleApiException(e))
+        return rewards.Rewards
+            .Select(reward => new Reward
             {
-                // This is left empty intentionally.
-            }
-
-            throw;
-        }
+                Cost = reward.Cost,
+                Id = reward.Id,
+                ImageUri = reward.ImageUri,
+                Name = reward.Name,
+                Description = reward.Description,
+                CarouselImageUri = reward.CarouselImageUri,
+                IsCarousel = reward.IsCarousel,
+                IsHidden = reward.IsHidden,
+                IsDigital = reward.RewardType == RewardType.Digital
+            })
+            .ToList();
     }
 
     public async Task<ClaimRewardResult> ClaimReward(ClaimRewardDto claim)
@@ -71,7 +63,7 @@ public class RewardService : IRewardService
         catch (Exception e)
         {
             // TODO: Handle errors
-            if (! await ExceptionHandler.HandleApiException(e))
+            if (! await _apiExceptionHandler.TryHandleAsync(e))
             {
             }
         }
@@ -91,7 +83,7 @@ public class RewardService : IRewardService
         }
         catch (Exception e)
         {
-            await ExceptionHandler.HandleApiException(e);
+            await _apiExceptionHandler.TryHandleAsync(e);
         }
 
         return result;
@@ -107,7 +99,7 @@ public class RewardService : IRewardService
         }
         catch (Exception e)
         {
-            await ExceptionHandler.HandleApiException(e);
+            await _apiExceptionHandler.TryHandleAsync(e);
         }
 
         await _userService.UpdateMyDetailsAsync();
@@ -125,7 +117,7 @@ public class RewardService : IRewardService
         }
         catch (Exception e)
         {
-            await ExceptionHandler.HandleApiException(e);
+            await _apiExceptionHandler.TryHandleAsync(e);
         }
 
         return result;
