@@ -46,29 +46,10 @@ public class QuizService : IQuizService
         }
     }
 
-    // HttpRequestException (offline, 401, ...) propagates: the Quiz page reports it, knowing whether
-    // cached quizzes are still on screen.
+    // Errors (offline, 401, ...) propagate: the Quiz page reports them, knowing whether cached quizzes
+    // are still on screen. Returning nothing here would be cached over the real list.
     public async Task<IEnumerable<QuizDto>> GetQuizzes()
-    {
-        try
-        {
-            var quizzes = new List<QuizDto>();
-
-            var apiQuizzes = await _quizClient.GetQuizzes(CancellationToken.None);
-
-            foreach (var quiz in apiQuizzes)
-            {
-                quizzes.Add(quiz);
-            }
-
-            return quizzes;
-        }
-        catch (Exception e) when (e is not HttpRequestException)
-        {
-            await _errorPresenter.HandleLoadErrorAsync(e, "quizzes");
-            return null;
-        }
-    }
+        => (await _quizClient.GetQuizzes(CancellationToken.None)).ToList();
 
     public async Task<QuizResultDto> SubmitQuiz(QuizSubmissionDto dto)
     {

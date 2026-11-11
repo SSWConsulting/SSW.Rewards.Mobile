@@ -86,13 +86,15 @@ public class PagedListSourceTests
 
     private static PagedListSource<Item> CreateSource(
         FakeFetch fetch, FakeCache? cache = null, int pageSize = 2,
-        Action<Item>? prepare = null, Func<Item, Item, bool>? areSame = null, Func<bool>? shouldUseCache = null)
+        Action<Item>? prepare = null, Func<Item, Item, bool>? areSame = null, Func<bool>? shouldUseCache = null,
+        Func<Item, bool>? filter = null)
         => new(new PagedListSourceOptions<Item>
         {
             FetchPage = fetch.Fetch,
             PageSize = pageSize,
             PrepareItem = prepare,
             AreSame = areSame,
+            Filter = filter,
             Cache = cache,
             CacheKey = cache is null ? null : "test-key",
             ShouldUseCache = shouldUseCache,
@@ -511,5 +513,139 @@ public class PagedListSourceTests
         second.Error.Should().BeNull();
         source.Items.Select(i => i.Id).Should().Equal(new[] { 3, 4 }, "the superseded load must not clobber the newer one");
         firstResult.Error.Should().BeNull("cancellation is not an error");
+    }
+
+    [Test]
+    public async Task Filter_ShowsOnlyMatchingItems_ButPagesAndCachesTheWholeList()
+    {
+        var cache = new FakeCache();
+        var fetch = new FakeFetch().Returns(1, 2).Returns(3);
+        var source = CreateSource(fetch, cache, filter: i => i.Id % 2 == 1);
+
+        await source.RefreshAsync();
+        await source.LoadMoreAsync();
+
+        source.Items.Select(i => i.Id).Should().Equal(1, 3);
+        source.AllItems.Select(i => i.Id).Should().Equal(1, 2, 3);
+        fetch.RequestedSkips.Should().Equal(new[] { 0, 2 }, "the skip counts fetched items, not shown ones");
+        cache.Store["test-key"].Should().BeOfType<List<Item>>()
+            .Which.Select(i => i.Id).Should().Equal(1, 2);
+    }
+
+    [Test]
+    public async Task ApplyFilter_ReFiltersLoadedItems_WithoutFetching()
+    {
+        var showOdd = true;
+        var fetch = new FakeFetch().Returns(1, 2, 3);
+        var source = CreateSource(fetch, pageSize: 5, filter: i => showOdd == (i.Id % 2 == 1));
+        await source.RefreshAsync();
+
+        showOdd = false;
+        source.ApplyFilter();
+
+        source.Items.Select(i => i.Id).Should().Equal(2);
+        fetch.RequestedSkips.Should().Equal(0);
+    }
+
+    [Test]
+    public async Task ApplyFilter_SameResult_DoesNotRedraw()
+    {
+        var source = CreateSource(new FakeFetch().Returns(1, 2), filter: _ => true);
+        await source.RefreshAsync();
+        var changes = 0;
+        source.Items.CollectionChanged += (_, _) => changes++;
+
+        source.ApplyFilter();
+
+        changes.Should().Be(0);
+    }
+
+    [Test]
+    public async Task Refresh_FilterHidesEverythingAndNetworkFails_StillReportsContent()
+    {
+        var cache = new FakeCache();
+        cache.Store["test-key"] = CachedItems(2, 4);
+        var source = CreateSource(new FakeFetch().Throws(), cache, filter: i => i.Id % 2 == 1);
+
+        var result = await source.RefreshAsync();
+
+        source.Items.Should().BeEmpty();
+        result.HasContent.Should().BeTrue("cached items are loaded, only filtered out, so the failure stays quiet");
+    }
+
+    [Test]
+    public async Task AreSame_IdenticalNetworkPage_KeepsTheShownInstancesInAllItems()
+    {
+        var cache = new FakeCache();
+        cache.Store["test-key"] = CachedItems(1, 2);
+        var source = CreateSource(new FakeFetch().Returns(1, 2), cache, areSame: (a, b) => a.Id == b.Id);
+
+        await source.RefreshAsync();
+
+        source.AllItems.Should().Equal(source.Items, (a, b) => ReferenceEquals(a, b),
+            "a ViewModel updating AllItems (e.g. affordability) must update what is on screen");
+    }
+
+    [Test]
+    public async Task SinglePage_FirstPageIsTheLast_LoadMoreNeverFetches()
+    {
+        var fetch = new FakeFetch().Returns(1, 2, 3);
+        var source = CreateSource(fetch, pageSize: PagedListSourceOptions<Item>.SinglePage);
+
+        await source.RefreshAsync();
+        await source.LoadMoreAsync();
+
+        source.CanLoadMore.Should().BeFalse();
+        fetch.RequestedSkips.Should().Equal(0);
+    }
+
+    [Test]
+    public async Task CanLoadMore_TrueAfterFullNetworkPage_FalseWhileShowingCacheOnly()
+    {
+        var cache = new FakeCache();
+        cache.Store["test-key"] = CachedItems(1, 2);
+        var offline = CreateSource(new FakeFetch().Throws(), cache);
+        var online = CreateSource(new FakeFetch().Returns(1, 2));
+
+        await offline.RefreshAsync();
+        await online.RefreshAsync();
+
+        offline.CanLoadMore.Should().BeFalse("paging from cached items could duplicate page 1");
+        online.CanLoadMore.Should().BeTrue();
+    }
+
+    [Test]
+    public async Task Reset_ClearsItemsAndPaging_NextRefreshStartsFromCache()
+    {
+        var cache = new FakeCache();
+        cache.Store["test-key"] = CachedItems(9);
+        var fetch = new FakeFetch().Returns(1, 2).Pending(out _);
+        var source = CreateSource(fetch, cache);
+        await source.RefreshAsync();
+
+        source.Reset();
+
+        source.Items.Should().BeEmpty();
+        source.HasContent.Should().BeFalse();
+        source.CanLoadMore.Should().BeFalse();
+
+        _ = source.RefreshAsync();
+        source.Items.Select(i => i.Id).Should().Equal(new[] { 1, 2 }, "an emptied list reads the cache again");
+    }
+
+    [Test]
+    public async Task Reset_DuringRefresh_CancelsIt_AndReleasesAQueuedLoadMore()
+    {
+        var fetch = new FakeFetch().Pending(out var slow);
+        var source = CreateSource(fetch);
+        var refresh = source.RefreshAsync();
+        var loadMore = source.LoadMoreAsync();
+
+        source.Reset();
+        slow.SetResult(CachedItems(1, 2));
+
+        (await refresh).Error.Should().BeNull();
+        (await loadMore).Error.Should().BeNull();
+        source.Items.Should().BeEmpty("the cancelled load belongs to the previous user");
     }
 }

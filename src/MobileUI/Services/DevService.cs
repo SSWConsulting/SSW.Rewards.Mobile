@@ -22,32 +22,22 @@ public class DevService : IDevService
         _apiExceptionHandler = apiExceptionHandler;
     }
 
+    // Errors (including a 401) propagate: the Network page reports them through IApiErrorPresenter.
+    // An empty list here would be cached over the user's real network.
     public async Task<IEnumerable<NetworkProfileDto>> GetProfilesAsync()
     {
-        try
-        {
-            var vm = await _staffClient.GetNetworkProfileList(CancellationToken.None);
+        var vm = await _staffClient.GetNetworkProfileList(CancellationToken.None);
 
-            return vm.Profiles
-                .OrderBy(x => x.Name)
-                .Select(x =>
-                {
-                    x.ProfilePicture = string.IsNullOrWhiteSpace(x.ProfilePicture)
-                        ? "v2sophie"
-                        : x.ProfilePicture;
-                    return x;
-                })
-                .ToArray();
-        }
-        catch (Exception e)
-        {
-            if (!await _apiExceptionHandler.TryHandleAsync(e))
+        return vm.Profiles
+            .OrderBy(x => x.Name)
+            .Select(x =>
             {
-                throw;
-            }
-        }
-        
-        return [];
+                x.ProfilePicture = string.IsNullOrWhiteSpace(x.ProfilePicture)
+                    ? "v2sophie"
+                    : x.ProfilePicture;
+                return x;
+            })
+            .ToArray();
     }
     
     public async Task<DevProfile> GetProfileAsync(string email)

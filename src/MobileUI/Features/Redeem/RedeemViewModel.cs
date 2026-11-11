@@ -17,7 +17,6 @@ public partial class RedeemViewModel : BaseViewModel
     private readonly IUserService _userService;
     private readonly IAddressService _addressService;
     private readonly IFirebaseAnalyticsService _firebaseAnalyticsService;
-    private readonly IFileCacheService _fileCacheService;
     private readonly IDispatcherTimer _timer;
     private readonly Subject<string> _searchSubject = new();
     private readonly IAlertService _alertService;
@@ -25,9 +24,9 @@ public partial class RedeemViewModel : BaseViewModel
 
     private const int AutoScrollInterval = 6;
     private const int DebounceInterval = 300;
-    private const string CacheKey = "RewardsList";
+    private const string RewardsSubject = "rewards";
 
-    public AdvancedObservableCollection<Reward> Rewards { get; } = new();
+    public PagedListSource<Reward> Rewards { get; }
     public ObservableRangeCollection<Reward> CarouselRewards { get; set; } = [];
 
     [ObservableProperty]
@@ -54,9 +53,19 @@ public partial class RedeemViewModel : BaseViewModel
         _userService = userService;
         _addressService = addressService;
         _firebaseAnalyticsService = firebaseAnalyticsService;
-        _fileCacheService = fileCacheService;
         _alertService = alertService;
         _errorPresenter = errorPresenter;
+
+        Rewards = new PagedListSource<Reward>(new()
+        {
+            FetchPage = (_, _, _) => FetchRewardsData(),
+            PageSize = PagedListSourceOptions<Reward>.SinglePage,
+            PrepareItem = reward => reward.CanAfford = reward.Cost <= Credits,
+            Filter = FilterReward,
+            AreSame = Reward.IsEqual,
+            Cache = fileCacheService,
+            CacheKey = "RewardsList",
+        });
 
         _userService.MyBalanceObservable().Subscribe(OnBalanceChanged);
         _userService.MyUserIdObservable().DistinctUntilChanged().Subscribe(OnUserChanged);
@@ -69,7 +78,11 @@ public partial class RedeemViewModel : BaseViewModel
             .DistinctUntilChanged()
                 .Throttle(TimeSpan.FromMilliseconds(DebounceInterval))
                 .ObserveOn(SynchronizationContext.Current)
-                .Subscribe(_ => Rewards.RefreshCollectionWithOfflineFilter());
+                .Subscribe(_ =>
+                {
+                    IsSearching = !string.IsNullOrWhiteSpace(SearchText);
+                    Rewards.ApplyFilter();
+                });
     }
 
     partial void OnSearchTextChanged(string value)
@@ -81,8 +94,6 @@ public partial class RedeemViewModel : BaseViewModel
     {
         _timer.Stop();
         _timer.Tick -= OnScrollTick;
-        Rewards.OnCollectionUpdated -= OnRewardsUpdated;
-        Rewards.OnError -= OnRewardsError;
     }
 
     private void OnUserChanged(int userId)
@@ -99,7 +110,7 @@ public partial class RedeemViewModel : BaseViewModel
 
     private void UpdateRewardsAffordability()
     {
-        foreach (var reward in Rewards.Collection)
+        foreach (var reward in Rewards.AllItems)
         {
             reward.CanAfford = reward.Cost <= Credits;
         }
@@ -112,13 +123,7 @@ public partial class RedeemViewModel : BaseViewModel
 
     public async Task Initialise()
     {
-        Rewards.InitializeInitialCaching(_fileCacheService, CacheKey, () => true);
-        Rewards.FilterItem = FilterReward;
-        Rewards.CompareItems = Reward.IsEqual;
-        Rewards.OnCollectionUpdated += OnRewardsUpdated;
-        Rewards.OnError += OnRewardsError;
-
-        if (!Rewards.IsLoaded)
+        if (!Rewards.HasContent)
         {
             await LoadData();
         }
@@ -128,19 +133,31 @@ public partial class RedeemViewModel : BaseViewModel
 
     private async Task LoadData()
     {
-        if (!Rewards.IsLoaded)
-            IsBusy = true;
-
+        IsBusy = !Rewards.HasContent;
         _timer.Stop();
         CarouselPosition = 0;
 
-        // Ensure reward affordability is calculated against the user's latest credit balance.
-        await _userService.UpdateMyDetailsAsync();
+        try
+        {
+            // Ensure reward affordability is calculated against the user's latest credit balance.
+            await _userService.UpdateMyDetailsAsync();
 
-        await Rewards.LoadAsync(async ct => await FetchRewardsData(ct), reload: true);
+            var result = await Rewards.RefreshAsync();
+            CarouselRewards.ReplaceRange(Rewards.AllItems.Where(r => r.IsCarousel));
+            UpdateRewardsAffordability();
+
+            // Quiet behind cached rewards, except a 401, which still goes to re-login.
+            await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: false, RewardsSubject);
+        }
+        finally
+        {
+            IsBusy = false;
+            IsRefreshing = false;
+            _timer.Start();
+        }
     }
 
-    private async Task<List<Reward>> FetchRewardsData(CancellationToken ct)
+    private async Task<List<Reward>> FetchRewardsData()
     {
         var rewards = await _rewardService.GetRewards();
         var pendingRedemptions = (await _userService.GetPendingRedemptionsAsync()).ToList();
@@ -150,8 +167,6 @@ public partial class RedeemViewModel : BaseViewModel
         foreach (var reward in rewards.Where(reward => !reward.IsHidden))
         {
             var pendingRedemption = pendingRedemptions.FirstOrDefault(x => x.RewardId == reward.Id);
-            reward.CanAfford = reward.Cost <= Credits;
-
             if (pendingRedemption != null)
             {
                 reward.IsPendingRedemption = true;
@@ -164,38 +179,9 @@ public partial class RedeemViewModel : BaseViewModel
         return rewardsList;
     }
 
-    private void OnRewardsUpdated(List<Reward> rewards, bool isFromCache)
-    {
-        MainThread.BeginInvokeOnMainThread(() =>
-        {
-            IsBusy = false;
-            IsRefreshing = false;
-            _timer.Start();
-
-            CarouselRewards.ReplaceRange(Rewards.Collection.Where(r => r.IsCarousel));
-            UpdateRewardsAffordability();
-        });
-    }
-
-    private bool OnRewardsError(Exception ex)
-    {
-        MainThread.BeginInvokeOnMainThread(async () =>
-        {
-            // Quiet behind cached rewards, except a 401, which still goes to re-login.
-            await _errorPresenter.HandleLoadAsync(ListLoadResult.Fail(ex, Rewards.IsLoaded), userRequestedNewData: false, "rewards");
-
-            IsBusy = false;
-            IsRefreshing = false;
-            _timer.Start();
-        });
-        return true;
-    }
-
     private bool FilterReward(Reward reward)
     {
         if (reward == null) return false;
-
-        IsSearching = !string.IsNullOrWhiteSpace(SearchText);
 
         if (string.IsNullOrWhiteSpace(SearchText))
             return true;
@@ -248,7 +234,7 @@ public partial class RedeemViewModel : BaseViewModel
             return;
         }
 
-        var reward = Rewards.Collection.FirstOrDefault(r => r.Id == id);
+        var reward = Rewards.Items.FirstOrDefault(r => r.Id == id);
         if (reward != null)
         {
             var popup = new RedeemRewardPage(

@@ -4,16 +4,19 @@ using SSW.Rewards.Mobile.Helpers;
 namespace SSW.Rewards.Mobile.Common;
 
 /// <summary>
-/// A bindable, offline-friendly backing source for paged list pages.
+/// A bindable, offline-friendly backing source for list pages.
 /// Owns the whole load lifecycle so ViewModels don't have to: cache-then-network
 /// initial load, pull-to-refresh, network-only pagination with end-of-feed
-/// detection, per-item display preparation, anti-flicker replace, and
-/// cancellation of stale loads. Bind <see cref="Items"/> in XAML.
+/// detection, per-item display preparation, local filtering, anti-flicker replace,
+/// and cancellation of stale loads. Bind <see cref="Items"/> in XAML.
 /// </summary>
 public sealed partial class PagedListSource<T> : ObservableObject
 {
     private readonly PagedListSourceOptions<T> _options;
     private CancellationTokenSource? _cts;
+
+    // Every loaded item, before Filter. Items is the filtered view of it.
+    private readonly List<T> _all = [];
 
     // Number of items confirmed from the network; the skip for the next page.
     // Stays 0 while only cached data is shown so pagination can't duplicate page 1.
@@ -26,7 +29,20 @@ public sealed partial class PagedListSource<T> : ObservableObject
     // False while Items still hold the previous query's list (segment or filter switch in flight).
     private bool _showsCurrentQuery = true;
 
+    /// <summary>The loaded items that pass <see cref="PagedListSourceOptions{T}.Filter"/>. Bind this.</summary>
     public ObservableRangeCollection<T> Items { get; } = [];
+
+    /// <summary>Every loaded item, ignoring the filter (e.g. for a carousel beside a searchable list).</summary>
+    public IReadOnlyList<T> AllItems => _all;
+
+    /// <summary>True once anything (cached or fresh) is loaded, even when the filter hides all of it.</summary>
+    public bool HasContent => _all.Count > 0;
+
+    /// <summary>
+    /// True when <see cref="LoadMoreAsync"/> can fetch another page: the list came from the network
+    /// and the last page was full.
+    /// </summary>
+    public bool CanLoadMore => !_endReached && _fetchedCount > 0;
 
     [ObservableProperty]
     public partial bool IsShowingCachedData { get; private set; }
@@ -63,7 +79,7 @@ public sealed partial class PagedListSource<T> : ObservableObject
         {
             _fetchedCount = 0;
             _endReached = false;
-            _showsCurrentQuery = Items.Count == 0;
+            _showsCurrentQuery = _all.Count == 0;
         }
 
         // Captured before any await: a cache reset (logout) during this load voids its write.
@@ -71,7 +87,7 @@ public sealed partial class PagedListSource<T> : ObservableObject
 
         try
         {
-            if (UseCache && (Items.Count == 0 || !_showsCurrentQuery))
+            if (UseCache && (_all.Count == 0 || !_showsCurrentQuery))
             {
                 var cached = await _options.Cache!.GetAsync<List<T>>(_options.CacheKey!);
                 if (cached is { Count: > 0 } && !ct.IsCancellationRequested)
@@ -83,7 +99,7 @@ public sealed partial class PagedListSource<T> : ObservableObject
             var fresh = await _options.FetchPage(0, _options.PageSize, ct);
             if (ct.IsCancellationRequested)
             {
-                return ListLoadResult.Ok(Items.Count > 0, IsShowingCachedData);
+                return ListLoadResult.Ok(HasContent, IsShowingCachedData);
             }
 
             _fetchedCount = fresh.Count;
@@ -95,32 +111,29 @@ public sealed partial class PagedListSource<T> : ObservableObject
                 await _options.Cache!.SetAsync(_options.CacheKey!, fresh, generation: cacheGeneration);
             }
 
-            return ListLoadResult.Ok(Items.Count > 0, fromCache: false);
+            return ListLoadResult.Ok(HasContent, fromCache: false);
         }
         catch (Exception) when (ct.IsCancellationRequested)
         {
             // Superseded: whatever it hit (even a 401) is no longer the user's problem.
-            return ListLoadResult.Ok(Items.Count > 0, IsShowingCachedData);
+            return ListLoadResult.Ok(HasContent, IsShowingCachedData);
         }
         catch (Exception ex)
         {
             if (!_showsCurrentQuery)
             {
                 // The previous query's items would be mislabelled under the new one.
-                Items.Clear();
-                IsShowingCachedData = false;
-                _showsCurrentQuery = true;
+                Clear();
             }
 
-            return ListLoadResult.Fail(ex, Items.Count > 0);
+            return ListLoadResult.Fail(ex, HasContent);
         }
         finally
         {
             // A superseding refresh owns the flag now.
             if (!ct.IsCancellationRequested)
             {
-                _isRefreshing = false;
-                _refreshIdle.TrySetResult();
+                SettleRefresh();
             }
         }
     }
@@ -136,7 +149,7 @@ public sealed partial class PagedListSource<T> : ObservableObject
         {
             if (_loadMoreQueued)
             {
-                return ListLoadResult.Ok(Items.Count > 0, IsShowingCachedData);
+                return ListLoadResult.Ok(HasContent, IsShowingCachedData);
             }
 
             // The scroll threshold may not fire again if the refresh changes nothing visible.
@@ -155,9 +168,9 @@ public sealed partial class PagedListSource<T> : ObservableObject
         }
 
         // No successful refresh yet (e.g. showing cache offline) — appending could duplicate page 1.
-        if (_endReached || _fetchedCount == 0)
+        if (!CanLoadMore)
         {
-            return ListLoadResult.Ok(Items.Count > 0, IsShowingCachedData);
+            return ListLoadResult.Ok(HasContent, IsShowingCachedData);
         }
 
         var ct = RestartToken();
@@ -167,7 +180,7 @@ public sealed partial class PagedListSource<T> : ObservableObject
             var page = await _options.FetchPage(_fetchedCount, _options.PageSize, ct);
             if (ct.IsCancellationRequested)
             {
-                return ListLoadResult.Ok(Items.Count > 0, IsShowingCachedData);
+                return ListLoadResult.Ok(HasContent, IsShowingCachedData);
             }
 
             _fetchedCount += page.Count;
@@ -176,18 +189,38 @@ public sealed partial class PagedListSource<T> : ObservableObject
             {
                 page.ForEach(prepare);
             }
-            Items.AddRange(page);
+            _all.AddRange(page);
+            Items.AddRange(Filtered(page));
 
             return ListLoadResult.Ok(hasContent: true, fromCache: false);
         }
         catch (Exception) when (ct.IsCancellationRequested)
         {
-            return ListLoadResult.Ok(Items.Count > 0, IsShowingCachedData);
+            return ListLoadResult.Ok(HasContent, IsShowingCachedData);
         }
         catch (Exception ex)
         {
-            return ListLoadResult.Fail(ex, Items.Count > 0);
+            return ListLoadResult.Fail(ex, HasContent);
         }
+    }
+
+    /// <summary>
+    /// Re-runs <see cref="PagedListSourceOptions{T}.Filter"/> over the loaded items, without a fetch.
+    /// Call it when the filter's input changes (search text, a segment that filters locally).
+    /// </summary>
+    public void ApplyFilter() => ShowFiltered();
+
+    /// <summary>
+    /// Empties the list and cancels any load in flight, e.g. when a different user signs in.
+    /// The next <see cref="RefreshAsync"/> starts over from the cache.
+    /// </summary>
+    public void Reset()
+    {
+        _cts?.Cancel();
+        _fetchedCount = 0;
+        _endReached = false;
+        Clear();
+        SettleRefresh();
     }
 
     private bool UseCache =>
@@ -200,26 +233,56 @@ public sealed partial class PagedListSource<T> : ObservableObject
             items.ForEach(prepare);
         }
 
-        // Cache and network are usually identical — skipping the replace avoids a full redraw.
-        if (!SameAsShown(items))
+        // Cache and network are usually identical — keeping the shown instances avoids a full redraw.
+        if (!SameAsLoaded(items))
         {
-            Items.ReplaceRange(items);
+            _all.Clear();
+            _all.AddRange(items);
+            ShowFiltered();
         }
 
         IsShowingCachedData = fromCache;
         _showsCurrentQuery = true;
     }
 
-    private bool SameAsShown(List<T> items)
+    private void ShowFiltered()
     {
-        if (_options.AreSame is null || Items.Count != items.Count)
+        var visible = Filtered(_all);
+        var unchanged = visible.Count == Items.Count
+            && !visible.Where((item, i) => !ReferenceEquals(item, Items[i])).Any();
+        if (!unchanged)
+        {
+            Items.ReplaceRange(visible);
+        }
+    }
+
+    private List<T> Filtered(List<T> items) =>
+        _options.Filter is { } filter ? items.Where(filter).ToList() : [.. items];
+
+    private void Clear()
+    {
+        _all.Clear();
+        Items.Clear();
+        IsShowingCachedData = false;
+        _showsCurrentQuery = true;
+    }
+
+    private void SettleRefresh()
+    {
+        _isRefreshing = false;
+        _refreshIdle.TrySetResult();
+    }
+
+    private bool SameAsLoaded(List<T> items)
+    {
+        if (_options.AreSame is null || _all.Count != items.Count)
         {
             return false;
         }
 
         for (int i = 0; i < items.Count; i++)
         {
-            if (!_options.AreSame(Items[i], items[i]))
+            if (!_options.AreSame(_all[i], items[i]))
             {
                 return false;
             }
