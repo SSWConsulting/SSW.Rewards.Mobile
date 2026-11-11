@@ -84,6 +84,8 @@ public static class DependencyInjection
         services.AddSingleton<MauiConnectivityService>();
         services.AddSingleton<IConnectivityService>(sp => sp.GetRequiredService<MauiConnectivityService>());
         services.AddSingleton<SSW.Rewards.ApiClient.Resilience.IApiNetworkStatus>(sp => sp.GetRequiredService<MauiConnectivityService>());
+        // Every GET replays its last response offline (OfflineFallbackHandler); wiped on sign-out with the rest of the cache.
+        services.AddSingleton<SSW.Rewards.ApiClient.Resilience.IApiResponseCache, FileCacheApiResponseCache>();
         services.AddSingleton<IAppNavigator, AppNavigator>();
         services.AddSingleton<IApiExceptionHandler, ApiExceptionHandler>();
         services.AddSingleton<SSW.Rewards.Mobile.Common.IApiErrorPresenter, SSW.Rewards.Mobile.Common.ApiErrorPresenter>();

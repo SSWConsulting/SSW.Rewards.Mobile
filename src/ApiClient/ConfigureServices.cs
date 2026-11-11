@@ -27,7 +27,12 @@ public static class ConfigureServices
             var cleintNameHeaderValue = includeAdminServices ? Constants.RewardsAppClientName_AdminUI : Constants.RewardsAppClientName_MobileApp;
             client.DefaultRequestHeaders.Add(Constants.RewardsAppClientNameHeaderKey, cleintNameHeaderValue);
         })
-        // Outermost, so the pipeline's timeout/circuit failures reach callers as HttpRequestException.
+        // Outermost: replays a stored GET once everything inside it (retries included) has failed.
+        // Only active when the app registers an IApiResponseCache (the mobile app does, AdminUI doesn't).
+        .AddHttpMessageHandler(sp => sp.GetService<IApiResponseCache>() is { } responseCache
+            ? new OfflineFallbackHandler(responseCache)
+            : new PassThroughHandler())
+        // Next, so the pipeline's timeout/circuit failures reach callers as HttpRequestException.
         .AddHttpMessageHandler(() => new ResilienceRejectionHandler())
         .AddHttpMessageHandler<THandler>()
         .AddStandardResilienceHandler()
@@ -59,6 +64,8 @@ public static class ConfigureServices
 
         return services;
     }
+
+    private sealed class PassThroughHandler : DelegatingHandler;
 
     /// <summary>
     /// Standard pipeline (retry + circuit breaker + timeouts), shared by the mobile app and AdminUI.

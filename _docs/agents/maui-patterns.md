@@ -144,6 +144,26 @@ Rules:
    `HandleLoadAsync` already handles the 401.
 16. `Reset()` empties the list and cancels its load, e.g. when a different user signs in (Redeem).
 
+## Offline by default — `OfflineFallbackHandler`
+
+Every GET through the API client works offline once it has succeeded, with no page code:
+`OfflineFallbackHandler` (`ApiClient/Resilience`, the outermost handler) stores each successful GET
+response in `IApiResponseCache` and, when the same GET (same URL and query) later fails without
+reaching the API, returns the stored response instead of throwing.
+
+- **Network failures only** (no connection, timeout, open circuit — after the resilience pipeline has
+  given up). An HTTP error the API returns (401, 404, 500) passes through, so a 401 still re-logs in.
+- **GET only.** Writes stay online-only (guard them with `EnsureOnlineAsync`).
+- **Session-scoped.** The mobile app's `FileCacheApiResponseCache` stores responses in
+  `IFileCacheService`, so sign-out wipes them; a response that outlives the wipe isn't stored.
+  Entries expire after 30 days.
+- A replayed response carries the `X-SSW-Rewards-Offline-Replay` header. To the page it's a normal
+  response, so its load reports no error; the offline banner tells the user the data may be stale.
+- **It's a safety net, not a replacement for `PagedListSource`.** The handler only answers once the
+  network has failed; `PagedListSource` shows its cached copy *before* the network, so list pages
+  still open instantly. A new page that skips both still works offline after one online visit.
+- AdminUI registers no `IApiResponseCache`, so it never caches.
+
 ## XAML with Compiled Bindings
 
 ```xml
