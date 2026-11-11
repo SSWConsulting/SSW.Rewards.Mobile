@@ -14,6 +14,7 @@ public class CachedItemLoaderTests
     {
         public Dictionary<string, object?> Store { get; } = [];
         public long Generation { get; private set; }
+        public TimeSpan? LastExpiry { get; private set; }
 
         public Task<T?> GetAsync<T>(string cacheKey)
             => Task.FromResult(Store.TryGetValue(cacheKey, out var value) ? (T?)value : default);
@@ -23,6 +24,7 @@ public class CachedItemLoaderTests
             if (generation is not { } expected || expected == Generation)
             {
                 Store[cacheKey] = value;
+                LastExpiry = expiry;
             }
 
             return Task.CompletedTask;
@@ -67,6 +69,16 @@ public class CachedItemLoaderTests
         _cache.Store[Key].Should().Be(new Item("fresh"));
         result.Error.Should().BeNull();
         result.FromCache.Should().BeFalse();
+    }
+
+    [Test]
+    public async Task LoadAsync_WithExpiry_CachesFreshCopyWithThatExpiry()
+    {
+        var expiry = TimeSpan.FromDays(30);
+
+        await CachedItemLoader.LoadAsync(_cache, Key, _ => Task.FromResult(new Item("fresh")), Show, expiry: expiry);
+
+        _cache.LastExpiry.Should().Be(expiry, "per-item keys must not pile up until logout");
     }
 
     [Test]

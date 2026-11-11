@@ -16,6 +16,10 @@ public static class CachedItemLoader
     /// <param name="fetch">Fetches the fresh item from the network.</param>
     /// <param name="show">Displays an item; the flag is true for the cached copy.</param>
     /// <param name="ct">Cancels a superseded load: nothing more is shown and no error is reported.</param>
+    /// <param name="expiry">
+    /// How long the cached copy is kept. Pass one for per-item keys so items the user never reopens
+    /// don't pile up until logout.
+    /// </param>
     /// <returns>
     /// A failed result when the fetch fails; <see cref="ListLoadResult.HasContent"/> tells whether
     /// the cached copy is on screen, so the caller can stay quiet behind it.
@@ -25,7 +29,8 @@ public static class CachedItemLoader
         string cacheKey,
         Func<CancellationToken, Task<T>> fetch,
         Func<T, bool, Task> show,
-        CancellationToken ct = default)
+        CancellationToken ct = default,
+        TimeSpan? expiry = null)
         where T : class
     {
         // Captured before any await: a cache reset (logout) during this load voids its write.
@@ -48,7 +53,7 @@ public static class CachedItemLoader
             }
 
             await show(fresh, false);
-            await cache.SetAsync(cacheKey, fresh, generation: generation);
+            await cache.SetAsync(cacheKey, fresh, expiry, generation);
             return ListLoadResult.Ok(hasContent: true, fromCache: false);
         }
         catch (Exception) when (ct.IsCancellationRequested)
