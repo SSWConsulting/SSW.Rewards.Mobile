@@ -86,9 +86,11 @@ public partial class ActivityPageViewModel : BaseViewModel
 
     public async Task LoadFeed()
     {
-        // The feed is hidden behind the Posts tab; switching back refreshes it.
+        // The feed is hidden behind the Posts tab (switching back refreshes it); retry the posts
+        // instead, so returning from a post detail replaces cached posts once back online.
         if (_currentSegment == ActivityPageSegments.Posts)
         {
+            await PostsViewModel.InitialiseAsync();
             return;
         }
 
@@ -101,8 +103,14 @@ public partial class ActivityPageViewModel : BaseViewModel
     [RelayCommand]
     private async Task Refresh()
     {
-        await LoadFeed();
-        IsRefreshing = false;
+        try
+        {
+            await LoadFeed();
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
     }
 
     [RelayCommand]

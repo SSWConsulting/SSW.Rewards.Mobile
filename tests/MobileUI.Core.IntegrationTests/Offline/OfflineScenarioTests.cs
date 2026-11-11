@@ -10,6 +10,7 @@ using SSW.Rewards.ApiClient.Services;
 using SSW.Rewards.Mobile.Common;
 using SSW.Rewards.Mobile.Services;
 using SSW.Rewards.Shared.DTOs.ActivityFeed;
+using SSW.Rewards.Shared.DTOs.Posts;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -24,6 +25,8 @@ namespace SSW.Rewards.Mobile.Core.IntegrationTests.Offline;
 public class OfflineScenarioTests
 {
     private const string FeedRoute = "/api/ActivityFeed/GetAllActivities";
+    private const string PostsRoute = "/api/Posts/GetPosts";
+    private const string PostDetailRoute = "/api/Posts/GetPostById";
 
     /// <summary>Stands in for the auth handler the app registers; auth is not under test.</summary>
     private sealed class PassthroughAuthHandler : DelegatingHandler;
@@ -151,6 +154,17 @@ public class OfflineScenarioTests
         offlineSession.IsShowingCachedData.Should().BeTrue();
     }
 
+    private PagedListSource<PostDto> CreatePostsSource(string cacheKey) =>
+        new(new PagedListSourceOptions<PostDto>
+        {
+            FetchPage = async (skip, take, ct) =>
+                (await _services.GetRequiredService<IPostsService>().GetPosts(
+                    PageNumberPaging.ToPageIndex(skip, take), take, true, null, null, null, ct)).Items.ToList(),
+            PageSize = 20,
+            Cache = new AkavacheCacheService(NullLogger<AkavacheCacheService>.Instance),
+            CacheKey = cacheKey,
+        });
+
     [Test]
     public async Task ExpiredSession_BehindCachedFeed_RedirectsToLoginWithoutAlert()
     {
@@ -192,6 +206,61 @@ public class OfflineScenarioTests
 
         redirect.LoginRedirects.Should().Be(1);
         source.Items.Should().HaveCount(2);
+    }
+
+    [Test]
+    public async Task ExpiredSession_BehindCachedPosts_RedirectsToLoginWithoutAlert()
+    {
+        var cacheKey = $"posts-expired-{Guid.NewGuid():N}";
+        _server.Given(Request.Create().WithPath(PostsRoute).UsingGet())
+            .RespondWith(Response.Create().WithStatusCode(200).WithBodyAsJson(new PostListViewModel
+            {
+                Items = [new PostDto { Id = 1, Title = "cached" }],
+            }));
+        await CreatePostsSource(cacheKey).RefreshAsync();
+
+        _server.Reset();
+        _server.Given(Request.Create().WithPath(PostsRoute).UsingGet())
+            .RespondWith(Response.Create().WithStatusCode(401).WithBody("token expired"));
+        var redirect = new LoginRedirectHandler();
+        var alerts = new FakeAlertService();
+        var errorHandler = new OfflineAwareListErrorHandler(redirect, new OnlineConnectivity(), alerts);
+
+        var coldStart = CreatePostsSource(cacheKey);
+        var result = await coldStart.RefreshAsync();
+        await errorHandler.HandleAsync(result, userRequestedNewData: false, "Posts", "offline", "generic");
+
+        coldStart.IsShowingCachedData.Should().BeTrue();
+        result.Error.Should().BeOfType<HttpRequestException>()
+            .Which.IsUnauthorized().Should().BeTrue("the Posts client must keep the API status");
+        redirect.LoginRedirects.Should().Be(1, "cached posts must not hide an expired session");
+        alerts.Alerts.Should().Be(0);
+    }
+
+    [Test]
+    public async Task ExpiredSession_BehindCachedPostDetail_RedirectsToLoginWithoutAlert()
+    {
+        var cache = new AkavacheCacheService(NullLogger<AkavacheCacheService>.Instance);
+        var cacheKey = $"PostDetail_expired-{Guid.NewGuid():N}";
+        await cache.SetAsync(cacheKey, new PostDetailDto { Id = 7, Title = "cached" });
+        _server.Given(Request.Create().WithPath(PostDetailRoute).UsingGet())
+            .RespondWith(Response.Create().WithStatusCode(401).WithBody("token expired"));
+        var redirect = new LoginRedirectHandler();
+        var alerts = new FakeAlertService();
+        var errorHandler = new OfflineAwareListErrorHandler(redirect, new OnlineConnectivity(), alerts);
+        PostDetailDto? shown = null;
+
+        var result = await CachedItemLoader.LoadAsync<PostDetailDto>(
+            cache,
+            cacheKey,
+            ct => _services.GetRequiredService<IPostsService>().GetPostById(7, ct),
+            (post, _) => { shown = post; return Task.CompletedTask; });
+        await errorHandler.HandleAsync(result, userRequestedNewData: false, "Post", "offline", "generic");
+
+        shown!.Title.Should().Be("cached");
+        result.Error.Should().BeOfType<HttpRequestException>().Which.IsUnauthorized().Should().BeTrue();
+        redirect.LoginRedirects.Should().Be(1);
+        alerts.Alerts.Should().Be(0);
     }
 
     [Test]

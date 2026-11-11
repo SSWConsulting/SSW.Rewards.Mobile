@@ -49,7 +49,10 @@ public partial class PostListViewModel : BaseViewModel
         });
     }
 
-    /// <summary>Loads on first show; retries while only cached posts are on screen (e.g. after being offline).</summary>
+    /// <summary>
+    /// Loads on first show of the Posts tab, and again each time the Activity page reappears while only
+    /// cached posts are on screen (e.g. after being offline). Cheap once fresh posts are shown.
+    /// </summary>
     public async Task InitialiseAsync()
     {
         if (Posts.Items.Count > 0 && !Posts.IsShowingCachedData)
@@ -63,8 +66,15 @@ public partial class PostListViewModel : BaseViewModel
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        await LoadPostsAsync();
-        IsRefreshing = false;
+        try
+        {
+            await LoadPostsAsync();
+        }
+        finally
+        {
+            // Always release the pull-to-refresh spinner, even if the error handler throws (e.g. 401 sign-out).
+            IsRefreshing = false;
+        }
     }
 
     [RelayCommand]

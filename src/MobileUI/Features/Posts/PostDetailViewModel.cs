@@ -23,6 +23,9 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
     private readonly OfflineAwareListErrorHandler _errorHandler;
     private readonly ILogger<PostDetailViewModel> _logger;
 
+    // One cache entry per post opened; expire them so they don't accumulate until logout.
+    private static readonly TimeSpan CacheExpiry = TimeSpan.FromDays(30);
+
     private int _postId;
     private CancellationTokenSource? _loadCts;
 
@@ -91,7 +94,8 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
 
                     return Task.CompletedTask;
                 },
-                ct);
+                ct,
+                CacheExpiry);
 
             // A failure behind the cached post stays quiet.
             await _errorHandler.HandleAsync(result, userRequestedNewData: false, PostTitle, OfflineMessage, GenericMessage);
