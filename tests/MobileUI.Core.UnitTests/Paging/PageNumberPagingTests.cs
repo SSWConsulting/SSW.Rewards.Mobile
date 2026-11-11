@@ -1,6 +1,6 @@
 using FluentAssertions;
 using NUnit.Framework;
-using SSW.Rewards.Mobile.Common;
+using SSW.Rewards.ApiClient.Paging;
 
 namespace SSW.Rewards.Mobile.Core.UnitTests.Paging;
 
