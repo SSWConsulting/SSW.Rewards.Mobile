@@ -18,7 +18,7 @@ public enum ActivityPageSegments
     Posts
 }
 
-public partial class ActivityPageViewModel : BaseViewModel
+public partial class ActivityPageViewModel : BaseViewModel, IRefreshOnReconnect
 {
     private const string FeedTitle = "Activity Feed";
     private const string OfflineMessage = "You're offline. The activity feed will load once you're back online.";
@@ -97,6 +97,9 @@ public partial class ActivityPageViewModel : BaseViewModel
         // Background refresh: a failure behind cached content stays quiet.
         await _errorHandler.HandleAsync(result, userRequestedNewData: false, FeedTitle, OfflineMessage, GenericMessage);
     }
+
+    public Task RefreshOnReconnectAsync()
+        => ShowPosts ? PostsViewModel.RefreshCommand.ExecuteAsync(null) : LoadFeed();
 
     [RelayCommand]
     private async Task Refresh()

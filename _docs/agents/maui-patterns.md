@@ -121,10 +121,15 @@ Rules:
    Writing outside `PagedListSource`/`FetchAndRefresh`? Capture `Generation` before the load and pass it
    to `SetAsync`, so a load that outlives a reset can't write the previous user's data back.
 10. `PagedListSource` is bindable — `Feed.Items` in XAML, `Feed.IsShowingCachedData` for
-   stale-data indicators (global offline banner lands with #1567).
-11. Online-only actions (submit, redeem) check `Connectivity.Current.NetworkAccess` and tell the
+   per-page stale-data indicators. Don't add a page-level "you're offline" message: `PageTemplate`
+   shows a global banner bound to the debounced `ConnectivityMonitor.IsOffline`.
+11. **Refresh on reconnect:** a page's ViewModel implements `IRefreshOnReconnect` and
+   `BaseContentPage` calls it when the connection comes back — immediately if the page is visible,
+   otherwise on its next `OnAppearing`. Don't subscribe to `Connectivity.ConnectivityChanged` in a
+   ViewModel.
+12. Online-only actions (submit, redeem) check `Connectivity.Current.NetworkAccess` and tell the
    user why they're blocked — never let the action throw.
-12. `AdvancedObservableCollection<T>` (Network/Leaderboard/Redeem/Profile) is the **legacy**
+13. `AdvancedObservableCollection<T>` (Network/Leaderboard/Redeem/Profile) is the **legacy**
    version of this pattern — don't use it for new pages; those pages migrate to
    `PagedListSource`/`IFileCacheService.GetAsync` as part of #1567.
 

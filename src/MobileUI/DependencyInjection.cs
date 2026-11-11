@@ -85,6 +85,10 @@ public static class DependencyInjection
         services.AddSingleton<MauiConnectivityService>();
         services.AddSingleton<IConnectivityService>(sp => sp.GetRequiredService<MauiConnectivityService>());
         services.AddSingleton<SSW.Rewards.ApiClient.Resilience.IApiNetworkStatus>(sp => sp.GetRequiredService<MauiConnectivityService>());
+        services.AddSingleton(sp => new ConnectivityMonitor(
+            sp.GetRequiredService<IConnectivityService>(),
+            CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default,
+            MainThread.BeginInvokeOnMainThread));
         services.AddSingleton<IAppNavigator, AppNavigator>();
         services.AddSingleton<IApiExceptionHandler, ApiExceptionHandler>();
         services.AddTransient<SSW.Rewards.Mobile.Common.OfflineAwareListErrorHandler>();
