@@ -28,5 +28,8 @@ public sealed class AppNavigator : IAppNavigator
         return Shell.Current.Navigation.PushAsync(page);
     }
 
+    public Task GoToPostDetailAsync(int postId)
+        => Shell.Current.GoToAsync("postdetail", new Dictionary<string, object> { ["PostId"] = postId });
+
     public Task PopModalAsync() => Shell.Current.Navigation.PopModalAsync();
 }

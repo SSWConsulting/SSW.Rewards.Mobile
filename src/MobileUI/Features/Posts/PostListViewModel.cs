@@ -1,35 +1,58 @@
+#nullable enable
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using SSW.Rewards.ApiClient.Services;
+using SSW.Rewards.Mobile.Common;
 using SSW.Rewards.Shared.DTOs.Posts;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class PostListViewModel : BaseViewModel
 {
-    private readonly IPostsService _postsService;
-    private readonly ILogger<PostListViewModel> _logger;
-
+    private const string PostsTitle = "Posts";
+    private const string OfflineMessage = "You're offline. Posts will load once you're back online.";
+    private const string GenericMessage = "There seems to be a problem loading posts. Please try again soon.";
     private const int PageSize = 20;
-    private int _page = 0;
-    private bool _limitReached;
 
-    public PostListViewModel(IPostsService postsService, ILogger<PostListViewModel> logger)
-    {
-        Title = "Posts";
-        _postsService = postsService;
-        _logger = logger;
-    }
+    private readonly IAppNavigator _navigator;
+    private readonly OfflineAwareListErrorHandler _errorHandler;
 
-    public ObservableRangeCollection<PostDto> Posts { get; } = [];
+    public PagedListSource<PostDto> Posts { get; }
 
     [ObservableProperty]
-    private bool _isRefreshing;
+    public partial bool IsRefreshing { get; set; }
 
+    public PostListViewModel(
+        IPostsService postsService,
+        IAppNavigator navigator,
+        OfflineAwareListErrorHandler errorHandler,
+        IFileCacheService fileCacheService)
+    {
+        Title = PostsTitle;
+        _navigator = navigator;
+        _errorHandler = errorHandler;
+
+        Posts = new PagedListSource<PostDto>(new()
+        {
+            PageSize = PageSize,
+            FetchPage = async (skip, take, ct) =>
+            {
+                var result = await postsService.GetPosts(
+                    PageNumberPaging.ToPageIndex(skip, take), take, publishedOnly: true,
+                    searchTerm: null, sortBy: null, sortDirection: null, ct);
+                return result.Items?.ToList() ?? [];
+            },
+            AreSame = (a, b) => a.HasSameDisplayAs(b),
+            Cache = fileCacheService,
+            CacheKey = "PostsCache",
+        });
+    }
+
+    /// <summary>Loads on first show; retries while only cached posts are on screen (e.g. after being offline).</summary>
     public async Task InitialiseAsync()
     {
-        if (Posts.Count > 0)
+        if (Posts.Items.Count > 0 && !Posts.IsShowingCachedData)
         {
             return;
         }
@@ -40,109 +63,37 @@ public partial class PostListViewModel : BaseViewModel
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        try
-        {
-            _page = 0;
-            _limitReached = false;
-            await LoadPostsAsync(replace: true);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error refreshing posts");
-            await MainThread.InvokeOnMainThreadAsync(async () =>
-                await Shell.Current.DisplayAlertAsync("Error", "Failed to refresh posts. Please try again.", "OK"));
-        }
-        finally
-        {
-            await MainThread.InvokeOnMainThreadAsync(() => IsRefreshing = false);
-        }
+        await LoadPostsAsync();
+        IsRefreshing = false;
     }
 
     [RelayCommand]
     private async Task LoadMoreAsync()
     {
-        if (IsBusy || _limitReached)
-            return;
+        var result = await Posts.LoadMoreAsync();
 
-        _page++;
-        await LoadPostsAsync();
+        // Loaded posts stay on screen, so only a session expiry interrupts scrolling.
+        await _errorHandler.HandleAsync(result, userRequestedNewData: false, PostsTitle, OfflineMessage, GenericMessage);
     }
 
-    private async Task LoadPostsAsync(bool replace = false)
-    {
-        if (IsBusy)
-            return;
+    [RelayCommand]
+    private Task PostTappedAsync(PostDto? post)
+        => post is null ? Task.CompletedTask : _navigator.GoToPostDetailAsync(post.Id);
 
-        IsBusy = true;
+    private async Task LoadPostsAsync()
+    {
+        // The spinner covers an empty list only; cached posts render straight away.
+        IsBusy = Posts.Items.Count == 0;
         try
         {
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-            var result = await _postsService.GetPosts(_page, PageSize, publishedOnly: true, searchTerm: null, sortBy: null, sortDirection: null, cts.Token);
+            var result = await Posts.RefreshAsync();
 
-            if (result == null || result.Items == null || !result.Items.Any())
-            {
-                _limitReached = true;
-                return;
-            }
-
-            await MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                if (replace)
-                {
-                    Posts.ReplaceRange(result.Items);
-                }
-                else
-                {
-                    Posts.AddRange(result.Items);
-                }
-            });
-
-            // Check if we've reached the end using IsLastPage
-            if (result.IsLastPage)
-            {
-                _limitReached = true;
-            }
-        }
-        catch (OperationCanceledException)
-        {
-            _logger.LogWarning("Loading posts timed out");
-            _limitReached = true;
-            MainThread.BeginInvokeOnMainThread(async () =>
-                await Shell.Current.DisplayAlertAsync("Timeout", "The request took too long. Please check your connection.", "OK"));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error loading posts");
-            _limitReached = true;
-            MainThread.BeginInvokeOnMainThread(async () =>
-                await Shell.Current.DisplayAlertAsync("Error", $"Failed to load posts: {ex.Message}", "OK"));
+            // A failure behind cached posts stays quiet.
+            await _errorHandler.HandleAsync(result, userRequestedNewData: false, PostsTitle, OfflineMessage, GenericMessage);
         }
         finally
         {
             IsBusy = false;
-        }
-    }
-
-    [RelayCommand]
-    private async Task PostTappedAsync(PostDto post)
-    {
-        if (post == null)
-            return;
-
-        try
-        {
-            var parameters = new Dictionary<string, object>
-            {
-                { "PostId", post.Id }
-            };
-
-            await Shell.Current.GoToAsync($"postdetail", parameters);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error navigating to post detail");
-            await MainThread.InvokeOnMainThreadAsync(async () =>
-                await Shell.Current.DisplayAlertAsync("Error", "Failed to open post", "OK"));
         }
     }
 }

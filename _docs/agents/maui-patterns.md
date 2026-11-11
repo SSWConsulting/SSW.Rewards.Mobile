@@ -124,7 +124,11 @@ Rules:
    stale-data indicators (global offline banner lands with #1567).
 11. Online-only actions (submit, redeem) check `Connectivity.Current.NetworkAccess` and tell the
    user why they're blocked — never let the action throw.
-12. `AdvancedObservableCollection<T>` (Network/Leaderboard/Redeem/Profile) is the **legacy**
+12. **Detail pages** (one item, not a list) use `CachedItemLoader.LoadAsync` with a per-item key
+   (`PostDetail_{id}`): cached copy first, then fresh, same `ListLoadResult` for the error handler.
+   Reloads after a write skip the cached copy (it predates the change) — see `PostDetailViewModel`.
+   APIs that page by page number adapt with `PageNumberPaging.ToPageIndex(skip, take)`.
+13. `AdvancedObservableCollection<T>` (Network/Leaderboard/Redeem/Profile) is the **legacy**
    version of this pattern — don't use it for new pages; those pages migrate to
    `PagedListSource`/`IFileCacheService.GetAsync` as part of #1567.
 

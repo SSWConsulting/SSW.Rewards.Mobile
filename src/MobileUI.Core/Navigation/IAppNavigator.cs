@@ -15,6 +15,9 @@ public interface IAppNavigator
     /// <summary>Navigates to another user's profile.</summary>
     Task GoToUserProfileAsync(int userId);
 
+    /// <summary>Navigates to a post's detail page.</summary>
+    Task GoToPostDetailAsync(int postId);
+
     /// <summary>Dismisses the current modal page.</summary>
     Task PopModalAsync();
 }
