@@ -157,9 +157,8 @@ public class OfflineScenarioTests
     private PagedListSource<PostDto> CreatePostsSource(string cacheKey) =>
         new(new PagedListSourceOptions<PostDto>
         {
-            FetchPage = async (skip, take, ct) =>
-                (await _services.GetRequiredService<IPostsService>().GetPosts(
-                    PageNumberPaging.ToPageIndex(skip, take), take, true, null, null, null, ct)).Items.ToList(),
+            // The same fetch the Posts tab uses, so the two can't drift apart.
+            FetchPage = _services.GetRequiredService<IPostsService>().GetPublishedPostsAsync,
             PageSize = 20,
             Cache = new AkavacheCacheService(NullLogger<AkavacheCacheService>.Instance),
             CacheKey = cacheKey,

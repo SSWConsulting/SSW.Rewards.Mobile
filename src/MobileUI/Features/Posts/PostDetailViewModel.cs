@@ -20,6 +20,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
     private readonly IFileCacheService _fileCacheService;
     private readonly IConnectivityService _connectivity;
     private readonly IAlertService _alertService;
+    private readonly IApiExceptionHandler _apiExceptionHandler;
     private readonly OfflineAwareListErrorHandler _errorHandler;
     private readonly ILogger<PostDetailViewModel> _logger;
 
@@ -34,6 +35,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         IFileCacheService fileCacheService,
         IConnectivityService connectivity,
         IAlertService alertService,
+        IApiExceptionHandler apiExceptionHandler,
         OfflineAwareListErrorHandler errorHandler,
         ILogger<PostDetailViewModel> logger)
     {
@@ -41,6 +43,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         _fileCacheService = fileCacheService;
         _connectivity = connectivity;
         _alertService = alertService;
+        _apiExceptionHandler = apiExceptionHandler;
         _errorHandler = errorHandler;
         _logger = logger;
     }
@@ -140,7 +143,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error toggling like");
-            await _alertService.DisplayAlertAsync("Error", "Failed to update like", "OK");
+            await ShowWriteErrorAsync(ex, "Failed to update like");
         }
         finally
         {
@@ -168,7 +171,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error adding comment");
-            await _alertService.DisplayAlertAsync("Error", "Failed to add comment", "OK");
+            await ShowWriteErrorAsync(ex, "Failed to add comment");
         }
         finally
         {
@@ -200,11 +203,20 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error deleting comment");
-            await _alertService.DisplayAlertAsync("Error", "Failed to delete comment", "OK");
+            await ShowWriteErrorAsync(ex, "Failed to delete comment");
         }
         finally
         {
             IsLoadingAction = false;
+        }
+    }
+
+    // A 401 goes to re-login (as loads do) instead of failing every later tap the same way.
+    private async Task ShowWriteErrorAsync(Exception ex, string message)
+    {
+        if (!await _apiExceptionHandler.TryHandleAsync(ex))
+        {
+            await _alertService.DisplayAlertAsync("Error", message, "OK");
         }
     }
 

@@ -1,12 +1,12 @@
-namespace SSW.Rewards.Mobile.Common;
+namespace SSW.Rewards.ApiClient.Paging;
 
 /// <summary>
-/// Adapts <see cref="PagedListSource{T}"/>'s skip/take requests to APIs that page by page number.
+/// Adapts skip/take requests (the mobile app's <c>PagedListSource</c>) to APIs that page by page number.
 /// </summary>
 public static class PageNumberPaging
 {
     /// <summary>
-    /// Zero-based page index for a skip/take request. <see cref="PagedListSource{T}"/> always skips a
+    /// Zero-based page index for a skip/take request. <c>PagedListSource</c> always skips a
     /// whole number of full pages, since a short page ends the list.
     /// </summary>
     public static int ToPageIndex(int skip, int take)

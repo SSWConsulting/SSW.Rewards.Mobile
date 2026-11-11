@@ -36,13 +36,7 @@ public partial class PostListViewModel : BaseViewModel
         Posts = new PagedListSource<PostDto>(new()
         {
             PageSize = PageSize,
-            FetchPage = async (skip, take, ct) =>
-            {
-                var result = await postsService.GetPosts(
-                    PageNumberPaging.ToPageIndex(skip, take), take, publishedOnly: true,
-                    searchTerm: null, sortBy: null, sortDirection: null, ct);
-                return result.Items?.ToList() ?? [];
-            },
+            FetchPage = postsService.GetPublishedPostsAsync,
             AreSame = (a, b) => a.HasSameDisplayAs(b),
             Cache = fileCacheService,
             CacheKey = "PostsCache",
