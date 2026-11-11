@@ -224,11 +224,11 @@ public class OfflineScenarioTests
             .RespondWith(Response.Create().WithStatusCode(401).WithBody("token expired"));
         var redirect = new LoginRedirectHandler();
         var alerts = new FakeAlertService();
-        var errorHandler = new OfflineAwareListErrorHandler(redirect, new OnlineConnectivity(), alerts);
+        var errorHandler = new ApiErrorPresenter(redirect, new OnlineConnectivity(), alerts);
 
         var coldStart = CreatePostsSource(cacheKey);
         var result = await coldStart.RefreshAsync();
-        await errorHandler.HandleAsync(result, userRequestedNewData: false, "Posts", "offline", "generic");
+        await errorHandler.HandleLoadAsync(result, userRequestedNewData: false, "posts");
 
         coldStart.IsShowingCachedData.Should().BeTrue();
         result.Error.Should().BeOfType<HttpRequestException>()
@@ -247,7 +247,7 @@ public class OfflineScenarioTests
             .RespondWith(Response.Create().WithStatusCode(401).WithBody("token expired"));
         var redirect = new LoginRedirectHandler();
         var alerts = new FakeAlertService();
-        var errorHandler = new OfflineAwareListErrorHandler(redirect, new OnlineConnectivity(), alerts);
+        var errorHandler = new ApiErrorPresenter(redirect, new OnlineConnectivity(), alerts);
         PostDetailDto? shown = null;
 
         var result = await CachedItemLoader.LoadAsync<PostDetailDto>(
@@ -255,7 +255,7 @@ public class OfflineScenarioTests
             cacheKey,
             ct => _services.GetRequiredService<IPostsService>().GetPostById(7, ct),
             (post, _) => { shown = post; return Task.CompletedTask; });
-        await errorHandler.HandleAsync(result, userRequestedNewData: false, "Post", "offline", "generic");
+        await errorHandler.HandleLoadAsync(result, userRequestedNewData: false, "this post");
 
         shown!.Title.Should().Be("cached");
         result.Error.Should().BeOfType<HttpRequestException>().Which.IsUnauthorized().Should().BeTrue();
