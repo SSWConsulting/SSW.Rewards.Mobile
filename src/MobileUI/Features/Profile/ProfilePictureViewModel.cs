@@ -1,6 +1,7 @@
 ﻿using Mopups.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SSW.Rewards.Mobile.Common;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -9,6 +10,7 @@ public partial class ProfilePictureViewModel : BaseViewModel
     private readonly IUserService _userService;
     private readonly IPermissionsService _permissionsService;
     private readonly IAlertService _alertService;
+    private readonly IApiErrorPresenter _errorPresenter;
 
     [ObservableProperty]
     private bool _useButtonEnabled;
@@ -23,11 +25,13 @@ public partial class ProfilePictureViewModel : BaseViewModel
     private bool _isUploading;
 
 
-    public ProfilePictureViewModel(IUserService userService, IPermissionsService permissionsService, IAlertService alertService)
+    public ProfilePictureViewModel(IUserService userService, IPermissionsService permissionsService, IAlertService alertService,
+        IApiErrorPresenter errorPresenter)
     {
         _userService = userService;
         _permissionsService = permissionsService;
         _alertService = alertService;
+        _errorPresenter = errorPresenter;
         userService.MyProfilePicObservable().Subscribe(myProfilePic => _profilePicture = myProfilePic);
     }
 
@@ -80,6 +84,11 @@ public partial class ProfilePictureViewModel : BaseViewModel
     [RelayCommand]
     private async Task UsePhoto()
     {
+        if (!await _errorPresenter.EnsureOnlineAsync("change your profile picture"))
+        {
+            return;
+        }
+
         IsUploading = true;
         var imageStream = await _imageFile.OpenReadAsync();
 
@@ -90,10 +99,8 @@ public partial class ProfilePictureViewModel : BaseViewModel
         }
         catch (Exception e)
         {
-            if (!await ExceptionHandler.HandleApiException(e))
-            {
-                await _alertService.DisplayAlertAsync("Oops...", "There seems to be a problem uploading your image. Please try again soon.", "OK");
-            }
+            IsUploading = false;
+            await _errorPresenter.HandleActionErrorAsync(e, "upload your picture");
         }
     }
 

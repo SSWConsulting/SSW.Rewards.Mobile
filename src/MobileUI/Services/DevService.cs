@@ -14,10 +14,12 @@ public interface IDevService
 public class DevService : IDevService
 {
     private readonly IStaffService _staffClient;
+    private readonly IApiExceptionHandler _apiExceptionHandler;
 
-    public DevService(IStaffService staffClient)
+    public DevService(IStaffService staffClient, IApiExceptionHandler apiExceptionHandler)
     {
         _staffClient = staffClient;
+        _apiExceptionHandler = apiExceptionHandler;
     }
 
     public async Task<IEnumerable<NetworkProfileDto>> GetProfilesAsync()
@@ -39,7 +41,7 @@ public class DevService : IDevService
         }
         catch (Exception e)
         {
-            if (!await ExceptionHandler.HandleApiException(e))
+            if (!await _apiExceptionHandler.TryHandleAsync(e))
             {
                 throw;
             }
@@ -78,7 +80,7 @@ public class DevService : IDevService
         }
         catch (Exception e)
         {
-            await ExceptionHandler.HandleApiException(e);
+            await _apiExceptionHandler.TryHandleAsync(e);
         }
 
         return null;

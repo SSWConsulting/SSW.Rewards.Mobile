@@ -13,10 +13,12 @@ public interface ILeaderService
 public class LeaderService : ILeaderService
 {
     private readonly ILeaderboardService _leaderBoardClient;
+    private readonly IApiExceptionHandler _apiExceptionHandler;
 
-    public LeaderService(ILeaderboardService leaderBoardClient)
+    public LeaderService(ILeaderboardService leaderBoardClient, IApiExceptionHandler apiExceptionHandler)
     {
         _leaderBoardClient = leaderBoardClient;
+        _apiExceptionHandler = apiExceptionHandler;
     }
 
     public async Task<MobileLeaderboardViewModel> GetLeadersAsync(bool forceRefresh, int page = 0, int pageSize = 50, LeaderboardFilter currentPeriod = LeaderboardFilter.Forever)
@@ -35,7 +37,7 @@ public class LeaderService : ILeaderService
         }
         catch (Exception e)
         {
-            if (!await ExceptionHandler.HandleApiException(e))
+            if (!await _apiExceptionHandler.TryHandleAsync(e))
             {
                 throw;
             }

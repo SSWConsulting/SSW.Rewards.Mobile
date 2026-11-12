@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using SSW.Rewards.Mobile.Messages;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SSW.Rewards.Mobile.Common;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
@@ -121,6 +122,14 @@ public partial class ScanResultViewModel : BaseViewModel
                 AnimationRef = "coin.json";
                 ResultHeading = "Not Enough Points";
                 ResultBody = "You do not have enough points to claim this reward yet. Try again later.";
+                AchievementHeading = string.Empty;
+                HeadingColour = Colors.White;
+                break;
+
+            case ScanResult.Offline:
+                AnimationRef = "empty-box.json";
+                ResultHeading = UserMessages.OfflineTitle;
+                ResultBody = UserMessages.ScanOffline;
                 AchievementHeading = string.Empty;
                 HeadingColour = Colors.White;
                 break;

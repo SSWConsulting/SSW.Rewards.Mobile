@@ -11,6 +11,9 @@ public class ScanResponseViewModel
     public static ScanResponseViewModel NotFound()
         => new() { result = ScanResult.NotFound, Title = "Not Found" };
 
+    public static ScanResponseViewModel Offline()
+        => new() { result = ScanResult.Offline, Title = "Offline" };
+
     public static ScanResponseViewModel OnlyStaffCanRedeemPendingRewards()
         => new() { result = ScanResult.Error, Title = "Only SSW can redeem pending rewards" };
 }

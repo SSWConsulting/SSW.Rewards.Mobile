@@ -12,18 +12,14 @@ namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
 {
-    private const string PostTitle = "Post";
-    private const string OfflineMessage = "You're offline. This post will load once you're back online.";
-    private const string GenericMessage = "There seems to be a problem loading this post. Please try again soon.";
+    private const string DeletedTitle = "Post";
     private const string DeletedMessage = "This post is no longer available.";
 
     private readonly IPostsService _postsService;
     private readonly IFileCacheService _fileCacheService;
-    private readonly IConnectivityService _connectivity;
     private readonly IAlertService _alertService;
-    private readonly IApiExceptionHandler _apiExceptionHandler;
+    private readonly IApiErrorPresenter _errorPresenter;
     private readonly IAppNavigator _navigator;
-    private readonly OfflineAwareListErrorHandler _errorHandler;
     private readonly ILogger<PostDetailViewModel> _logger;
 
     // One cache entry per post opened; expire them so they don't accumulate until logout.
@@ -35,20 +31,16 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
     public PostDetailViewModel(
         IPostsService postsService,
         IFileCacheService fileCacheService,
-        IConnectivityService connectivity,
         IAlertService alertService,
-        IApiExceptionHandler apiExceptionHandler,
+        IApiErrorPresenter errorPresenter,
         IAppNavigator navigator,
-        OfflineAwareListErrorHandler errorHandler,
         ILogger<PostDetailViewModel> logger)
     {
         _postsService = postsService;
         _fileCacheService = fileCacheService;
-        _connectivity = connectivity;
         _alertService = alertService;
-        _apiExceptionHandler = apiExceptionHandler;
+        _errorPresenter = errorPresenter;
         _navigator = navigator;
-        _errorHandler = errorHandler;
         _logger = logger;
     }
 
@@ -109,13 +101,13 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
                 // Deleted on the server (the loader has dropped the cached copy): stop showing it, so
                 // the user can't like or comment on a post that no longer exists.
                 Post = null;
-                await _alertService.DisplayAlertAsync(PostTitle, DeletedMessage, "OK");
+                await _alertService.DisplayAlertAsync(DeletedTitle, DeletedMessage, "OK");
                 await _navigator.GoBackAsync();
                 return;
             }
 
             // A failure behind the cached post stays quiet.
-            await _errorHandler.HandleAsync(result, userRequestedNewData: false, PostTitle, OfflineMessage, GenericMessage);
+            await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: false, "this post");
         }
         finally
         {
@@ -138,7 +130,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     private async Task ToggleLikeAsync()
     {
-        if (IsLoadingAction || !await EnsureOnlineAsync("like this post"))
+        if (IsLoadingAction || !await _errorPresenter.EnsureOnlineAsync("like this post"))
             return;
 
         IsLoadingAction = true;
@@ -157,7 +149,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error toggling like");
-            await ShowWriteErrorAsync(ex, "Failed to update like");
+            await _errorPresenter.HandleActionErrorAsync(ex, "update your like");
         }
         finally
         {
@@ -168,7 +160,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     private async Task AddCommentAsync()
     {
-        if (string.IsNullOrWhiteSpace(NewComment) || IsLoadingAction || !await EnsureOnlineAsync("comment"))
+        if (string.IsNullOrWhiteSpace(NewComment) || IsLoadingAction || !await _errorPresenter.EnsureOnlineAsync("comment"))
             return;
 
         IsLoadingAction = true;
@@ -185,7 +177,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error adding comment");
-            await ShowWriteErrorAsync(ex, "Failed to add comment");
+            await _errorPresenter.HandleActionErrorAsync(ex, "add your comment");
         }
         finally
         {
@@ -196,7 +188,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     private async Task DeleteCommentAsync(PostCommentDto comment)
     {
-        if (IsLoadingAction || !await EnsureOnlineAsync("delete a comment"))
+        if (IsLoadingAction || !await _errorPresenter.EnsureOnlineAsync("delete a comment"))
             return;
 
         bool confirm = await _alertService.DisplayConfirmationAsync(
@@ -217,32 +209,11 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error deleting comment");
-            await ShowWriteErrorAsync(ex, "Failed to delete comment");
+            await _errorPresenter.HandleActionErrorAsync(ex, "delete the comment");
         }
         finally
         {
             IsLoadingAction = false;
         }
-    }
-
-    // A 401 goes to re-login (as loads do) instead of failing every later tap the same way.
-    private async Task ShowWriteErrorAsync(Exception ex, string message)
-    {
-        if (!await _apiExceptionHandler.TryHandleAsync(ex))
-        {
-            await _alertService.DisplayAlertAsync("Error", message, "OK");
-        }
-    }
-
-    // Writes stay online-only (no outbox), so say why up front instead of failing the request.
-    private async Task<bool> EnsureOnlineAsync(string action)
-    {
-        if (_connectivity.IsOnline)
-        {
-            return true;
-        }
-
-        await _alertService.DisplayAlertAsync("You're offline", $"Connect to the internet to {action}.", "OK");
-        return false;
     }
 }

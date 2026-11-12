@@ -11,12 +11,10 @@ namespace SSW.Rewards.Mobile.ViewModels;
 public partial class PostListViewModel : BaseViewModel
 {
     private const string PostsTitle = "Posts";
-    private const string OfflineMessage = "You're offline. Posts will load once you're back online.";
-    private const string GenericMessage = "There seems to be a problem loading posts. Please try again soon.";
     private const int PageSize = 20;
 
     private readonly IAppNavigator _navigator;
-    private readonly OfflineAwareListErrorHandler _errorHandler;
+    private readonly IApiErrorPresenter _errorPresenter;
 
     public PagedListSource<PostDto> Posts { get; }
 
@@ -32,12 +30,12 @@ public partial class PostListViewModel : BaseViewModel
     public PostListViewModel(
         IPostsService postsService,
         IAppNavigator navigator,
-        OfflineAwareListErrorHandler errorHandler,
+        IApiErrorPresenter errorPresenter,
         IFileCacheService fileCacheService)
     {
         Title = PostsTitle;
         _navigator = navigator;
-        _errorHandler = errorHandler;
+        _errorPresenter = errorPresenter;
 
         Posts = new PagedListSource<PostDto>(new()
         {
@@ -83,7 +81,7 @@ public partial class PostListViewModel : BaseViewModel
         var result = await Posts.LoadMoreAsync();
 
         // Loaded posts stay on screen, so only a session expiry interrupts scrolling.
-        await _errorHandler.HandleAsync(result, userRequestedNewData: false, PostsTitle, OfflineMessage, GenericMessage);
+        await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: false, "posts");
     }
 
     [RelayCommand]
@@ -103,7 +101,7 @@ public partial class PostListViewModel : BaseViewModel
             LoadFailed = result.Error is not null && !result.HasContent;
 
             // A failure behind cached posts stays quiet.
-            await _errorHandler.HandleAsync(result, userRequestedNewData: false, PostsTitle, OfflineMessage, GenericMessage);
+            await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: false, "posts");
         }
         finally
         {

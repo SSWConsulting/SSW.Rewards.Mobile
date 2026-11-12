@@ -9,8 +9,9 @@ public class MyProfileViewModel(
     IServiceProvider provider,
     IFileCacheService fileCacheService,
     IAlertService alertService,
+    SSW.Rewards.Mobile.Common.IApiErrorPresenter errorPresenter,
     ILogger<ProfileViewModelBase> logger)
-    : ProfileViewModelBase(true, userService, devService, provider, fileCacheService, alertService, logger)
+    : ProfileViewModelBase(true, userService, devService, provider, fileCacheService, alertService, errorPresenter, logger)
 {
     private readonly IUserService _userService = userService;
 
