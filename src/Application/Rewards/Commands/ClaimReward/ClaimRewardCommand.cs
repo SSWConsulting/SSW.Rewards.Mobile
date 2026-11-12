@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Hangfire;
+using Microsoft.Extensions.Logging;
+using SSW.Rewards.Application.Rewards.BackgroundJobs;
 using SSW.Rewards.Application.System.Commands.Common;
 using SSW.Rewards.Shared.DTOs.AddressTypes;
 using SSW.Rewards.Shared.DTOs.Rewards;
@@ -18,7 +20,7 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
-    private readonly IRewardSender _rewardSender;
+    private readonly IBackgroundJobClient _backgroundJobClient;
     private readonly ICurrentUserService _currentUserService;
     private readonly ICacheService _cacheService;
     private readonly ILogger<ClaimRewardCommandHandler> _logger;
@@ -26,14 +28,14 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
     public ClaimRewardCommandHandler(
         IApplicationDbContext context,
         IMapper mapper,
-        IRewardSender rewardSender,
+        IBackgroundJobClient backgroundJobClient,
         ICurrentUserService currentUserService,
         ICacheService cacheService,
         ILogger<ClaimRewardCommandHandler> logger)
     {
         _context = context;
         _mapper = mapper;
-        _rewardSender = rewardSender;
+        _backgroundJobClient = backgroundJobClient;
         _currentUserService = currentUserService;
         _cacheService = cacheService;
         _logger = logger;
@@ -65,7 +67,6 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
             .Where(u => u.Email == _currentUserService.GetUserEmail())
             .Select(x => new
             {
-                User = x,
                 UserId = x.Id,
                 PointsUsed = x.UserRewards.Sum(ur => ur.Reward.Cost),
                 TotalPoints = x.UserAchievements.Sum(ua => ua.Achievement.Value),
@@ -91,11 +92,21 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
             };
         }
 
-        _context.UserRewards.Add(new()
+        var userReward = new UserReward
         {
             UserId = userAndPoints.UserId,
             RewardId = reward.Id
-        });
+        };
+        _context.UserRewards.Add(userReward);
+
+        // Outbox: the fulfilment request (and shipping address) is saved in the same transaction as the claim,
+        // so a failed email can be retried - and an interrupted delivery resumed - from the database.
+        RewardClaimDelivery? delivery = null;
+        if (!request.ClaimInPerson)
+        {
+            delivery = CreateDelivery(userReward, request.Address);
+            _context.RewardClaimDeliveries.Add(delivery);
+        }
 
         // Award the user an achievement for claiming their first prize.
         if (!userAndPoints.HasClaimedPrizeAchievement && claimPrizeAchievementId != -1)
@@ -111,9 +122,9 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
 
         _cacheService.Remove(CacheTags.UpdatedOnlyRewards);
 
-        if (!request.ClaimInPerson)
+        if (delivery != null)
         {
-            await _rewardSender.SendRewardAsync(userAndPoints.User, reward, request.Address?.freeformAddress ?? string.Empty, cancellationToken);
+            TryEnqueueDelivery(delivery);
         }
 
         var rewardModel = _mapper.Map<RewardDto>(reward);
@@ -123,6 +134,34 @@ public class ClaimRewardCommandHandler : IRequestHandler<ClaimRewardCommand, Cla
             Reward = rewardModel,
             status = RewardStatus.Claimed
         };
+    }
+
+    private static RewardClaimDelivery CreateDelivery(UserReward userReward, Address? address) => new()
+    {
+        UserReward = userReward,
+        FreeformAddress = address?.freeformAddress,
+        StreetNumber = address?.streetNumber,
+        StreetName = address?.streetName,
+        Municipality = address?.municipality,
+        State = address?.countrySubdivisionName ?? address?.countrySubdivision,
+        PostalCode = address?.postalCode,
+        Country = address?.country,
+        Status = RewardClaimDeliveryStatus.Pending
+    };
+
+    private void TryEnqueueDelivery(RewardClaimDelivery delivery)
+    {
+        // The claim is already saved: never fail the request because of the email.
+        // If the enqueue fails, RewardClaimDeliverySweepJob picks the Pending record up later.
+        try
+        {
+            RewardClaimDeliveryJob.Enqueue(_backgroundJobClient, delivery.Id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to enqueue reward claim delivery {DeliveryId} for claim #{ClaimId}; the sweep job will retry it",
+                delivery.Id, delivery.UserRewardId);
+        }
     }
 
     private async Task<int> GetClaimPrizeAchievementId(CancellationToken ct)
