@@ -195,6 +195,7 @@ public class LeaderboardServiceTests
         };
 
         _contextMock.Setup(x => x.Users).Returns(users.BuildMockDbSet().Object);
+        _contextMock.Setup(x => x.StaffMembers).Returns(new List<StaffMember>().BuildMockDbSet().Object);
         _cacheServiceMock.Setup(x => x.GetOrAddAsync(
                 CacheKeys.Leaderboard,
                 It.IsAny<Func<Task<List<LeaderboardUserDto>>>>()))
@@ -266,6 +267,7 @@ public class LeaderboardServiceTests
         };
 
         _contextMock.Setup(x => x.Users).Returns(users.BuildMockDbSet().Object);
+        _contextMock.Setup(x => x.StaffMembers).Returns(new List<StaffMember>().BuildMockDbSet().Object);
         _cacheServiceMock.Setup(x => x.GetOrAddAsync(
                 CacheKeys.Leaderboard,
                 It.IsAny<Func<Task<List<LeaderboardUserDto>>>>()))
