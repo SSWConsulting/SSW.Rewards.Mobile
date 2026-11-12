@@ -25,6 +25,8 @@ public partial class Podium : ContentView
 	{
 		if (leader is null)
 		{
+			// The list was emptied (e.g. a period that can't load offline): don't keep the old leader.
+			ParentLayout.IsVisible = false;
 			return;
 		}
 

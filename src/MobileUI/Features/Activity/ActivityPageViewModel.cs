@@ -170,9 +170,10 @@ public partial class ActivityPageViewModel : BaseViewModel, IRefreshOnReconnect
             return;
         }
 
-        // The user asked for different data — report a failure even though the
-        // previous segment's items are still visible.
-        await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: true, FeedSubject);
+        // A failed switch never leaves the previous segment on screen: it's cleared (nothing to show,
+        // so the failure is reported) or replaced by this segment's cached items (quiet, like any
+        // refresh behind cached data).
+        await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: false, FeedSubject);
     }
 
     [RelayCommand]

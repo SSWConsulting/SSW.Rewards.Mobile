@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SSW.Rewards.Mobile.Common;
 using SSW.Rewards.Mobile.Controls;
@@ -14,82 +14,72 @@ public enum NetworkPageSegments
 
 public partial class NetworkPageViewModel : BaseViewModel, IRefreshOnReconnect
 {
-    public NetworkPageSegments CurrentSegment { get; set; }
-    public AdvancedObservableCollection<NetworkProfileDto> AdvancedSearchResults { get; set; } = new();
+    private const string NetworkSubject = "your network";
 
-    [ObservableProperty] 
-    private List<Segment> _segments;
+    private readonly IServiceProvider _provider;
+    private readonly IApiErrorPresenter _errorPresenter;
+
+    public NetworkPageSegments CurrentSegment { get; set; }
+
+    /// <summary>One list from one endpoint; the segments only filter it locally.</summary>
+    public PagedListSource<NetworkProfileDto> Profiles { get; }
+
+    public List<Segment> Segments { get; } =
+    [
+        new() { Name = "Scanned", Value = NetworkPageSegments.Following },
+        new() { Name = "Scanned me", Value = NetworkPageSegments.Followers },
+    ];
+
     [ObservableProperty]
     private Segment? _selectedSegment;
+
     [ObservableProperty]
     private bool _isRefreshing;
 
-    private readonly IFileCacheService _fileCacheService;
-    private readonly IDevService _devService;
-    private readonly IServiceProvider _provider;
-
-    private bool _pageLoaded;
-    
-    public NetworkPageViewModel(IFileCacheService fileCacheService, IDevService devService, IServiceProvider provider)
+    public NetworkPageViewModel(IFileCacheService fileCacheService, IDevService devService, IServiceProvider provider,
+        IApiErrorPresenter errorPresenter)
     {
-        _fileCacheService = fileCacheService;
-        _devService = devService;
         _provider = provider;
+        _errorPresenter = errorPresenter;
+
+        Profiles = new PagedListSource<NetworkProfileDto>(new()
+        {
+            FetchPage = async (_, _, _) => (await devService.GetProfilesAsync()).ToList(),
+            PageSize = PagedListSourceOptions<NetworkProfileDto>.SinglePage,
+            Filter = profile => CurrentSegment switch
+            {
+                NetworkPageSegments.Following => profile.Scanned,
+                NetworkPageSegments.Followers => profile.ScannedMe,
+                _ => false
+            },
+            AreSame = NetworkProfileDto.IsEqual,
+            Cache = fileCacheService,
+            CacheKey = "NetworkProfilesCache",
+        });
+
+        // Cached profiles land before the network: drop the spinner then.
+        Profiles.Items.CollectionChanged += (_, _) => IsBusy &= !Profiles.HasContent;
     }
-    
+
     public async Task Initialise()
     {
-        IsBusy = true;
-        if (Segments is null || Segments.Count == 0)
+        IsBusy = !Profiles.HasContent;
+        try
         {
-            Segments =
-                [
-                    new Segment { Name = "Scanned", Value = NetworkPageSegments.Following },
-                    new Segment { Name = "Scanned me", Value = NetworkPageSegments.Followers },
-                ];
-
-            // Always use cache first because all tabs have same endpoint but different local filtering logic.
-            AdvancedSearchResults.InitializeInitialCaching(_fileCacheService, "NetworkProfilesCache", () => true);
-
-            // Tabs have different filtering logic instead of different endpoints or parameters.
-            AdvancedSearchResults.FilterItem = x =>
-                CurrentSegment switch
-                {
-                    NetworkPageSegments.Following => x.Scanned,
-                    NetworkPageSegments.Followers => x.ScannedMe,
-                    _ => false
-                };
-
-            // This is to reduce flickering when loading data.
-            AdvancedSearchResults.CompareItems = NetworkProfileDto.IsEqual;
+            await LoadAsync();
         }
-
-        // Disable refreshing when done.
-        AdvancedSearchResults.OnCollectionUpdated += OnCollectionUpdated;
-
-        // Handle errors silently, e.g., log them or show a message.
-        AdvancedSearchResults.OnError += OnCollectionError;
-
-        _pageLoaded = true;
-
-        await RefreshNetwork();
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
-    public void OnDisappearing()
+    private async Task LoadAsync()
     {
-        AdvancedSearchResults.OnCollectionUpdated -= OnCollectionUpdated;
-        AdvancedSearchResults.OnError -= OnCollectionError;
-    }
+        var result = await Profiles.RefreshAsync();
 
-    private void OnCollectionUpdated(List<NetworkProfileDto> profiles, bool isFromCache)
-    {
-        IsBusy = IsRefreshing = false;
-    }
-
-    private bool OnCollectionError(Exception ex)
-    {
-        IsRefreshing = IsBusy = false;
-        return true;
+        // Quiet behind cached profiles, except a 401, which still goes to re-login.
+        await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: false, NetworkSubject);
     }
 
     [RelayCommand]
@@ -99,32 +89,28 @@ public partial class NetworkPageViewModel : BaseViewModel, IRefreshOnReconnect
             return;
 
         CurrentSegment = (NetworkPageSegments)SelectedSegment.Value;
-
-        // This may trigger before the page is ready.
-        if (_pageLoaded)
-        {
-            AdvancedSearchResults.RefreshCollectionWithOfflineFilter();
-        }
+        Profiles.ApplyFilter();
     }
-    
+
     [RelayCommand]
     private async Task UserTapped(NetworkProfileDto leader)
     {
         var page = ActivatorUtilities.CreateInstance<OthersProfilePage>(_provider, leader.UserId);
         await Shell.Current.Navigation.PushAsync(page);
     }
-    
+
     [RelayCommand]
     private async Task RefreshNetwork()
     {
-        await AdvancedSearchResults.LoadAsync(LoadData, true);
+        try
+        {
+            await LoadAsync();
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
     }
 
-    public Task RefreshOnReconnectAsync() => RefreshNetwork();
-
-    private async Task<List<NetworkProfileDto>> LoadData(CancellationToken ct)
-    {
-        IEnumerable<NetworkProfileDto> profiles = await _devService.GetProfilesAsync();
-        return profiles.ToList();
-    }
+    public Task RefreshOnReconnectAsync() => LoadAsync();
 }

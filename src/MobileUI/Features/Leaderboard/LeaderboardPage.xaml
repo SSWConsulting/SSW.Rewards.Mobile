@@ -73,7 +73,7 @@
             Command="{Binding RefreshLeaderboardCommand}"
             IsRefreshing="{Binding IsRefreshing}">
             <CollectionView
-                ItemsSource="{Binding Leaders}"
+                ItemsSource="{Binding Leaders.Items}"
                 x:Name="LeadersCollection"
                 SizeChanged="OnSizeChanged"
                 ItemsUpdatingScrollMode="KeepItemsInView"

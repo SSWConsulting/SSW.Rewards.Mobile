@@ -136,9 +136,18 @@ Rules:
    (`PostDetail_{id}`): cached copy first, then fresh, same `ListLoadResult` for the error handler.
    Reloads after a write skip the cached copy (it predates the change) — see `PostDetailViewModel`.
    APIs that page by page number adapt with `PageNumberPaging.ToPageIndex(skip, take)`.
-14. `AdvancedObservableCollection<T>` (Network/Leaderboard/Redeem/Profile) is the **legacy**
-   version of this pattern — don't use it for new pages; those pages migrate to
-   `PagedListSource`/`IFileCacheService.GetAsync` as part of #1567.
+14. **Lists the API returns in one call** (Network, Redeem, Quiz) use
+   `PageSize = PagedListSourceOptions<T>.SinglePage`: the first page is the last, so `LoadMoreAsync`
+   never fetches again.
+15. **Filter locally with `Filter` + `ApplyFilter()`** when a search box or segment narrows one fetched
+   list (Redeem search, Network "Scanned"/"Scanned me"). Pagination, the cache and `HasContent` work on
+   the unfiltered list (`AllItems`), so filtering everything out never reads as "nothing loaded". When a
+   segment needs a different endpoint or parameter, change the query and call
+   `RefreshAsync(queryChanged: true)` instead (Activity, Leaderboard).
+16. **Service methods behind a list propagate their errors** (no `TryHandleAsync`, no empty fallback):
+   an empty list returned on failure would be cached over the real one, and the page's
+   `HandleLoadAsync` already handles the 401.
+17. `Reset()` empties the list and cancels its load, e.g. when a different user signs in (Redeem).
 
 ## XAML with Compiled Bindings
 

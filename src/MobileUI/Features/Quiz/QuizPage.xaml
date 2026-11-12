@@ -71,7 +71,7 @@
                     <CollectionView
                         Grid.Row="1"
                         x:Name="QuizListSection"
-                        ItemsSource="{Binding Quizzes.Collection}"
+                        ItemsSource="{Binding Quizzes.Items}"
                         ItemsUpdatingScrollMode="KeepItemsInView"
                         ItemSizingStrategy="{OnPlatform iOS='MeasureFirstItem', Android='MeasureAllItems'}">
                         <CollectionView.ItemsLayout>
