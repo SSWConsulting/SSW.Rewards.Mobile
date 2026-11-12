@@ -7,6 +7,7 @@
         NotFound,
         InsufficientBalance,
         Error,
-        Confirmed
+        Confirmed,
+        Offline
     }
 }

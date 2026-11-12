@@ -21,6 +21,7 @@ public partial class RedeemViewModel : BaseViewModel, IRefreshOnReconnect
     private readonly IDispatcherTimer _timer;
     private readonly Subject<string> _searchSubject = new();
     private readonly IAlertService _alertService;
+    private readonly IApiErrorPresenter _errorPresenter;
 
     private const int AutoScrollInterval = 6;
     private const int DebounceInterval = 300;
@@ -45,7 +46,8 @@ public partial class RedeemViewModel : BaseViewModel, IRefreshOnReconnect
     private bool _isSearching;
 
     public RedeemViewModel(IRewardService rewardService, IUserService userService, IAddressService addressService,
-        IFirebaseAnalyticsService firebaseAnalyticsService, IFileCacheService fileCacheService, IAlertService alertService)
+        IFirebaseAnalyticsService firebaseAnalyticsService, IFileCacheService fileCacheService, IAlertService alertService,
+        IApiErrorPresenter errorPresenter)
     {
         Title = "Rewards";
         _rewardService = rewardService;
@@ -54,6 +56,7 @@ public partial class RedeemViewModel : BaseViewModel, IRefreshOnReconnect
         _firebaseAnalyticsService = firebaseAnalyticsService;
         _fileCacheService = fileCacheService;
         _alertService = alertService;
+        _errorPresenter = errorPresenter;
 
         _userService.MyBalanceObservable().Subscribe(OnBalanceChanged);
         _userService.MyUserIdObservable().DistinctUntilChanged().Subscribe(OnUserChanged);
@@ -178,21 +181,8 @@ public partial class RedeemViewModel : BaseViewModel, IRefreshOnReconnect
     {
         MainThread.BeginInvokeOnMainThread(async () =>
         {
-            if (!Rewards.IsLoaded)
-            {
-                string userMessage;
-
-                if (ex is HttpRequestException)
-                {
-                    userMessage = "Unable to load rewards due to a network issue. Please check your internet connection and try again.";
-                }
-                else
-                {
-                    userMessage = "An unexpected error occurred while loading rewards. Please try again later.";
-                }
-
-                await _alertService.DisplayAlertAsync("Oops...", userMessage, "OK");
-            }
+            // Quiet behind cached rewards, except a 401, which still goes to re-login.
+            await _errorPresenter.HandleLoadAsync(ListLoadResult.Fail(ex, Rewards.IsLoaded), userRequestedNewData: false, "rewards");
 
             IsBusy = false;
             IsRefreshing = false;
@@ -255,9 +245,8 @@ public partial class RedeemViewModel : BaseViewModel, IRefreshOnReconnect
     [RelayCommand]
     private async Task RedeemReward(int id)
     {
-        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+        if (!await _errorPresenter.EnsureOnlineAsync("view or redeem a reward"))
         {
-            await _alertService.DisplayAlertAsync("Device Offline", "You must be online to view or redeem a reward.", "OK");
             return;
         }
 

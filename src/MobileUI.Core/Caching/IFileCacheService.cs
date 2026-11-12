@@ -18,6 +18,9 @@ public interface IFileCacheService
     /// </summary>
     Task SetAsync<T>(string cacheKey, T value, TimeSpan? expiry = null, long? generation = null);
 
+    /// <summary>Removes one entry, e.g. an item the API says no longer exists. Never throws.</summary>
+    Task RemoveAsync<T>(string cacheKey);
+
     /// <summary>Wipes every cached entry (e.g. on logout, so no user data outlives the session). Never throws.</summary>
     Task ResetAsync();
 

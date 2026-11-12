@@ -1,84 +1,136 @@
+#nullable enable
+
+using AsyncAwaitBestPractices;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using SSW.Rewards.ApiClient.Services;
+using SSW.Rewards.Mobile.Common;
 using SSW.Rewards.Shared.DTOs.Posts;
-using IUserService = SSW.Rewards.Mobile.Services.IUserService;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
 {
+    private const string DeletedTitle = "Post";
+    private const string DeletedMessage = "This post is no longer available.";
+
     private readonly IPostsService _postsService;
-    private readonly IUserService _userService;
+    private readonly IFileCacheService _fileCacheService;
+    private readonly IAlertService _alertService;
+    private readonly IApiErrorPresenter _errorPresenter;
+    private readonly IAppNavigator _navigator;
     private readonly ILogger<PostDetailViewModel> _logger;
 
-    private int _postId;
+    // One cache entry per post opened; expire them so they don't accumulate until logout.
+    private static readonly TimeSpan CacheExpiry = TimeSpan.FromDays(30);
 
-    public PostDetailViewModel(IPostsService postsService, IUserService userService, ILogger<PostDetailViewModel> logger)
+    private int _postId;
+    private CancellationTokenSource? _loadCts;
+
+    public PostDetailViewModel(
+        IPostsService postsService,
+        IFileCacheService fileCacheService,
+        IAlertService alertService,
+        IApiErrorPresenter errorPresenter,
+        IAppNavigator navigator,
+        ILogger<PostDetailViewModel> logger)
     {
         _postsService = postsService;
-        _userService = userService;
+        _fileCacheService = fileCacheService;
+        _alertService = alertService;
+        _errorPresenter = errorPresenter;
+        _navigator = navigator;
         _logger = logger;
     }
 
     [ObservableProperty]
-    private PostDetailDto _post;
+    public partial PostDetailDto? Post { get; set; }
 
     [ObservableProperty]
-    private string _newComment = string.Empty;
+    public partial string NewComment { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private bool _isLiked;
+    public partial bool IsLiked { get; set; }
 
     [ObservableProperty]
-    private int _likesCount;
+    public partial int LikesCount { get; set; }
 
     [ObservableProperty]
-    private bool _isLoadingAction;
+    public partial bool IsLoadingAction { get; set; }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         if (query.TryGetValue("PostId", out var postId))
         {
             _postId = Convert.ToInt32(postId);
-            Task.Run(async () => await LoadPostAsync());
+            LoadPostAsync().SafeFireAndForget(ex => _logger.LogError(ex, "Error loading post details"));
         }
     }
 
     private async Task LoadPostAsync()
     {
-        if (IsBusy)
-            return;
+        _loadCts?.Cancel();
+        _loadCts?.Dispose();
+        _loadCts = new CancellationTokenSource();
+        var ct = _loadCts.Token;
 
-        IsBusy = true;
+        // The spinner covers an empty page only; a cached post renders straight away.
+        IsBusy = Post is null;
         try
         {
-            var result = await _postsService.GetPostById(_postId, CancellationToken.None);
+            var result = await CachedItemLoader.LoadAsync<PostDetailDto>(
+                _fileCacheService,
+                $"PostDetail_{_postId}",
+                token => _postsService.GetPostById(_postId, token),
+                (post, fromCache) =>
+                {
+                    // Reloads after a like or comment skip the cached copy: it predates the change.
+                    if (!fromCache || Post is null)
+                    {
+                        Show(post);
+                    }
 
-            if (result != null)
+                    return Task.CompletedTask;
+                },
+                ct,
+                CacheExpiry);
+
+            if (result.Error.IsNotFound())
             {
-                Post = result;
-                IsLiked = result.CurrentUserLiked;
-                LikesCount = result.LikesCount;
-                Title = result.Title;
+                // Deleted on the server (the loader has dropped the cached copy): stop showing it, so
+                // the user can't like or comment on a post that no longer exists.
+                Post = null;
+                await _alertService.DisplayAlertAsync(DeletedTitle, DeletedMessage, "OK");
+                await _navigator.GoBackAsync();
+                return;
             }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error loading post details");
-            await Shell.Current.DisplayAlertAsync("Error", "Failed to load post details", "OK");
+
+            // A failure behind the cached post stays quiet.
+            await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: false, "this post");
         }
         finally
         {
-            IsBusy = false;
+            // A superseding load owns the spinner now.
+            if (!ct.IsCancellationRequested)
+            {
+                IsBusy = false;
+            }
         }
+    }
+
+    private void Show(PostDetailDto post)
+    {
+        Post = post;
+        IsLiked = post.CurrentUserLiked;
+        LikesCount = post.LikesCount;
+        Title = post.Title;
     }
 
     [RelayCommand]
     private async Task ToggleLikeAsync()
     {
-        if (IsLoadingAction)
+        if (IsLoadingAction || !await _errorPresenter.EnsureOnlineAsync("like this post"))
             return;
 
         IsLoadingAction = true;
@@ -89,17 +141,15 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
             IsLiked = result;
             LikesCount += result ? 1 : -1;
 
-            // Update the main Post object as well
             if (Post != null)
             {
-                // Reload to get updated data
                 await LoadPostAsync();
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error toggling like");
-            await Shell.Current.DisplayAlertAsync("Error", "Failed to update like", "OK");
+            await _errorPresenter.HandleActionErrorAsync(ex, "update your like");
         }
         finally
         {
@@ -110,7 +160,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     private async Task AddCommentAsync()
     {
-        if (string.IsNullOrWhiteSpace(NewComment) || IsLoadingAction)
+        if (string.IsNullOrWhiteSpace(NewComment) || IsLoadingAction || !await _errorPresenter.EnsureOnlineAsync("comment"))
             return;
 
         IsLoadingAction = true;
@@ -120,7 +170,6 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
 
             if (commentId > 0 && Post != null)
             {
-                // Reload the post to get updated comments
                 await LoadPostAsync();
                 NewComment = string.Empty;
             }
@@ -128,7 +177,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error adding comment");
-            await Shell.Current.DisplayAlertAsync("Error", "Failed to add comment", "OK");
+            await _errorPresenter.HandleActionErrorAsync(ex, "add your comment");
         }
         finally
         {
@@ -139,11 +188,10 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
     [RelayCommand]
     private async Task DeleteCommentAsync(PostCommentDto comment)
     {
-        if (IsLoadingAction)
+        if (IsLoadingAction || !await _errorPresenter.EnsureOnlineAsync("delete a comment"))
             return;
 
-        // Confirm deletion
-        bool confirm = await Shell.Current.DisplayAlertAsync(
+        bool confirm = await _alertService.DisplayConfirmationAsync(
             "Delete Comment",
             "Are you sure you want to delete this comment?",
             "Delete",
@@ -156,14 +204,12 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         try
         {
             await _postsService.DeleteComment(comment.Id, CancellationToken.None);
-
-            // Reload the post to get updated comments
             await LoadPostAsync();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error deleting comment");
-            await Shell.Current.DisplayAlertAsync("Error", "Failed to delete comment", "OK");
+            await _errorPresenter.HandleActionErrorAsync(ex, "delete the comment");
         }
         finally
         {

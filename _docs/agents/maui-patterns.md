@@ -40,7 +40,7 @@ Exemplar: `Features/Activity/ActivityPageViewModel.cs`.
 public PagedListSource<ActivityFeedItemDto> Feed { get; }
 
 public MyViewModel(IActivityFeedService service, IFileCacheService fileCacheService,
-    OfflineAwareListErrorHandler errorHandler, ...)
+    IApiErrorPresenter errorPresenter, ...)
 {
     Feed = new PagedListSource<ActivityFeedItemDto>(new()
     {
@@ -57,14 +57,14 @@ public async Task LoadFeed()
 {
     var result = await Feed.RefreshAsync();
     // 401 → login even behind cache; other failures stay quiet while content is shown.
-    await _errorHandler.HandleAsync(result, userRequestedNewData: false, Title, OfflineMessage, GenericMessage);
+    await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: false, "the activity feed");
 }
 
 [RelayCommand]
 private async Task LoadMore()
 {
     var result = await Feed.LoadMoreAsync();   // never discard the result
-    await _errorHandler.HandleAsync(result, userRequestedNewData: false, Title, OfflineMessage, GenericMessage);
+    await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: false, "the activity feed");
 }
 
 [RelayCommand(AllowConcurrentExecutions = true)]  // a non-concurrent command drops the user's next tap
@@ -74,7 +74,7 @@ private async Task FilterBySegment()
     _currentSegment = segment;
     var result = await Feed.RefreshAsync(queryChanged: true);
     if (segment != _currentSegment) return;          // the user already moved on
-    await _errorHandler.HandleAsync(result, userRequestedNewData: true, Title, OfflineMessage, GenericMessage);
+    await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: true, "the activity feed");
 }
 ```
 
@@ -88,18 +88,20 @@ cache-implementation-agnostic: pages only ever see `IFileCacheService`.
 
 Rules:
 
-1. **Handle every result via `OfflineAwareListErrorHandler`** (Core, DI-registered, unit-tested) —
-   refresh, load-more and segment switches alike; don't hand-roll the policy. It runs the API
+1. **Report every failure via `IApiErrorPresenter`** (Core, DI singleton, unit-tested) — list loads,
+   other loads and user actions alike; don't write alert text or hand-roll the policy. It runs the API
    exception handler first (401 → login), stays silent when a background load fails behind visible
-   content, and otherwise shows your offline/generic message. Pass `userRequestedNewData: true` for
-   segment/filter switches (those always alert).
+   content, and otherwise says "You're offline" or "Something went wrong" with wording from
+   `UserMessages`. You pass only the subject ("the activity feed") or action ("redeem a reward").
+   Pass `userRequestedNewData: true` for segment/filter switches (those always alert). A legacy
+   `OnError(Exception)` callback reports through `HandleLoadAsync(ListLoadResult.Fail(ex, hasContent), ...)`.
 2. **API client methods throw `HttpRequestException` with `StatusCode`** on failure — a plain
    `Exception` hides 401s from the handler, so an expired session behind cached content never logs in.
    The resilience pipeline's own failures (timeout, open circuit) also arrive as `HttpRequestException`,
    and nothing is retried while `IApiNetworkStatus` says the device is offline, so offline errors are immediate.
 3. **No MAUI statics in ViewModels.** Use the Core seams: `IConnectivityService` (not
    `Connectivity.Current`), `IAppNavigator` (not `Shell.Current` + `ActivatorUtilities`),
-   `IApiExceptionHandler` (not the static `ExceptionHandler`), `IAlertService`. This is what keeps
+   `IApiErrorPresenter`/`IApiExceptionHandler`, `IAlertService`. This is what keeps
    ViewModel logic host-testable.
 4. **`RefreshAsync` replaces, `LoadMoreAsync` appends.** Pagination is network-only and can't
    duplicate page 1 while cached data is shown; only a successful short/empty page marks the end.
@@ -127,9 +129,14 @@ Rules:
    `BaseContentPage` calls it when the connection comes back — immediately if the page is visible,
    otherwise on its next `OnAppearing`. Don't subscribe to `Connectivity.ConnectivityChanged` in a
    ViewModel.
-12. Online-only actions (submit, redeem) check `Connectivity.Current.NetworkAccess` and tell the
-   user why they're blocked — never let the action throw.
-13. `AdvancedObservableCollection<T>` (Network/Leaderboard/Redeem/Profile) is the **legacy**
+12. **Writes are online-only** (no outbox; scans included). Guard each one with
+   `if (!await _errorPresenter.EnsureOnlineAsync("redeem a reward")) return;` and report a failed
+   request with `HandleActionErrorAsync(ex, action)` — never let the action throw.
+13. **Detail pages** (one item, not a list) use `CachedItemLoader.LoadAsync` with a per-item key
+   (`PostDetail_{id}`): cached copy first, then fresh, same `ListLoadResult` for the error handler.
+   Reloads after a write skip the cached copy (it predates the change) — see `PostDetailViewModel`.
+   APIs that page by page number adapt with `PageNumberPaging.ToPageIndex(skip, take)`.
+14. `AdvancedObservableCollection<T>` (Network/Leaderboard/Redeem/Profile) is the **legacy**
    version of this pattern — don't use it for new pages; those pages migrate to
    `PagedListSource`/`IFileCacheService.GetAsync` as part of #1567.
 

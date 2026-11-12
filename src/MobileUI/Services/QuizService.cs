@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Shared.DTOs.Quizzes;
+using SSW.Rewards.Mobile.Common;
+using SSW.Rewards.Shared.DTOs.Quizzes;
 using IApiQuizService = SSW.Rewards.ApiClient.Services.IQuizService;
 
 namespace SSW.Rewards.Mobile.Services;
@@ -23,12 +24,12 @@ public interface IQuizService
 public class QuizService : IQuizService
 {
     private readonly IApiQuizService _quizClient;
-    private readonly IAlertService _alertService;
+    private readonly IApiErrorPresenter _errorPresenter;
 
-    public QuizService(IApiQuizService quizService, IAlertService alertService)
+    public QuizService(IApiQuizService quizService, IApiErrorPresenter errorPresenter)
     {
         _quizClient = quizService;
-        _alertService = alertService;
+        _errorPresenter = errorPresenter;
     }
 
     public async Task<QuizDetailsDto> GetQuizDetails(int quizID)
@@ -39,15 +40,14 @@ public class QuizService : IQuizService
         }
         catch (Exception e)
         {
-            if (!await ExceptionHandler.HandleApiException(e))
-            {
-                await _alertService.DisplayAlertAsync("Oops...", "There seems to be a problem loading the quiz. Please try again soon.", "OK");
-            }
+            await _errorPresenter.HandleLoadErrorAsync(e, "the quiz");
 
             return null;
         }
     }
 
+    // HttpRequestException (offline, 401, ...) propagates: the Quiz page reports it, knowing whether
+    // cached quizzes are still on screen.
     public async Task<IEnumerable<QuizDto>> GetQuizzes()
     {
         try
@@ -63,18 +63,9 @@ public class QuizService : IQuizService
 
             return quizzes;
         }
-        catch (HttpRequestException)
+        catch (Exception e) when (e is not HttpRequestException)
         {
-            // Don't show error for network issues - let the caller handle it
-            throw;
-        }
-        catch (Exception e)
-        {
-            if (!await ExceptionHandler.HandleApiException(e))
-            {
-                await _alertService.DisplayAlertAsync("Oops...", "There seems to be a problem loading the quizzes. Please try again soon.", "OK");
-            }
-
+            await _errorPresenter.HandleLoadErrorAsync(e, "quizzes");
             return null;
         }
     }
@@ -87,10 +78,7 @@ public class QuizService : IQuizService
         }
         catch (Exception e)
         {
-            if (!await ExceptionHandler.HandleApiException(e))
-            {
-                await _alertService.DisplayAlertAsync("Oops...", "There seems to be a problem submitting your quiz. Please try again soon.", "OK");
-            }
+            await _errorPresenter.HandleActionErrorAsync(e, "submit your quiz");
 
             return null;
         }
@@ -104,10 +92,7 @@ public class QuizService : IQuizService
         }
         catch (Exception e)
         {
-            if (!await ExceptionHandler.HandleApiException(e))
-            {
-                await _alertService.DisplayAlertAsync("Oops...", "There seems to be a problem beginning the quiz. Please try again soon.", "OK");
-            }
+            await _errorPresenter.HandleActionErrorAsync(e, "start the quiz");
         }
 
         return null;
@@ -121,10 +106,7 @@ public class QuizService : IQuizService
         }
         catch (Exception e)
         {
-            if (!await ExceptionHandler.HandleApiException(e))
-            {
-                await _alertService.DisplayAlertAsync("Oops...", "There seems to be a problem submitting your answer. Please try again soon.", "OK");
-            }
+            await _errorPresenter.HandleActionErrorAsync(e, "submit your answer");
         }
     }
 
@@ -136,10 +118,7 @@ public class QuizService : IQuizService
         }
         catch (Exception e)
         {
-            if (!await ExceptionHandler.HandleApiException(e))
-            {
-                await _alertService.DisplayAlertAsync("Oops...", "There seems to be a problem loading the quiz details. Please try again soon.", "OK");
-            }
+            await _errorPresenter.HandleLoadErrorAsync(e, "the quiz results");
 
             return null;
         }
@@ -153,10 +132,7 @@ public class QuizService : IQuizService
         }
         catch (Exception e)
         {
-            if (!await ExceptionHandler.HandleApiException(e))
-            {
-                await _alertService.DisplayAlertAsync("Oops...", "There seems to be a problem loading the quiz results. Please try again soon.", "OK");
-            }
+            await _errorPresenter.HandleLoadErrorAsync(e, "the quiz results");
 
             return null;
         }

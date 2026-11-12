@@ -20,13 +20,11 @@ public enum ActivityPageSegments
 
 public partial class ActivityPageViewModel : BaseViewModel, IRefreshOnReconnect
 {
-    private const string FeedTitle = "Activity Feed";
-    private const string OfflineMessage = "You're offline. The activity feed will load once you're back online.";
-    private const string GenericMessage = "There seems to be a problem loading the activity feed. Please try again soon.";
+    private const string FeedSubject = "the activity feed";
 
     private readonly IUserService _userService;
     private readonly IAppNavigator _navigator;
-    private readonly OfflineAwareListErrorHandler _errorHandler;
+    private readonly IApiErrorPresenter _errorPresenter;
 
     private ActivityPageSegments _currentSegment;
 
@@ -58,12 +56,12 @@ public partial class ActivityPageViewModel : BaseViewModel, IRefreshOnReconnect
         IUserService userService,
         PostListViewModel postsViewModel,
         IAppNavigator navigator,
-        OfflineAwareListErrorHandler errorHandler,
+        IApiErrorPresenter errorPresenter,
         IFileCacheService fileCacheService)
     {
         _userService = userService;
         _navigator = navigator;
-        _errorHandler = errorHandler;
+        _errorPresenter = errorPresenter;
         PostsViewModel = postsViewModel;
         ShowActivityFeed = true;
 
@@ -86,16 +84,39 @@ public partial class ActivityPageViewModel : BaseViewModel, IRefreshOnReconnect
 
     public async Task LoadFeed()
     {
-        // The feed is hidden behind the Posts tab; switching back refreshes it.
+        // The feed is hidden behind the Posts tab (switching back refreshes it); retry the posts
+        // instead, so returning from a post detail replaces cached posts once back online.
         if (_currentSegment == ActivityPageSegments.Posts)
         {
+            await PostsViewModel.InitialiseAsync();
             return;
         }
 
-        var result = await Feed.RefreshAsync();
+        var result = await RefreshFeedAsync();
 
         // Background refresh: a failure behind cached content stays quiet.
-        await _errorHandler.HandleAsync(result, userRequestedNewData: false, FeedTitle, OfflineMessage, GenericMessage);
+        await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: false, FeedSubject);
+    }
+
+    private int _feedLoads;
+
+    private async Task<ListLoadResult> RefreshFeedAsync(bool queryChanged = false)
+    {
+        // The spinner covers an empty feed only; cached items render straight away. Counted, so a
+        // superseded load finishing first doesn't hide it while the newer one still runs.
+        _feedLoads++;
+        IsBusy = Feed.Items.Count == 0;
+        try
+        {
+            return await Feed.RefreshAsync(queryChanged);
+        }
+        finally
+        {
+            if (--_feedLoads == 0)
+            {
+                IsBusy = false;
+            }
+        }
     }
 
     public Task RefreshOnReconnectAsync()
@@ -104,8 +125,14 @@ public partial class ActivityPageViewModel : BaseViewModel, IRefreshOnReconnect
     [RelayCommand]
     private async Task Refresh()
     {
-        await LoadFeed();
-        IsRefreshing = false;
+        try
+        {
+            await LoadFeed();
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
     }
 
     [RelayCommand]
@@ -114,7 +141,7 @@ public partial class ActivityPageViewModel : BaseViewModel, IRefreshOnReconnect
         var result = await Feed.LoadMoreAsync();
 
         // Loaded items stay on screen, so only a session expiry interrupts scrolling.
-        await _errorHandler.HandleAsync(result, userRequestedNewData: false, FeedTitle, OfflineMessage, GenericMessage);
+        await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: false, FeedSubject);
     }
 
     // Concurrent so a tap made while the previous segment loads isn't dropped; the newer refresh supersedes it.
@@ -137,7 +164,7 @@ public partial class ActivityPageViewModel : BaseViewModel, IRefreshOnReconnect
             return;
         }
 
-        var result = await Feed.RefreshAsync(queryChanged: true);
+        var result = await RefreshFeedAsync(queryChanged: true);
         if (segment != _currentSegment)
         {
             return;
@@ -145,7 +172,7 @@ public partial class ActivityPageViewModel : BaseViewModel, IRefreshOnReconnect
 
         // The user asked for different data — report a failure even though the
         // previous segment's items are still visible.
-        await _errorHandler.HandleAsync(result, userRequestedNewData: true, FeedTitle, OfflineMessage, GenericMessage);
+        await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: true, FeedSubject);
     }
 
     [RelayCommand]

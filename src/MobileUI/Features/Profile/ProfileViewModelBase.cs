@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using Mopups.Services;
 using SSW.Rewards.Enums;
+using SSW.Rewards.Mobile.Common;
 using SSW.Rewards.Mobile.PopupPages;
 using SSW.Rewards.PopupPages;
 using SSW.Rewards.Shared.DTOs.Staff;
@@ -19,6 +20,7 @@ public partial class ProfileViewModelBase : BaseViewModel
     private readonly IFileCacheService _fileCacheService;
     private readonly ILogger<ProfileViewModelBase> _logger;
     private readonly IAlertService _alertService;
+    private readonly IApiErrorPresenter _errorPresenter;
 
     [ObservableProperty]
     private string _profilePic;
@@ -94,6 +96,7 @@ public partial class ProfileViewModelBase : BaseViewModel
         IServiceProvider provider,
         IFileCacheService fileCacheService,
         IAlertService alertService,
+        IApiErrorPresenter errorPresenter,
         ILogger<ProfileViewModelBase> logger)
     {
         IsMe = isMe;
@@ -103,6 +106,7 @@ public partial class ProfileViewModelBase : BaseViewModel
         _fileCacheService = fileCacheService;
         _logger = logger;
         _alertService = alertService;
+        _errorPresenter = errorPresenter;
     }
 
     protected async Task _initialise()
@@ -141,7 +145,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             if (!hasCachedData)
             {
                 _logger.LogError("Profile loading error: {Message}", ex.Message);
-                await _alertService.DisplayAlertAsync("Oops...", "There was an error loading this profile", "OK");
+                await _errorPresenter.HandleLoadErrorAsync(ex, "this profile");
                 await ClosePage();
             }
             else

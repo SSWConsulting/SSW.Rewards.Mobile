@@ -14,7 +14,7 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     private readonly IServiceProvider _provider;
     private readonly IFileCacheService _fileCacheService;
     private readonly IDispatcherTimer _timer;
-    private readonly IAlertService _alertService;
+    private readonly IApiErrorPresenter _errorPresenter;
 
     private const int AutoScrollInterval = 6;
     private const string CacheKey = "QuizzesList";
@@ -28,12 +28,12 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     public AdvancedObservableCollection<QuizItemViewModel> Quizzes { get; } = new();
     public ObservableRangeCollection<QuizItemViewModel> CarouselQuizzes { get; set; } = [];
 
-    public QuizViewModel(IQuizService quizService, IServiceProvider provider, IFileCacheService fileCacheService, IAlertService alertService)
+    public QuizViewModel(IQuizService quizService, IServiceProvider provider, IFileCacheService fileCacheService, IApiErrorPresenter errorPresenter)
     {
         _quizService = quizService;
         _provider = provider;
         _fileCacheService = fileCacheService;
-        _alertService = alertService;
+        _errorPresenter = errorPresenter;
         WeakReferenceMessenger.Default.Register(this);
         _timer = Application.Current.Dispatcher.CreateTimer();
         _timer.Interval = TimeSpan.FromSeconds(AutoScrollInterval);
@@ -96,21 +96,8 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     {
         MainThread.BeginInvokeOnMainThread(async () =>
         {
-            if (!Quizzes.IsLoaded)
-            {
-                string userMessage;
-
-                if (ex is HttpRequestException)
-                {
-                    userMessage = "Unable to load quizzes due to a network issue. Please check your internet connection and try again.";
-                }
-                else
-                {
-                    userMessage = "An unexpected error occurred while loading quizzes. Please try again later.";
-                }
-
-                await _alertService.DisplayAlertAsync("Oops...", userMessage, "OK");
-            }
+            // Quiet behind cached quizzes, except a 401, which still goes to re-login.
+            await _errorPresenter.HandleLoadAsync(ListLoadResult.Fail(ex, Quizzes.IsLoaded), userRequestedNewData: false, "quizzes");
 
             IsBusy = false;
             IsRefreshing = false;
@@ -157,9 +144,8 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     [RelayCommand]
     private async Task OpenQuiz(int quizId)
     {
-        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+        if (!await _errorPresenter.EnsureOnlineAsync("start a quiz"))
         {
-            await _alertService.DisplayAlertAsync("Device Offline", "You must be online to start a quiz.", "OK");
             return;
         }
 

@@ -61,7 +61,6 @@ public static class DependencyInjection
         services.AddTransient<ActivityPageViewModel>();
         services.AddTransient<SettingsPage>();
         services.AddTransient<SettingsViewModel>();
-        services.AddTransient<PostListPage>();
         services.AddTransient<PostListViewModel>();
         services.AddTransient<PostDetailPage>();
         services.AddTransient<PostDetailViewModel>();
@@ -91,7 +90,7 @@ public static class DependencyInjection
             MainThread.BeginInvokeOnMainThread));
         services.AddSingleton<IAppNavigator, AppNavigator>();
         services.AddSingleton<IApiExceptionHandler, ApiExceptionHandler>();
-        services.AddTransient<SSW.Rewards.Mobile.Common.OfflineAwareListErrorHandler>();
+        services.AddSingleton<SSW.Rewards.Mobile.Common.IApiErrorPresenter, SSW.Rewards.Mobile.Common.ApiErrorPresenter>();
 
         // Configure authentication options
         services.Configure<AuthenticationOptions>(options =>
