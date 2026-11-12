@@ -30,6 +30,12 @@ public class CachedItemLoaderTests
             return Task.CompletedTask;
         }
 
+        public Task RemoveAsync<T>(string cacheKey)
+        {
+            Store.Remove(cacheKey);
+            return Task.CompletedTask;
+        }
+
         public Task ResetAsync()
         {
             Generation++;
@@ -133,5 +139,31 @@ public class CachedItemLoaderTests
         _shown.Should().BeEmpty();
         result.Error.Should().BeNull();
         _cache.Store.Should().BeEmpty();
+    }
+
+    [Test]
+    public async Task LoadAsync_ItemDeletedOnServer_RemovesCachedCopy_AndReportsNothingToShow()
+    {
+        _cache.Store[Key] = new Item("cached");
+
+        var result = await CachedItemLoader.LoadAsync<Item>(_cache, Key,
+            _ => Task.FromException<Item>(new HttpRequestException("not found", null, System.Net.HttpStatusCode.NotFound)), Show);
+
+        _cache.Store.Should().NotContainKey(Key, "a deleted item must not be offered from the cache again");
+        result.Error.IsNotFound().Should().BeTrue("the caller tells 'missing' apart from 'offline' by this");
+        result.HasContent.Should().BeFalse("the cached copy on screen is no longer valid");
+    }
+
+    [Test]
+    public async Task LoadAsync_Offline_KeepsCachedCopy_AndIsNotNotFound()
+    {
+        _cache.Store[Key] = new Item("cached");
+
+        var result = await CachedItemLoader.LoadAsync<Item>(_cache, Key,
+            _ => Task.FromException<Item>(new HttpRequestException("offline")), Show);
+
+        _cache.Store.Should().ContainKey(Key);
+        result.Error.IsNotFound().Should().BeFalse();
+        result.HasContent.Should().BeTrue();
     }
 }

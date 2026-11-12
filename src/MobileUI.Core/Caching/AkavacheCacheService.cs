@@ -73,6 +73,23 @@ public class AkavacheCacheService : IFileCacheService
         }
     }
 
+    public async Task RemoveAsync<T>(string cacheKey)
+    {
+        await _writeGate.WaitAsync();
+        try
+        {
+            await CacheDatabase.LocalMachine.InvalidateObject<T>(cacheKey).FirstAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to remove cached data for key {CacheKey}", cacheKey);
+        }
+        finally
+        {
+            _writeGate.Release();
+        }
+    }
+
     public async Task ResetAsync()
     {
         await _writeGate.WaitAsync();

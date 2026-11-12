@@ -15,12 +15,14 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
     private const string PostTitle = "Post";
     private const string OfflineMessage = "You're offline. This post will load once you're back online.";
     private const string GenericMessage = "There seems to be a problem loading this post. Please try again soon.";
+    private const string DeletedMessage = "This post is no longer available.";
 
     private readonly IPostsService _postsService;
     private readonly IFileCacheService _fileCacheService;
     private readonly IConnectivityService _connectivity;
     private readonly IAlertService _alertService;
     private readonly IApiExceptionHandler _apiExceptionHandler;
+    private readonly IAppNavigator _navigator;
     private readonly OfflineAwareListErrorHandler _errorHandler;
     private readonly ILogger<PostDetailViewModel> _logger;
 
@@ -36,6 +38,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         IConnectivityService connectivity,
         IAlertService alertService,
         IApiExceptionHandler apiExceptionHandler,
+        IAppNavigator navigator,
         OfflineAwareListErrorHandler errorHandler,
         ILogger<PostDetailViewModel> logger)
     {
@@ -44,6 +47,7 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         _connectivity = connectivity;
         _alertService = alertService;
         _apiExceptionHandler = apiExceptionHandler;
+        _navigator = navigator;
         _errorHandler = errorHandler;
         _logger = logger;
     }
@@ -99,6 +103,16 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
                 },
                 ct,
                 CacheExpiry);
+
+            if (result.Error.IsNotFound())
+            {
+                // Deleted on the server (the loader has dropped the cached copy): stop showing it, so
+                // the user can't like or comment on a post that no longer exists.
+                Post = null;
+                await _alertService.DisplayAlertAsync(PostTitle, DeletedMessage, "OK");
+                await _navigator.GoBackAsync();
+                return;
+            }
 
             // A failure behind the cached post stays quiet.
             await _errorHandler.HandleAsync(result, userRequestedNewData: false, PostTitle, OfflineMessage, GenericMessage);
