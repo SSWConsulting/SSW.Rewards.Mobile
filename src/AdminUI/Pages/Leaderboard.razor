@@ -35,37 +35,37 @@
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.Balance)">
+            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => -x.Balance)" SortIcon="@DescendingFirstIcon">
                 Balance
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.PointsToday)">
+            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => -x.PointsToday)" SortIcon="@DescendingFirstIcon">
                 Points Today
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.PointsThisWeek)">
+            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => -x.PointsThisWeek)" SortIcon="@DescendingFirstIcon">
                 Points This Week
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.PointsThisMonth)">
+            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => -x.PointsThisMonth)" SortIcon="@DescendingFirstIcon">
                 Points This Month
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.PointsThisYear)">
+            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => -x.PointsThisYear)" SortIcon="@DescendingFirstIcon">
                 Points This Year
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.PointsClaimed)">
+            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => -x.PointsClaimed)" SortIcon="@DescendingFirstIcon">
                 Points Claimed
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => x.TotalPoints)">
+            <MudTableSortLabel SortBy="new Func<LeaderboardUserDto, object>(x => -x.TotalPoints)" SortIcon="@DescendingFirstIcon">
                 Total Points
             </MudTableSortLabel>
         </MudTh>
@@ -94,6 +94,11 @@
 </Table>
 
 @code {
+    // MudBlazor 6 always sorts ascending first (header click, and the phone-width sort dropdown which
+    // cannot change direction at all). Points columns sort on the negated value so "ascending" puts the
+    // highest points at the top, with a downward arrow so the icon matches what the user sees (#1166).
+    private const string DescendingFirstIcon = Icons.Material.Filled.ArrowDownward;
+
     private bool _loading = true;
     private string _searchString = string.Empty;
     private IEnumerable<LeaderboardUserDto> _model = Enumerable.Empty<LeaderboardUserDto>();
