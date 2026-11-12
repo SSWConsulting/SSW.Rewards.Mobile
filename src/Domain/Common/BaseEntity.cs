@@ -7,6 +7,6 @@ public abstract class BaseEntity
     public int Id { get; set; }
 
     public DateTime CreatedUtc { get; set; }
-    [MaxLength(40)]
+    [MaxLength(256)]
     public string? CreatedBy { get; set; }
 }
