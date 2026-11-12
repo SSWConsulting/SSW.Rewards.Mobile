@@ -1,4 +1,5 @@
-﻿using SSW.Rewards.Shared.DTOs.Leaderboard;
+﻿using SSW.Rewards.Application.Common.Helpers;
+using SSW.Rewards.Shared.DTOs.Leaderboard;
 using SSW.Rewards.Shared.Utils;
 
 namespace SSW.Rewards.Application.Leaderboard;
@@ -43,11 +44,13 @@ public class LeaderboardService : ILeaderboardService
         DateTime lastSevenDaysUtc = utcNow.AddDays(-7);
         DateTime lastThirtyDaysUtc = utcNow.AddDays(-30);
 
-        var users = await _context.Users
+        var leaderboardUsers = _context.Users
+            .Where(x => x.Activated && !string.IsNullOrWhiteSpace(x.FullName));
+
+        var users = await leaderboardUsers
             .AsNoTracking()
             .AsSplitQuery()
             .TagWithContext()
-            .Where(x => x.Activated && !string.IsNullOrWhiteSpace(x.FullName))
             .Select(x => new LeaderboardUserDto
             {
                 UserId = x.Id,
@@ -71,11 +74,6 @@ public class LeaderboardService : ILeaderboardService
                 PointsThisYear = x.UserAchievements
                     .Where(ua => ua.AwardedAt.Year == utcNow.Year)
                     .Sum(ua => ua.Achievement.Value),
-                Title = x.SocialMediaIds
-                    .Where(s => s.SocialMediaPlatform.Name == "Company")
-                    .Select(s => s.SocialMediaUserId)
-                    .FirstOrDefault()
-                    ?? "",
                 XHandle = x.SocialMediaIds
                     .Where(s => s.SocialMediaPlatform.Name == "Twitter" || s.SocialMediaPlatform.Name == "X")
                     .Select(s => s.SocialMediaUserId)
@@ -83,6 +81,8 @@ public class LeaderboardService : ILeaderboardService
                     ?? ""
             })
             .ToListAsync(cancellationToken);
+
+        var titles = await _context.GetUserTitlesAsync(leaderboardUsers, cancellationToken);
 
         var defaultProfilePictureUrl = await _profilePicStorageProvider.GetProfilePicUri("v2sophie.png");
 
@@ -94,12 +94,7 @@ public class LeaderboardService : ILeaderboardService
             .ThenBy(lud => lud.UserId))
         {
             user.Rank = ++rank;
-            user.Title = user.Title switch
-            {
-                _ when !string.IsNullOrEmpty(user.Title) => RegexHelpers.WebsiteRegex().Replace(user.Title, string.Empty),
-                _ when user.Email?.EndsWith("ssw.com.au") == true => "SSW",
-                _ => "Community"
-            };
+            user.Title = titles.GetValueOrDefault(user.UserId, UserTitles.Community);
             user.XHandle = ParseXHandle(user.XHandle);
 
             if (string.IsNullOrEmpty(user.ProfilePic) && defaultProfilePictureUrl != null)

@@ -189,6 +189,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             Points = profile.Points,
             Balance = profile.Balance,
             IsStaff = profile.IsStaff,
+            Title = profile.Title,
             Email = profile.Email,
             Achievements = profile.Achievements.ToList(),
             Rewards = profile.Rewards.ToList(),
@@ -221,7 +222,7 @@ public partial class ProfileViewModelBase : BaseViewModel
             Balance = profileData.Balance;
             IsStaff = profileData.IsStaff;
             UserEmail = profileData.Email ?? string.Empty;
-            Title = GetTitle();
+            Title = profileData.Title ?? string.Empty;
             LinkedInUrl = profileData.LinkedInUrl;
             GitHubUrl = profileData.GitHubUrl;
             TwitterUrl = profileData.TwitterUrl;
@@ -236,18 +237,6 @@ public partial class ProfileViewModelBase : BaseViewModel
     {
         return socialMediaList?.FirstOrDefault(x => x.SocialMediaPlatformId == socialMediaPlatformId)
             ?.SocialMediaUserId;
-    }
-
-    private string GetTitle()
-    {
-        if (IsStaff)
-        {
-            return "SSW";
-        }
-
-        return !string.IsNullOrEmpty(CompanyUrl)
-            ? RegexHelpers.WebsiteRegex().Replace(CompanyUrl, string.Empty)
-            : "Community";
     }
 
     [RelayCommand]
@@ -458,6 +447,7 @@ public class CachedProfileData
     public int Points { get; init; }
     public int Balance { get; init; }
     public bool IsStaff { get; init; }
+    public string Title { get; init; }
     public string Email { get; init; }
     public string LinkedInUrl { get; init; }
     public string GitHubUrl { get; init; }

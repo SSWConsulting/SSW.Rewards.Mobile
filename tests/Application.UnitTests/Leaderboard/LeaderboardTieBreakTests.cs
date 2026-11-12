@@ -49,6 +49,7 @@ public class LeaderboardTieBreakTests
 
         var context = new Mock<IApplicationDbContext>();
         context.Setup(x => x.Users).Returns(users.BuildMockDbSet().Object);
+        context.Setup(x => x.StaffMembers).Returns(new List<StaffMember>().BuildMockDbSet().Object);
         var cache = new Mock<ICacheService>();
         cache.Setup(x => x.GetOrAddAsync(CacheKeys.Leaderboard, It.IsAny<Func<Task<List<LeaderboardUserDto>>>>()))
             .Returns<string, Func<Task<List<LeaderboardUserDto>>>>((_, factory) => factory());

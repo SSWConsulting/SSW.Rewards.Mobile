@@ -315,6 +315,7 @@ public class UserService : IUserService, IRolesService
 
         vm.Rank = await GetUserRankAsync(userId, cancellationToken);
         vm.IsStaff = vm.Email?.EndsWith("@ssw.com.au") ?? false;
+        vm.Title = await _dbContext.GetUserTitleAsync(userId, cancellationToken);
         vm.Balance = vm.Points - vm.Rewards.Sum(r => r.RewardCost);
 
         return vm;
