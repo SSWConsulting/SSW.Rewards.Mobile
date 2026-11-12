@@ -61,7 +61,6 @@ public static class DependencyInjection
         services.AddTransient<ActivityPageViewModel>();
         services.AddTransient<SettingsPage>();
         services.AddTransient<SettingsViewModel>();
-        services.AddTransient<PostListPage>();
         services.AddTransient<PostListViewModel>();
         services.AddTransient<PostDetailPage>();
         services.AddTransient<PostDetailViewModel>();

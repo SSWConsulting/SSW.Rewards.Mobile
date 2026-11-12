@@ -45,7 +45,7 @@ public class PostsService : IPostsService
         }
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-        throw new Exception($"Failed to get posts: {responseContent}");
+        throw new HttpRequestException($"Failed to get posts: {responseContent}", null, result.StatusCode);
     }
 
     public async Task<PostDetailDto> GetPostById(int id, CancellationToken cancellationToken)
@@ -62,7 +62,7 @@ public class PostsService : IPostsService
         }
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-        throw new Exception($"Failed to get post: {responseContent}");
+        throw new HttpRequestException($"Failed to get post: {responseContent}", null, result.StatusCode);
     }
 
     public async Task<bool> ToggleLike(int postId, CancellationToken cancellationToken)
@@ -77,7 +77,7 @@ public class PostsService : IPostsService
         }
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-        throw new Exception($"Failed to toggle like: {responseContent}");
+        throw new HttpRequestException($"Failed to toggle like: {responseContent}", null, result.StatusCode);
     }
 
     public async Task<int> AddComment(int postId, string comment, CancellationToken cancellationToken)
@@ -97,7 +97,7 @@ public class PostsService : IPostsService
         }
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-        throw new Exception($"Failed to add comment: {responseContent}");
+        throw new HttpRequestException($"Failed to add comment: {responseContent}", null, result.StatusCode);
     }
 
     public async Task DeleteComment(int commentId, CancellationToken cancellationToken)
@@ -107,7 +107,7 @@ public class PostsService : IPostsService
         if (!result.IsSuccessStatusCode)
         {
             var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-            throw new Exception($"Failed to delete comment: {responseContent}");
+            throw new HttpRequestException($"Failed to delete comment: {responseContent}", null, result.StatusCode);
         }
     }
 
@@ -118,7 +118,7 @@ public class PostsService : IPostsService
         if (!result.IsSuccessStatusCode)
         {
             var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-            throw new Exception($"Failed to delete post: {responseContent}");
+            throw new HttpRequestException($"Failed to delete post: {responseContent}", null, result.StatusCode);
         }
     }
 
@@ -133,7 +133,7 @@ public class PostsService : IPostsService
         }
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-        throw new Exception($"Failed to create post: {responseContent}");
+        throw new HttpRequestException($"Failed to create post: {responseContent}", null, result.StatusCode);
     }
 
     public async Task UpdatePost(UpdatePostDto dto, CancellationToken cancellationToken)
@@ -143,7 +143,7 @@ public class PostsService : IPostsService
         if (!result.IsSuccessStatusCode)
         {
             var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-            throw new Exception($"Failed to update post: {responseContent}");
+            throw new HttpRequestException($"Failed to update post: {responseContent}", null, result.StatusCode);
         }
     }
 
@@ -163,6 +163,6 @@ public class PostsService : IPostsService
         }
 
         var responseContent = await result.Content.ReadAsStringAsync(cancellationToken);
-        throw new Exception($"Failed to upload image: {responseContent}");
+        throw new HttpRequestException($"Failed to upload image: {responseContent}", null, result.StatusCode);
     }
 }
