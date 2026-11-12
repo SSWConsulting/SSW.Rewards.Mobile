@@ -148,21 +148,41 @@
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
                 </CollectionView.ItemsLayout>
                 <CollectionView.EmptyView>
-                    <VerticalStackLayout
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        Spacing="10">
-                        <Label
-                            Text="No posts yet"
-                            FontSize="18"
+                    <!-- Hidden while the first load runs: the spinner covers that. -->
+                    <Grid IsVisible="{Binding PostsViewModel.IsBusy, Converter={mct:InvertedBoolConverter}}">
+                        <VerticalStackLayout
                             HorizontalOptions="Center"
-                            TextColor="{StaticResource Gray300}" />
-                        <Label
-                            Text="Check back later for updates"
-                            FontSize="14"
+                            VerticalOptions="Center"
+                            Spacing="10"
+                            IsVisible="{Binding PostsViewModel.LoadFailed, Converter={mct:InvertedBoolConverter}}">
+                            <Label
+                                Text="No posts yet"
+                                FontSize="18"
+                                HorizontalOptions="Center"
+                                TextColor="{StaticResource Gray300}" />
+                            <Label
+                                Text="Check back later for updates"
+                                FontSize="14"
+                                HorizontalOptions="Center"
+                                TextColor="{StaticResource Gray400}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout
                             HorizontalOptions="Center"
-                            TextColor="{StaticResource Gray400}" />
-                    </VerticalStackLayout>
+                            VerticalOptions="Center"
+                            Spacing="10"
+                            IsVisible="{Binding PostsViewModel.LoadFailed}">
+                            <Label
+                                Text="Couldn't load posts"
+                                FontSize="18"
+                                HorizontalOptions="Center"
+                                TextColor="{StaticResource Gray300}" />
+                            <Label
+                                Text="Pull down to try again"
+                                FontSize="14"
+                                HorizontalOptions="Center"
+                                TextColor="{StaticResource Gray400}" />
+                        </VerticalStackLayout>
+                    </Grid>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="posts:PostDto">
@@ -249,12 +269,22 @@
             </CollectionView>
         </RefreshView>
         
-        <ActivityIndicator
-            Grid.Row="1"
-            HorizontalOptions="Center"
-            VerticalOptions="Center"
-            Color="{StaticResource SSWRed}"
-            IsRunning="{Binding IsBusy}"
-            IsVisible="{Binding IsBusy}"/>
+        <!-- One spinner per tab: each list's first load, while it has nothing to show. -->
+        <Grid Grid.Row="1" IsVisible="{Binding ShowActivityFeed}" InputTransparent="True">
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Color="{StaticResource SSWRed}"
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"/>
+        </Grid>
+        <Grid Grid.Row="1" IsVisible="{Binding ShowPosts}" InputTransparent="True">
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Color="{StaticResource SSWRed}"
+                IsRunning="{Binding PostsViewModel.IsBusy}"
+                IsVisible="{Binding PostsViewModel.IsBusy}"/>
+        </Grid>
     </Grid>
 </common:BaseContentPage>

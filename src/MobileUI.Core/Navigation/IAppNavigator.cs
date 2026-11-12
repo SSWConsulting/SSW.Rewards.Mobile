@@ -18,6 +18,9 @@ public interface IAppNavigator
     /// <summary>Navigates to a post's detail page.</summary>
     Task GoToPostDetailAsync(int postId);
 
+    /// <summary>Goes back one page in the current navigation stack.</summary>
+    Task GoBackAsync();
+
     /// <summary>Dismisses the current modal page.</summary>
     Task PopModalAsync();
 }
