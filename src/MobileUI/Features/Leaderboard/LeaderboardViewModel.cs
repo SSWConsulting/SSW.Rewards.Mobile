@@ -8,7 +8,7 @@ using SSW.Rewards.Mobile.Controls;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class LeaderboardViewModel : BaseViewModel
+public partial class LeaderboardViewModel : BaseViewModel, IRefreshOnReconnect
 {
     private const string LeaderboardSubject = "the leaderboard";
     private const int ScrollDelayMilliseconds = 50;
@@ -112,6 +112,8 @@ public partial class LeaderboardViewModel : BaseViewModel
             IsRefreshing = false;
         }
     }
+
+    public Task RefreshOnReconnectAsync() => RefreshLeaderboard();
 
     [RelayCommand]
     private async Task LoadMore()

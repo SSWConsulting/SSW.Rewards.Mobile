@@ -10,9 +10,13 @@ public partial class TopBarViewModel : ObservableObject
     [ObservableProperty]
     private string _profilePic;
 
-    public TopBarViewModel(IServiceProvider provider, IUserService userService)
+    /// <summary>Drives the offline banner in the shared page template.</summary>
+    public ConnectivityMonitor Connectivity { get; }
+
+    public TopBarViewModel(IServiceProvider provider, IUserService userService, ConnectivityMonitor connectivity)
     {
         _provider = provider;
+        Connectivity = connectivity;
 
         userService.MyProfilePicObservable().Subscribe(myProfilePage => ProfilePic = myProfilePage);
     }

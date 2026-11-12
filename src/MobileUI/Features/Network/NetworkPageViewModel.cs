@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SSW.Rewards.Mobile.Common;
 using SSW.Rewards.Mobile.Controls;
@@ -12,7 +12,7 @@ public enum NetworkPageSegments
     Followers
 }
 
-public partial class NetworkPageViewModel : BaseViewModel
+public partial class NetworkPageViewModel : BaseViewModel, IRefreshOnReconnect
 {
     private const string NetworkSubject = "your network";
 
@@ -111,4 +111,6 @@ public partial class NetworkPageViewModel : BaseViewModel
             IsRefreshing = false;
         }
     }
+
+    public Task RefreshOnReconnectAsync() => LoadAsync();
 }
