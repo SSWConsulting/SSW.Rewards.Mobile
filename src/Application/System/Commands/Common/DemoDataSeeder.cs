@@ -517,9 +517,8 @@ public class DemoDataSeeder
             if (firstHack is not null) Award(user, achievements.ByName(MilestoneAchievements.AttendHackday).Id, firstHack.Value);
             if (firstWorkshop is not null) Award(user, achievements.ByName(MilestoneAchievements.AttendWorkshop).Id, firstWorkshop.Value);
 
-            // Quiz completions — only for quizzes flagged for it. Any passed completion
-            // currently blocks ALL further submissions of that quiz (global-pass check in
-            // SubmitUserQuizCommandValidator), so playable quizzes stay completion-free.
+            // Quiz completions — only for quizzes flagged for it, so some quizzes stay
+            // completion-free for demoing a fresh attempt.
             foreach (var demo in DemoDataSet.Quizzes)
             {
                 if (!demo.SeedCompletions) continue;
