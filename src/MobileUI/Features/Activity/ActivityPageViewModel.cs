@@ -92,10 +92,31 @@ public partial class ActivityPageViewModel : BaseViewModel
             return;
         }
 
-        var result = await Feed.RefreshAsync();
+        var result = await RefreshFeedAsync();
 
         // Background refresh: a failure behind cached content stays quiet.
         await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: false, FeedSubject);
+    }
+
+    private int _feedLoads;
+
+    private async Task<ListLoadResult> RefreshFeedAsync(bool queryChanged = false)
+    {
+        // The spinner covers an empty feed only; cached items render straight away. Counted, so a
+        // superseded load finishing first doesn't hide it while the newer one still runs.
+        _feedLoads++;
+        IsBusy = Feed.Items.Count == 0;
+        try
+        {
+            return await Feed.RefreshAsync(queryChanged);
+        }
+        finally
+        {
+            if (--_feedLoads == 0)
+            {
+                IsBusy = false;
+            }
+        }
     }
 
     [RelayCommand]
@@ -140,7 +161,7 @@ public partial class ActivityPageViewModel : BaseViewModel
             return;
         }
 
-        var result = await Feed.RefreshAsync(queryChanged: true);
+        var result = await RefreshFeedAsync(queryChanged: true);
         if (segment != _currentSegment)
         {
             return;

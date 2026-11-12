@@ -21,6 +21,12 @@ public partial class PostListViewModel : BaseViewModel
     [ObservableProperty]
     public partial bool IsRefreshing { get; set; }
 
+    /// <summary>True when the last load failed with nothing to show, so the empty list says so instead of "No posts yet".</summary>
+    [ObservableProperty]
+    public partial bool LoadFailed { get; set; }
+
+    private int _loads;
+
     public PostListViewModel(
         IPostsService postsService,
         IAppNavigator navigator,
@@ -84,18 +90,25 @@ public partial class PostListViewModel : BaseViewModel
 
     private async Task LoadPostsAsync()
     {
-        // The spinner covers an empty list only; cached posts render straight away.
+        // The spinner (ActivityPage, Posts tab) covers an empty list only; cached posts render straight
+        // away. Counted, so a superseded load finishing first doesn't hide it while the newer one runs.
+        _loads++;
         IsBusy = Posts.Items.Count == 0;
+        LoadFailed = false;
         try
         {
             var result = await Posts.RefreshAsync();
+            LoadFailed = result.Error is not null && !result.HasContent;
 
             // A failure behind cached posts stays quiet.
             await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: false, "posts");
         }
         finally
         {
-            IsBusy = false;
+            if (--_loads == 0)
+            {
+                IsBusy = false;
+            }
         }
     }
 }

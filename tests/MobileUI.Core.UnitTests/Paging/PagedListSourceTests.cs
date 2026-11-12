@@ -38,6 +38,12 @@ public class PagedListSourceTests
             return Task.CompletedTask;
         }
 
+        public Task RemoveAsync<T>(string cacheKey)
+        {
+            Store.Remove(cacheKey);
+            return Task.CompletedTask;
+        }
+
         public Task ResetAsync()
         {
             Generation++;

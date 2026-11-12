@@ -12,10 +12,14 @@ namespace SSW.Rewards.Mobile.ViewModels;
 
 public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
 {
+    private const string DeletedTitle = "Post";
+    private const string DeletedMessage = "This post is no longer available.";
+
     private readonly IPostsService _postsService;
     private readonly IFileCacheService _fileCacheService;
     private readonly IAlertService _alertService;
     private readonly IApiErrorPresenter _errorPresenter;
+    private readonly IAppNavigator _navigator;
     private readonly ILogger<PostDetailViewModel> _logger;
 
     // One cache entry per post opened; expire them so they don't accumulate until logout.
@@ -29,12 +33,14 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
         IFileCacheService fileCacheService,
         IAlertService alertService,
         IApiErrorPresenter errorPresenter,
+        IAppNavigator navigator,
         ILogger<PostDetailViewModel> logger)
     {
         _postsService = postsService;
         _fileCacheService = fileCacheService;
         _alertService = alertService;
         _errorPresenter = errorPresenter;
+        _navigator = navigator;
         _logger = logger;
     }
 
@@ -89,6 +95,16 @@ public partial class PostDetailViewModel : BaseViewModel, IQueryAttributable
                 },
                 ct,
                 CacheExpiry);
+
+            if (result.Error.IsNotFound())
+            {
+                // Deleted on the server (the loader has dropped the cached copy): stop showing it, so
+                // the user can't like or comment on a post that no longer exists.
+                Post = null;
+                await _alertService.DisplayAlertAsync(DeletedTitle, DeletedMessage, "OK");
+                await _navigator.GoBackAsync();
+                return;
+            }
 
             // A failure behind the cached post stays quiet.
             await _errorPresenter.HandleLoadAsync(result, userRequestedNewData: false, "this post");
