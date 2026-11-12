@@ -5,10 +5,10 @@ namespace SSW.Rewards.Domain.Common;
 public abstract class BaseAuditableEntity : BaseEntity
 {
     public DateTime LastModifiedUtc { get; set; }
-    [MaxLength(40)]
+    [MaxLength(256)]
     public string? LastModifiedBy { get; set; }
 
     public DateTime? DeletedUtc { get; set; }
-    [MaxLength(40)]
+    [MaxLength(256)]
     public string? DeletedBy { get; set; }
 }
