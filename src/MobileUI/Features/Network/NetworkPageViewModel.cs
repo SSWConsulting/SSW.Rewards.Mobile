@@ -12,7 +12,7 @@ public enum NetworkPageSegments
     Followers
 }
 
-public partial class NetworkPageViewModel : BaseViewModel
+public partial class NetworkPageViewModel : BaseViewModel, IRefreshOnReconnect
 {
     public NetworkPageSegments CurrentSegment { get; set; }
     public AdvancedObservableCollection<NetworkProfileDto> AdvancedSearchResults { get; set; } = new();
@@ -119,6 +119,8 @@ public partial class NetworkPageViewModel : BaseViewModel
     {
         await AdvancedSearchResults.LoadAsync(LoadData, true);
     }
+
+    public Task RefreshOnReconnectAsync() => RefreshNetwork();
 
     private async Task<List<NetworkProfileDto>> LoadData(CancellationToken ct)
     {

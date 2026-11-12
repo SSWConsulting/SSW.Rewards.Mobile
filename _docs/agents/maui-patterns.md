@@ -123,15 +123,20 @@ Rules:
    Writing outside `PagedListSource`/`FetchAndRefresh`? Capture `Generation` before the load and pass it
    to `SetAsync`, so a load that outlives a reset can't write the previous user's data back.
 10. `PagedListSource` is bindable — `Feed.Items` in XAML, `Feed.IsShowingCachedData` for
-   stale-data indicators (global offline banner lands with #1567).
-11. **Writes are online-only** (no outbox; scans included). Guard each one with
+   per-page stale-data indicators. Don't add a page-level "you're offline" message: `PageTemplate`
+   shows a global banner bound to the debounced `ConnectivityMonitor.IsOffline`.
+11. **Refresh on reconnect:** a page's ViewModel implements `IRefreshOnReconnect` and
+   `BaseContentPage` calls it when the connection comes back — immediately if the page is visible,
+   otherwise on its next `OnAppearing`. Don't subscribe to `Connectivity.ConnectivityChanged` in a
+   ViewModel.
+12. **Writes are online-only** (no outbox; scans included). Guard each one with
    `if (!await _errorPresenter.EnsureOnlineAsync("redeem a reward")) return;` and report a failed
    request with `HandleActionErrorAsync(ex, action)` — never let the action throw.
-12. **Detail pages** (one item, not a list) use `CachedItemLoader.LoadAsync` with a per-item key
+13. **Detail pages** (one item, not a list) use `CachedItemLoader.LoadAsync` with a per-item key
    (`PostDetail_{id}`): cached copy first, then fresh, same `ListLoadResult` for the error handler.
    Reloads after a write skip the cached copy (it predates the change) — see `PostDetailViewModel`.
    APIs that page by page number adapt with `PageNumberPaging.ToPageIndex(skip, take)`.
-13. `AdvancedObservableCollection<T>` (Network/Leaderboard/Redeem/Profile) is the **legacy**
+14. `AdvancedObservableCollection<T>` (Network/Leaderboard/Redeem/Profile) is the **legacy**
    version of this pattern — don't use it for new pages; those pages migrate to
    `PagedListSource`/`IFileCacheService.GetAsync` as part of #1567.
 

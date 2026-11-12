@@ -6,7 +6,7 @@ using SSW.Rewards.Mobile.Controls;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class LeaderboardViewModel : BaseViewModel
+public partial class LeaderboardViewModel : BaseViewModel, IRefreshOnReconnect
 {
     private readonly ILeaderService _leaderService;
     private readonly IServiceProvider _provider;
@@ -65,6 +65,8 @@ public partial class LeaderboardViewModel : BaseViewModel
 
     [RelayCommand]
     private async Task RefreshLeaderboard() => await UpdateLeaderboardByAction(LeaderboardAction.ManualRefresh);
+
+    public Task RefreshOnReconnectAsync() => UpdateLeaderboardByAction(LeaderboardAction.ManualRefresh);
 
     [RelayCommand]
     private async Task LoadMore() => await UpdateLeaderboardByAction(LeaderboardAction.LoadMore);

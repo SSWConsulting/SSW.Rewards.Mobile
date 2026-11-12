@@ -11,7 +11,7 @@ using System.Reactive.Subjects;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class RedeemViewModel : BaseViewModel
+public partial class RedeemViewModel : BaseViewModel, IRefreshOnReconnect
 {
     private readonly IRewardService _rewardService;
     private readonly IUserService _userService;
@@ -239,6 +239,8 @@ public partial class RedeemViewModel : BaseViewModel
     {
         await LoadData();
     }
+
+    public Task RefreshOnReconnectAsync() => LoadData();
 
     [RelayCommand]
     private async Task RedeemReward(int id)

@@ -8,7 +8,7 @@ using SSW.Rewards.Shared.DTOs.Quizzes;
 
 namespace SSW.Rewards.Mobile.ViewModels;
 
-public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMessage>
+public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMessage>, IRefreshOnReconnect
 {
     private readonly IQuizService _quizService;
     private readonly IServiceProvider _provider;
@@ -138,6 +138,8 @@ public partial class QuizViewModel : BaseViewModel, IRecipient<QuizzesUpdatedMes
     {
         await LoadData();
     }
+
+    public Task RefreshOnReconnectAsync() => LoadData();
 
     [RelayCommand]
     private async Task OpenQuiz(int quizId)

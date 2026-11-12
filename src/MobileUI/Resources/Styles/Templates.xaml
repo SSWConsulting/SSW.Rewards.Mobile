@@ -6,7 +6,7 @@
                     xmlns:vm="clr-namespace:SSW.Rewards.Mobile.ViewModels"
                     xmlns:common="clr-namespace:SSW.Rewards.Mobile.Common">
     <ControlTemplate x:Key="PageTemplate">
-        <Grid RowDefinitions="50,*"
+        <Grid RowDefinitions="50,Auto,*"
               Margin="0"
               Padding="0">
             <Grid.BindingContext>
@@ -124,7 +124,29 @@
                     </Button.ImageSource>
                 </Button>
             </Grid>
-            <ContentPresenter Grid.Row="1" />
+            <!-- Offline banner (#1567): shown while the device is offline; the row collapses when hidden.
+                 Anything on screen while offline came from the cache, hence "showing saved data". -->
+            <Grid Grid.Row="1"
+                  x:DataType="vm:TopBarViewModel"
+                  IsVisible="{Binding Connectivity.IsOffline}"
+                  BackgroundColor="{StaticResource Gray600}"
+                  HorizontalOptions="Fill"
+                  Padding="12,6"
+                  SemanticProperties.Description="You're offline. Showing saved data.">
+                <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                    <!-- fa-plug -->
+                    <Label Text="&#xf1e6;"
+                           FontFamily="FA6Solid"
+                           FontSize="13"
+                           TextColor="White"
+                           VerticalOptions="Center" />
+                    <Label Text="You're offline · showing saved data"
+                           FontSize="13"
+                           TextColor="White"
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </Grid>
+            <ContentPresenter Grid.Row="2" />
         </Grid>
     </ControlTemplate>
 
