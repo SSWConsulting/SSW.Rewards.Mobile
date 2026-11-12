@@ -54,6 +54,27 @@ public class AkavacheCacheServiceTests
     }
 
     [Test]
+    public async Task Remove_DeletesOnlyThatEntry()
+    {
+        var (gone, kept) = (NewKey(), NewKey());
+        await _cache.SetAsync(gone, new Payload(1, "deleted on the server"));
+        await _cache.SetAsync(kept, new Payload(2, "still there"));
+
+        await _cache.RemoveAsync<Payload>(gone);
+
+        (await _cache.GetAsync<Payload>(gone)).Should().BeNull();
+        (await _cache.GetAsync<Payload>(kept)).Should().Be(new Payload(2, "still there"));
+    }
+
+    [Test]
+    public async Task Remove_MissingKey_DoesNotThrow()
+    {
+        var act = () => _cache.RemoveAsync<Payload>(NewKey());
+
+        await act.Should().NotThrowAsync();
+    }
+
+    [Test]
     public async Task Reset_WipesEverything()
     {
         var (k1, k2) = (NewKey(), NewKey());

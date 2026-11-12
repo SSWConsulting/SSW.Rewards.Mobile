@@ -22,7 +22,9 @@ public static class CachedItemLoader
     /// </param>
     /// <returns>
     /// A failed result when the fetch fails; <see cref="ListLoadResult.HasContent"/> tells whether
-    /// the cached copy is on screen, so the caller can stay quiet behind it.
+    /// the cached copy is on screen, so the caller can stay quiet behind it. When the API says the
+    /// item no longer exists (404, <see cref="ApiExceptionExtensions.IsNotFound"/>), the cached copy
+    /// is deleted and HasContent is false: the caller should stop showing it.
     /// </returns>
     public static async Task<ListLoadResult> LoadAsync<T>(
         IFileCacheService cache,
@@ -59,6 +61,12 @@ public static class CachedItemLoader
         catch (Exception) when (ct.IsCancellationRequested)
         {
             return ListLoadResult.Ok(shownCached, shownCached);
+        }
+        catch (Exception ex) when (ex.IsNotFound())
+        {
+            // Deleted on the server: don't keep offering the cached copy for weeks.
+            await cache.RemoveAsync<T>(cacheKey);
+            return ListLoadResult.Fail(ex, hasContent: false);
         }
         catch (Exception ex)
         {
