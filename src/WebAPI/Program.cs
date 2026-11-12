@@ -1,3 +1,5 @@
+using Hangfire;
+using SSW.Rewards.Application.Rewards.BackgroundJobs;
 using SSW.Rewards.Infrastructure.Persistence;
 using SSW.Rewards.WebAPI.Filters;
 
@@ -28,6 +30,20 @@ using (var scope = app.Services.CreateScope())
 {
     var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
     await initialiser.InitialiseAsync();
+}
+
+try
+{
+    // Resumes reward claim deliveries that are still Pending (failed enqueue, crash, exhausted retries).
+    app.Services.GetRequiredService<IRecurringJobManager>()
+        .AddOrUpdate<RewardClaimDeliverySweepJob>(
+            RewardClaimDeliverySweepJob.RecurringJobId,
+            job => job.EnqueueStaleDeliveriesAsync(CancellationToken.None),
+            RewardClaimDeliverySweepJob.Schedule);
+}
+catch (Exception ex)
+{
+    app.Logger.LogError(ex, "Failed to register recurring job {JobId}", RewardClaimDeliverySweepJob.RecurringJobId);
 }
 
 app.UseHealthChecks("/health");

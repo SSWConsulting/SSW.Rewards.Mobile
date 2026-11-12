@@ -1,52 +1,44 @@
 ﻿using Microsoft.Extensions.Logging;
 using SSW.Rewards.Application.Common.Interfaces;
 using SSW.Rewards.Application.Common.Models;
-using SSW.Rewards.Domain.Entities;
 using SSW.Rewards.Enums;
 
 namespace SSW.Rewards.Infrastructure;
 
 public class RewardSender : IRewardSender
 {
+    // TODO: These values are hard coded here but will be replaced once rewards are sent automatically.
+    private const string RecipientEmail = "SSWMarketing@ssw.com.au";
+    private const string RecipientName = "SSW Marketing";
+
     private readonly IEmailService _emailService;
     private readonly ILogger<RewardSender> _logger;
 
-    public RewardSender(IApplicationDbContext context, IEmailService emailService, ILogger<RewardSender> logger)
+    public RewardSender(IEmailService emailService, ILogger<RewardSender> logger)
     {
         _emailService = emailService;
         _logger = logger;
     }
 
-    public void SendReward(User user, Reward reward)
+    public async Task<bool> SendRewardAsync(RewardClaimNotification claim, CancellationToken cancellationToken)
     {
-        SendRewardAsync(user, reward, string.Empty, CancellationToken.None).RunSynchronously();
-    }
+        // The claim number makes a repeated email recognisable as the same claim.
+        string emailSubject = $"SSW Rewards - Reward Notification - Claim #{claim.ClaimId}";
 
-    public async Task SendRewardAsync(User user, Reward reward, string address, CancellationToken cancellationToken)
-    {
+        bool rewardSentSuccessfully;
 
-        string emailSubject = "SSW Rewards - Reward Notification";
-        
-        // TODO: These values are hard coded here but will be 
-        // replaced with the user's details once we implement
-        // physical address functionality and automatic sending
-        // of rewards
-        string recipientEmail = "SSWMarketing@ssw.com.au";
-        string recipientName = "SSW Marketing";
-
-        bool rewardSentSuccessully;
-
-        if (reward.RewardType == RewardType.Physical)
+        if (claim.RewardType == RewardType.Physical)
         {
-            PhysicalRewardEmail emailProps = new PhysicalRewardEmail
+            var emailProps = new PhysicalRewardEmail
             {
-                RecipientAddress = address, // TODO: when we implement addess capture, change to: user.Address.ToString(),
-                RecipientEmail = user.Email,
-                RecipientName = user.FullName,
-                RewardName = reward.Name
+                ClaimId = claim.ClaimId,
+                RecipientAddress = claim.Address,
+                RecipientEmail = claim.UserEmail,
+                RecipientName = claim.UserName,
+                RewardName = claim.RewardName
             };
 
-            rewardSentSuccessully = await _emailService.SendPhysicalRewardEmail(recipientEmail, recipientName, emailSubject, emailProps, cancellationToken);
+            rewardSentSuccessfully = await _emailService.SendPhysicalRewardEmail(RecipientEmail, RecipientName, emailSubject, emailProps, cancellationToken);
         }
         else
         {
@@ -54,25 +46,23 @@ public class RewardSender : IRewardSender
             // 1. Determines if it is a free ticket
             // 2. If yes, generate with the appropriate API (currently eventbrite) and send to user
             // 3. If no, send notification to Marketing for appropriate action
-
-            string voucherCode = "Please generate for user";
-
-            //end TODO
-
-            DigitalRewardEmail emailProps = new DigitalRewardEmail
+            var emailProps = new DigitalRewardEmail
             {
-                RecipientName = user.FullName,
-                RecipientEmail = user.Email,
-                RewardName = reward.Name,
-                VoucherCode = voucherCode
+                ClaimId = claim.ClaimId,
+                RecipientName = claim.UserName,
+                RecipientEmail = claim.UserEmail,
+                RewardName = claim.RewardName,
+                VoucherCode = "Please generate for user"
             };
 
-            rewardSentSuccessully = await _emailService.SendDigitalRewardEmail(recipientEmail, recipientName, emailSubject, emailProps, cancellationToken);
+            rewardSentSuccessfully = await _emailService.SendDigitalRewardEmail(RecipientEmail, RecipientName, emailSubject, emailProps, cancellationToken);
         }
 
-        if(!rewardSentSuccessully)
+        if (!rewardSentSuccessfully)
         {
-            _logger.LogError("Error sending email reward notification.", reward, user);
+            _logger.LogError("Email service refused the reward notification for claim #{ClaimId}", claim.ClaimId);
         }
+
+        return rewardSentSuccessfully;
     }
 }

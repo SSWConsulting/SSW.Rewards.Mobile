@@ -677,6 +677,78 @@ namespace SSW.Rewards.Persistence.Migrations
                     b.ToTable("Rewards");
                 });
 
+            modelBuilder.Entity("SSW.Rewards.Domain.Entities.RewardClaimDelivery", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Country")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeliveredUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FreeformAddress")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("LastAttemptUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastError")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Municipality")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("PostalCode")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("State")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StreetName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("StreetNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("UserRewardId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("UserRewardId")
+                        .IsUnique();
+
+                    b.ToTable("RewardClaimDeliveries");
+                });
+
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -1265,6 +1337,17 @@ namespace SSW.Rewards.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Quiz");
+                });
+
+            modelBuilder.Entity("SSW.Rewards.Domain.Entities.RewardClaimDelivery", b =>
+                {
+                    b.HasOne("SSW.Rewards.Domain.Entities.UserReward", "UserReward")
+                        .WithOne()
+                        .HasForeignKey("SSW.Rewards.Domain.Entities.RewardClaimDelivery", "UserRewardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserReward");
                 });
 
             modelBuilder.Entity("SSW.Rewards.Domain.Entities.SocialMediaPlatform", b =>

@@ -2,6 +2,7 @@
 
 public class PhysicalRewardEmail
 {
+    public int ClaimId { get; set; }
     public string RecipientName { get; set; }
     public string RecipientEmail { get; set; }
     public string RecipientAddress { get; set; }
