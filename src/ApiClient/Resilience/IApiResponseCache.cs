@@ -18,6 +18,9 @@ public interface IApiResponseCache
 
     /// <summary>Best-effort write, skipped when the cache was wiped since <paramref name="generation"/>. Never throws.</summary>
     Task SetAsync(string key, CachedApiResponse response, TimeSpan expiry, long generation);
+
+    /// <summary>Removes a stored response, e.g. once the API says the resource is gone. Never throws.</summary>
+    Task RemoveAsync(string key);
 }
 
 /// <summary>A stored response body and the headers needed to read it back.</summary>

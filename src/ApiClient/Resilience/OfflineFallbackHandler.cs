@@ -59,6 +59,11 @@ public sealed class OfflineFallbackHandler(IApiResponseCache cache) : Delegating
 
             await cache.SetAsync(key, new CachedApiResponse((int)response.StatusCode, contentType, body), Expiry, generation);
         }
+        else if (response.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.Gone)
+        {
+            // Deleted on the server (e.g. a post): don't bring it back offline.
+            await cache.RemoveAsync(key);
+        }
 
         return response;
     }

@@ -37,6 +37,7 @@ public class OfflineFallbackScenarioTests
         public Task<CachedApiResponse?> GetAsync(string key) => cache.GetAsync<CachedApiResponse>(key);
         public Task SetAsync(string key, CachedApiResponse response, TimeSpan expiry, long generation)
             => cache.SetAsync(key, response, expiry, generation);
+        public Task RemoveAsync(string key) => cache.RemoveAsync<CachedApiResponse>(key);
     }
 
     private WireMockServer _server = null!;

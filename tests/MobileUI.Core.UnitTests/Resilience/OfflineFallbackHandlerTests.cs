@@ -29,6 +29,12 @@ public class OfflineFallbackHandlerTests
 
             return Task.CompletedTask;
         }
+
+        public Task RemoveAsync(string key)
+        {
+            Store.Remove(key);
+            return Task.CompletedTask;
+        }
     }
 
     /// <summary>The rest of the pipeline: answers each request from a queue.</summary>
@@ -138,6 +144,19 @@ public class OfflineFallbackHandlerTests
 
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized, "a 401 must still end the session");
         _cache.Writes.Should().Be(1);
+    }
+
+    [Test]
+    public async Task Get_ApiReturnsNotFound_DropsTheStoredResponse_SoItIsNotReplayedOffline()
+    {
+        _inner.Returns(HttpStatusCode.OK, "post 42").Returns(HttpStatusCode.NotFound).Throws(Offline());
+        await Send(HttpMethod.Get);
+
+        (await Send(HttpMethod.Get)).StatusCode.Should().Be(HttpStatusCode.NotFound);
+        var act = () => Send(HttpMethod.Get);
+
+        _cache.Store.Should().BeEmpty();
+        await act.Should().ThrowAsync<HttpRequestException>("a deleted post must not come back offline");
     }
 
     [Test]

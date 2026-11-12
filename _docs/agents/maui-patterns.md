@@ -153,6 +153,7 @@ reaching the API, returns the stored response instead of throwing.
 
 - **Network failures only** (no connection, timeout, open circuit — after the resilience pipeline has
   given up). An HTTP error the API returns (401, 404, 500) passes through, so a 401 still re-logs in.
+  A 404/410 also drops the stored response, so a deleted item (e.g. a post) doesn't come back offline.
 - **GET only.** Writes stay online-only (guard them with `EnsureOnlineAsync`).
 - **Session-scoped.** The mobile app's `FileCacheApiResponseCache` stores responses in
   `IFileCacheService`, so sign-out wipes them; a response that outlives the wipe isn't stored.

@@ -14,4 +14,6 @@ public sealed class FileCacheApiResponseCache(IFileCacheService cache) : IApiRes
 
     public Task SetAsync(string key, CachedApiResponse response, TimeSpan expiry, long generation)
         => cache.SetAsync(key, response, expiry, generation);
+
+    public Task RemoveAsync(string key) => cache.RemoveAsync<CachedApiResponse>(key);
 }
