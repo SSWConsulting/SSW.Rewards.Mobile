@@ -123,26 +123,31 @@ Rules:
    Writing outside `PagedListSource`/`FetchAndRefresh`? Capture `Generation` before the load and pass it
    to `SetAsync`, so a load that outlives a reset can't write the previous user's data back.
 10. `PagedListSource` is bindable — `Feed.Items` in XAML, `Feed.IsShowingCachedData` for
-   stale-data indicators (global offline banner lands with #1567).
-11. **Writes are online-only** (no outbox; scans included). Guard each one with
+   per-page stale-data indicators. Don't add a page-level "you're offline" message: `PageTemplate`
+   shows a global banner bound to the debounced `ConnectivityMonitor.IsOffline`.
+11. **Refresh on reconnect:** a page's ViewModel implements `IRefreshOnReconnect` and
+   `BaseContentPage` calls it when the connection comes back — immediately if the page is visible,
+   otherwise on its next `OnAppearing`. Don't subscribe to `Connectivity.ConnectivityChanged` in a
+   ViewModel.
+12. **Writes are online-only** (no outbox; scans included). Guard each one with
    `if (!await _errorPresenter.EnsureOnlineAsync("redeem a reward")) return;` and report a failed
    request with `HandleActionErrorAsync(ex, action)` — never let the action throw.
-12. **Detail pages** (one item, not a list) use `CachedItemLoader.LoadAsync` with a per-item key
+13. **Detail pages** (one item, not a list) use `CachedItemLoader.LoadAsync` with a per-item key
    (`PostDetail_{id}`): cached copy first, then fresh, same `ListLoadResult` for the error handler.
    Reloads after a write skip the cached copy (it predates the change) — see `PostDetailViewModel`.
    APIs that page by page number adapt with `PageNumberPaging.ToPageIndex(skip, take)`.
-13. **Lists the API returns in one call** (Network, Redeem, Quiz) use
+14. **Lists the API returns in one call** (Network, Redeem, Quiz) use
    `PageSize = PagedListSourceOptions<T>.SinglePage`: the first page is the last, so `LoadMoreAsync`
    never fetches again.
-14. **Filter locally with `Filter` + `ApplyFilter()`** when a search box or segment narrows one fetched
+15. **Filter locally with `Filter` + `ApplyFilter()`** when a search box or segment narrows one fetched
    list (Redeem search, Network "Scanned"/"Scanned me"). Pagination, the cache and `HasContent` work on
    the unfiltered list (`AllItems`), so filtering everything out never reads as "nothing loaded". When a
    segment needs a different endpoint or parameter, change the query and call
    `RefreshAsync(queryChanged: true)` instead (Activity, Leaderboard).
-15. **Service methods behind a list propagate their errors** (no `TryHandleAsync`, no empty fallback):
+16. **Service methods behind a list propagate their errors** (no `TryHandleAsync`, no empty fallback):
    an empty list returned on failure would be cached over the real one, and the page's
    `HandleLoadAsync` already handles the 401.
-16. `Reset()` empties the list and cancels its load, e.g. when a different user signs in (Redeem).
+17. `Reset()` empties the list and cancels its load, e.g. when a different user signs in (Redeem).
 
 ## XAML with Compiled Bindings
 

@@ -18,7 +18,7 @@ public enum ActivityPageSegments
     Posts
 }
 
-public partial class ActivityPageViewModel : BaseViewModel
+public partial class ActivityPageViewModel : BaseViewModel, IRefreshOnReconnect
 {
     private const string FeedSubject = "the activity feed";
 
@@ -118,6 +118,9 @@ public partial class ActivityPageViewModel : BaseViewModel
             }
         }
     }
+
+    public Task RefreshOnReconnectAsync()
+        => ShowPosts ? PostsViewModel.RefreshCommand.ExecuteAsync(null) : LoadFeed();
 
     [RelayCommand]
     private async Task Refresh()
